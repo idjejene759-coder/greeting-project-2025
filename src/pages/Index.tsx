@@ -61,7 +61,7 @@ const Index = () => {
   };
 
   const handleRegister = () => {
-    window.open('https://t.me/X_Quill_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
+    window.open('https://t.me/C_Treasure_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
   };
 
   if (screen === 'home') {
