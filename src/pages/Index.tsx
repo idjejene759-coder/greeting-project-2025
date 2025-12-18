@@ -252,14 +252,22 @@ const Index = () => {
           </Button>
 
           <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 sm:mb-8">
-                <div className="text-center sm:text-left">
-                  <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Ваш баланс</p>
-                  <p className="text-3xl sm:text-4xl font-black" style={{ color: '#FF10F0' }}>
-                    {balance} ₽
-                  </p>
+              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row justify-around items-center gap-6">
+                  <div className="text-center">
+                    <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Ваш баланс</p>
+                    <p className="text-3xl sm:text-4xl font-black" style={{ color: '#FF10F0' }}>
+                      {balance} ₽
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Рефералов</p>
+                    <p className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>
+                      {referralCount}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-center sm:text-right">
+                <div className="text-center">
                   <Button
                     onClick={handleWithdraw}
                     className="bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all px-6 py-2"
@@ -268,12 +276,6 @@ const Index = () => {
                     Вывести
                   </Button>
                   <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 200 ₽</p>
-                </div>
-                <div className="text-center sm:text-right">
-                  <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Рефералов</p>
-                  <p className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>
-                    {referralCount}
-                  </p>
                 </div>
               </div>
 
