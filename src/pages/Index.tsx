@@ -32,11 +32,17 @@ const Index = () => {
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
-      setBalance(userData.balance);
-      setReferralCount(userData.referralCount);
-      setScreen('home');
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        setBalance(userData.balance || 0);
+        setReferralCount(userData.referralCount || 0);
+        setScreen('home');
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('user');
+        setScreen('auth');
+      }
     }
   }, []);
 
@@ -115,16 +121,29 @@ const Index = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setUser(data.user);
-        setBalance(data.user.balance);
-        setReferralCount(data.user.referralCount);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        const userData = {
+          id: data.user.id,
+          username: data.user.username,
+          balance: data.user.balance || 0,
+          referralCount: data.user.referralCount || 0,
+          referralCode: data.user.referralCode || ''
+        };
+        
+        setUser(userData);
+        setBalance(userData.balance);
+        setReferralCount(userData.referralCount);
+        localStorage.setItem('user', JSON.stringify(userData));
         toast.success(authMode === 'login' ? 'Вы вошли в систему!' : 'Регистрация успешна!');
         setScreen('home');
+        
+        // Очистить форму
+        setUsername('');
+        setPassword('');
       } else {
         toast.error(data.error || 'Ошибка');
       }
     } catch (error) {
+      console.error('Auth error:', error);
       toast.error('Ошибка соединения с сервером');
     }
   };
