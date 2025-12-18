@@ -68,25 +68,37 @@ const Index = () => {
           if (data.users) {
             const currentUser = data.users.find((u: any) => u.id === user.id);
             if (currentUser) {
-              setBalance(currentUser.balance);
-              setReferralCount(currentUser.referralCount);
-              const updatedUser = {
-                ...user,
-                balance: currentUser.balance,
-                referralCount: currentUser.referralCount
-              };
-              setUser(updatedUser);
-              localStorage.setItem('user', JSON.stringify(updatedUser));
+              const balanceChanged = currentUser.balance !== balance;
+              const referralsChanged = currentUser.referralCount !== referralCount;
+              
+              if (balanceChanged || referralsChanged) {
+                setBalance(currentUser.balance);
+                setReferralCount(currentUser.referralCount);
+                const updatedUser = {
+                  ...user,
+                  balance: currentUser.balance,
+                  referralCount: currentUser.referralCount
+                };
+                setUser(updatedUser);
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                
+                if (balanceChanged) {
+                  toast.info(`Ваш баланс обновлён: ${currentUser.balance} ₽`);
+                }
+                if (referralsChanged) {
+                  toast.info(`Рефералов: ${currentUser.referralCount}`);
+                }
+              }
             }
           }
         } catch (error) {
           console.error('Error updating user data:', error);
         }
-      }, 3000);
+      }, 2000);
       
       return () => clearInterval(interval);
     }
-  }, [user, screen, isAdmin]);
+  }, [user?.id, screen, isAdmin, balance, referralCount]);
 
   useEffect(() => {
     if (timeLeft > 0) {
