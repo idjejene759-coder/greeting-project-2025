@@ -214,24 +214,10 @@ const Index = () => {
         </div>
 
         <div className="relative z-10 max-w-4xl w-full space-y-8 sm:space-y-12 animate-fade-in">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
-                LUSKY BEAR
-              </h1>
-              <div className="mt-4 text-center space-y-2">
-                <p className="text-sm text-[#00F0FF]">Баланс: <span className="text-[#FF10F0] font-bold">{balance} ₽</span></p>
-                <p className="text-sm text-[#00F0FF]">Рефералов: <span className="text-[#FF10F0] font-bold">{referralCount}</span></p>
-                {user?.referralCode && (
-                  <button
-                    onClick={copyReferralLink}
-                    className="text-xs text-[#00F0FF] hover:text-[#FF10F0] underline transition-colors"
-                  >
-                    https://t.me/Lusky_bear_bot?start={user.referralCode}
-                  </button>
-                )}
-              </div>
-            </div>
+          <div className="flex justify-between items-center">
+            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider flex-1" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+              LUSKY BEAR
+            </h1>
             <Button
               onClick={handleLogout}
               variant="ghost"
