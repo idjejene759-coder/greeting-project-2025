@@ -253,7 +253,7 @@ const Index = () => {
 
           <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
               <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
-                <div className="flex flex-col sm:flex-row justify-around items-center gap-6">
+                <div className="flex flex-row justify-around items-center gap-4">
                   <div className="text-center">
                     <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Ваш баланс</p>
                     <p className="text-3xl sm:text-4xl font-black" style={{ color: '#FF10F0' }}>
