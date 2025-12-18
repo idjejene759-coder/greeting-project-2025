@@ -259,16 +259,29 @@ const Index = () => {
             </div>
 
             {user?.referralCode && (
-              <div className="text-center">
-                <a
-                  href={`https://t.me/Lusky_bear_bot?start=${user.referralCode}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm sm:text-base text-[#00F0FF] hover:text-[#FF10F0] underline transition-colors"
-                >
-                  https://t.me/Lusky_bear_bot
-                </a>
-              </div>
+              <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-center mb-4" style={{ color: '#FF10F0' }}>
+                  Ваша реферальная ссылка
+                </h3>
+                <p className="text-xs sm:text-sm text-center text-[#00F0FF] mb-4">
+                  Отправьте эту ссылку другу, и когда он зарегистрируется, вам зачислится +1 реферал
+                </p>
+                <div className="bg-[#1a1a2e] p-3 sm:p-4 rounded-lg border border-[#FF10F0]/30 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <input
+                    type="text"
+                    readOnly
+                    value={`https://t.me/Lusky_bear_bot?start=${user.referralCode}`}
+                    className="flex-1 bg-transparent border-none outline-none text-[#00F0FF] font-mono text-xs sm:text-sm px-2 py-1"
+                  />
+                  <Button
+                    onClick={copyReferralLink}
+                    className="bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+                  >
+                    <Icon name="Copy" size={18} className="mr-2" />
+                    Копировать
+                  </Button>
+                </div>
+              </Card>
             )}
           </div>
         </div>
