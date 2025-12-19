@@ -86,10 +86,10 @@ const Index = () => {
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 
                 if (balanceChanged) {
-                  toast.info(`Ваш баланс обновлён: ${currentUser.balance} ₽`);
+                  toast.info(`💰 Ваш баланс обновлён: ${currentUser.balance} ₽`);
                 }
                 if (referralsChanged) {
-                  toast.info(`Рефералов: ${currentUser.referralCount}`);
+                  toast.info(`👥 Рефералов: ${currentUser.referralCount}`);
                 }
               }
             }
@@ -247,44 +247,32 @@ const Index = () => {
           username: data.user.username,
           balance: data.user.balance || 0,
           referralCount: data.user.referralCount || 0,
-          referralCode: data.user.referralCode
+          referralCode: data.user.referralCode || ''
         };
-
+        
         setUser(userData);
         setBalance(userData.balance);
         setReferralCount(userData.referralCount);
         localStorage.setItem('user', JSON.stringify(userData));
-
+        
         if (authMode === 'register') {
           const registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
-          registeredAccounts.push(userData.id);
+          registeredAccounts.push(userData.username);
           localStorage.setItem('registeredAccounts', JSON.stringify(registeredAccounts));
         }
-
-        toast.success(authMode === 'login' ? 'Вход выполнен успешно!' : 'Регистрация прошла успешно!');
+        
+        toast.success(authMode === 'login' ? 'Вы вошли в систему!' : 'Регистрация успешна!');
         setScreen('home');
+        
         setUsername('');
         setPassword('');
       } else {
-        toast.error(data.message || 'Ошибка аутентификации');
+        toast.error(data.error || 'Ошибка');
       }
     } catch (error) {
       console.error('Auth error:', error);
-      toast.error('Ошибка подключения к серверу');
+      toast.error('Ошибка соединения с сервером');
     }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setBalance(0);
-    setReferralCount(0);
-    setIsAdmin(false);
-    setAdminUsers([]);
-    setSelectedUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAdmin');
-    setScreen('auth');
-    toast.success('Вы вышли из аккаунта');
   };
 
   const loadAdminUsers = async () => {
@@ -295,8 +283,8 @@ const Index = () => {
         setAdminUsers(data.users);
       }
     } catch (error) {
-      console.error('Error loading users:', error);
-      toast.error('Ошибка загрузки списка пользователей');
+      console.error('Load users error:', error);
+      toast.error('Ошибка загрузки пользователей');
     }
   };
 
@@ -310,24 +298,24 @@ const Index = () => {
         body: JSON.stringify({
           action: 'update_user',
           userId: selectedUser.id,
-          balance: parseFloat(editBalance) || 0,
-          referralCount: parseInt(editReferrals) || 0
+          balance: editBalance ? parseInt(editBalance) : undefined,
+          referralCount: editReferrals ? parseInt(editReferrals) : undefined
         })
       });
 
       const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success('Данные пользователя обновлены!');
+      if (data.success) {
+        toast.success('Данные пользователя обновлены');
         await loadAdminUsers();
         setScreen('admin');
         setSelectedUser(null);
+        setEditBalance('');
+        setEditReferrals('');
       } else {
-        toast.error(data.message || 'Ошибка обновления');
+        toast.error(data.error || 'Ошибка обновления');
       }
     } catch (error) {
-      console.error('Update error:', error);
-      toast.error('Ошибка подключения к серверу');
+      toast.error('Ошибка соединения с сервером');
     }
   };
 
@@ -349,19 +337,17 @@ const Index = () => {
       });
 
       const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (data.success) {
         toast.success('Пользователь заблокирован');
         await loadAdminUsers();
         setScreen('admin');
         setSelectedUser(null);
         setBanReason('');
       } else {
-        toast.error(data.message || 'Ошибка блокировки');
+        toast.error(data.error || 'Ошибка');
       }
     } catch (error) {
-      console.error('Ban error:', error);
-      toast.error('Ошибка подключения к серверу');
+      toast.error('Ошибка соединения с сервером');
     }
   };
 
@@ -372,225 +358,153 @@ const Index = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'unban_user',
-          userId: userId
+          userId
         })
       });
 
       const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (data.success) {
         toast.success('Пользователь разблокирован');
         await loadAdminUsers();
         setScreen('admin');
         setSelectedUser(null);
       } else {
-        toast.error(data.message || 'Ошибка разблокировки');
+        toast.error(data.error || 'Ошибка');
       }
     } catch (error) {
-      console.error('Unban error:', error);
-      toast.error('Ошибка подключения к серверу');
+      toast.error('Ошибка соединения с сервером');
     }
   };
 
-  const handleDeleteUser = async () => {
-    if (!selectedUser) return;
-
-    if (!confirm(`Вы уверены, что хотите удалить пользователя ${selectedUser.username}?`)) {
-      return;
-    }
-
-    try {
-      const response = await fetch(ADMIN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'delete_user',
-          userId: selectedUser.id
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success('Пользователь удален');
-        await loadAdminUsers();
-        setScreen('admin');
-        setSelectedUser(null);
-      } else {
-        toast.error(data.message || 'Ошибка удаления');
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      toast.error('Ошибка подключения к серверу');
-    }
+  const handleLogout = () => {
+    setUser(null);
+    setBalance(0);
+    setReferralCount(0);
+    localStorage.removeItem('user');
+    setScreen('auth');
+    toast.success('Вы вышли из системы');
   };
 
   if (screen === 'auth') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
         
-        <Card className="relative z-10 w-full max-w-md bg-black/60 border border-[#9b87f5]/30 p-6 sm:p-8 animate-fade-in">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl sm:text-4xl font-black mb-2" style={{ color: '#9b87f5' }}>
-              Lusky Bear
-            </h1>
-            <p className="text-sm sm:text-base" style={{ color: '#00F0FF' }}>
-              {authMode === 'login' ? 'Войдите в свой аккаунт' : 'Создайте новый аккаунт'}
-            </p>
-          </div>
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+        </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#9b87f5' }}>
-                Имя пользователя
-              </label>
-              <Input
-                placeholder="Введите имя пользователя"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="bg-black/40 border-[#9b87f5]/30 focus:border-[#9b87f5]"
-              />
-            </div>
+        <div className="relative z-10 max-w-md w-full space-y-8 animate-fade-in">
+          <h1 className="text-4xl sm:text-6xl font-black text-center tracking-wider mb-8" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+            LUSKY BEAR
+          </h1>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#9b87f5' }}>
-                Пароль
-              </label>
-              <Input
-                type="password"
-                placeholder="Введите пароль"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAuth()}
-                className="bg-black/40 border-[#9b87f5]/30 focus:border-[#9b87f5]"
-              />
-            </div>
+          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6 sm:p-8">
+            <h2 className="text-2xl sm:text-3xl font-black mb-6 text-center" style={{ color: authMode === 'login' ? '#00F0FF' : '#FF10F0' }}>
+              {authMode === 'login' ? 'Вход' : 'Регистрация'}
+            </h2>
 
-            <Button
-              onClick={handleAuth}
-              className="w-full h-12 text-base sm:text-lg font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60"
-            >
-              {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
-            </Button>
+            <div className="space-y-4">
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Имя пользователя"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white placeholder:text-gray-500"
+                  onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+                />
+              </div>
 
-            <div className="text-center">
-              <button
-                onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                className="text-sm hover:underline"
-                style={{ color: '#00F0FF' }}
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white placeholder:text-gray-500"
+                  onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+                />
+              </div>
+
+              <Button
+                onClick={handleAuth}
+                className="w-full h-12 text-lg font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
               >
-                {authMode === 'login' ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
-              </button>
-            </div>
+                {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+              </Button>
 
-            <Button
-              onClick={handleRegister}
-              className="w-full h-12 text-base sm:text-lg font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60"
-            >
-              <Icon name="UserPlus" size={20} className="mr-2" />
-              Зарегистрироваться в боте
-            </Button>
-          </div>
-        </Card>
+              <div className="text-center">
+                <button
+                  onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                  className="text-[#00F0FF] hover:text-[#FF10F0] transition-colors text-sm"
+                >
+                  {authMode === 'login' ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
+                </button>
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
 
-  if (screen === 'home' && user) {
+  if (screen === 'home') {
     return (
-      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
         
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+        </div>
+
+        <div className="relative z-10 max-w-4xl w-full space-y-8 sm:space-y-12 animate-fade-in">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl sm:text-4xl font-black" style={{ color: '#9b87f5' }}>
-              Lusky Bear
+            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider flex-1" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+              LUSKY BEAR
             </h1>
             <Button
               onClick={handleLogout}
               variant="ghost"
-              size="sm"
-              className="text-red-400 hover:text-red-300"
+              className="text-[#00F0FF] hover:text-[#FF10F0] text-sm"
             >
-              <Icon name="LogOut" size={20} className="mr-2" />
+              <Icon name="LogOut" size={20} className="mr-1" />
               Выход
             </Button>
           </div>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <Icon name="User" size={32} className="text-[#00F0FF]" />
-              <div>
-                <p className="text-base sm:text-lg font-semibold" style={{ color: '#00F0FF' }}>
-                  {user.username}
-                </p>
-                <p className="text-xs sm:text-sm text-gray-400">ID: {user.id}</p>
-              </div>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              <Button
+                onClick={() => setScreen('instructions')}
+                size="lg"
+                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+              >
+                <Icon name="Rocket" size={28} className="mr-2 sm:mr-3" />
+                Начать
+              </Button>
+
+              <Button
+                onClick={() => setScreen('referral')}
+                size="lg"
+                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+              >
+                <Icon name="Users" size={28} className="mr-2 sm:mr-3" />
+                Реферальная система
+              </Button>
+
+              <Button
+                onClick={handleVipSignals}
+                size="lg"
+                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+              >
+                <Icon name="Crown" size={28} className="mr-2 sm:mr-3" />
+                VIP Сигналы
+              </Button>
             </div>
-            
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              <div className="bg-black/40 rounded-lg p-3 sm:p-4">
-                <p className="text-xs sm:text-sm text-gray-400 mb-1">Баланс</p>
-                <p className="text-lg sm:text-2xl font-bold" style={{ color: '#00F0FF' }}>
-                  {balance} ₽
-                </p>
-              </div>
-              <div className="bg-black/40 rounded-lg p-3 sm:p-4">
-                <p className="text-xs sm:text-sm text-gray-400 mb-1">Рефералов</p>
-                <p className="text-lg sm:text-2xl font-bold" style={{ color: '#FF10F0' }}>
-                  {referralCount}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <Button
-              onClick={() => setScreen('instructions')}
-              size="lg"
-              className="h-16 sm:h-20 text-base sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
-            >
-              <Icon name="BookOpen" size={24} className="mr-2" />
-              Начать
-            </Button>
-
-            <Button
-              onClick={() => setScreen('signals')}
-              size="lg"
-              className="h-16 sm:h-20 text-base sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
-            >
-              <Icon name="TrendingUp" size={24} className="mr-2" />
-              Сигналы
-            </Button>
-
-            <Button
-              onClick={() => setScreen('referral')}
-              size="lg"
-              className="h-16 sm:h-20 text-base sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
-            >
-              <Icon name="Users" size={24} className="mr-2" />
-              Рефералы
-            </Button>
-
-            <Button
-              onClick={handleVipSignals}
-              size="lg"
-              className="h-16 sm:h-20 text-base sm:text-xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-2 border-[#9b87f5]/50 transition-all"
-            >
-              <Icon name="Crown" size={24} className="mr-2" />
-              VIP Сигналы
-            </Button>
           </div>
-
-          <Button
-            onClick={handleWithdraw}
-            size="lg"
-            className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white transition-all"
-          >
-            <Icon name="DollarSign" size={24} className="mr-2" />
-            Вывести средства
-          </Button>
         </div>
       </div>
     );
@@ -598,67 +512,71 @@ const Index = () => {
 
   if (screen === 'instructions') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-6">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
-            className="mb-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" className="mr-2" />
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Как использовать сигналы 1WIN
+          <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#FF10F0' }}>
+              ⚡ Инструкция для правильной работы ⚡
             </h2>
 
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-3 flex items-center">
-                  <Icon name="Zap" className="mr-2 text-yellow-400" />
-                  Что такое сигналы?
-                </h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Сигналы - это рекомендации по коэффициентам, которые с высокой вероятностью сработают в игре Aviator на платформе 1WIN.
-                </p>
+            <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🚀</span>
+                <p><strong>1.</strong> Зарегистрируйте совершенно новый аккаунт.</p>
               </div>
 
-              <div>
-                <h3 className="text-xl font-semibold mb-3 flex items-center">
-                  <Icon name="Target" className="mr-2 text-green-400" />
-                  Как использовать?
-                </h3>
-                <ol className="list-decimal list-inside space-y-2 text-gray-300">
-                  <li>Зарегистрируйтесь на 1WIN по кнопке "Регистрация"</li>
-                  <li>Откройте игру Aviator в разделе "Быстрые игры"</li>
-                  <li>Получите сигнал в нашем боте</li>
-                  <li>Дождитесь раунда и сделайте ставку</li>
-                  <li>Выведите средства на указанном коэффициенте</li>
-                </ol>
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🔥</span>
+                <p><strong>2.</strong> Вы получаете бесплатный бонус в размере 50 рублей, при желании введите промокод.</p>
               </div>
 
-              <div>
-                <h3 className="text-xl font-semibold mb-3 flex items-center">
-                  <Icon name="TrendingUp" className="mr-2 text-blue-400" />
-                  Советы для успеха
-                </h3>
-                <ul className="list-disc list-inside space-y-2 text-gray-300">
-                  <li>Начинайте с небольших ставок</li>
-                  <li>Используйте несколько сигналов подряд</li>
-                  <li>Не гонитесь за большими коэффициентами</li>
-                  <li>Выводите выигрыш вовремя</li>
-                  <li>Следите за балансом</li>
-                </ul>
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">👑</span>
+                <p><strong>3.</strong> Пополните баланс на любую сумму. Можно играть и на бонус, но в этом случае казино будет вас сливать.</p>
               </div>
 
-              <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4">
-                <p className="text-yellow-200 text-sm">
-                  Помните: азартные игры могут вызывать зависимость. Играйте ответственно и только на те средства, которые можете позволить себе потратить.
-                </p>
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🌟</span>
+                <p><strong>4.</strong> Зайдите в игру Tower Rush и сделайте 2 ставки — это нужно, чтобы казино увидело, что вы не бот.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🎰</span>
+                <p><strong>5.</strong> Затем зайдите в игру CRASH X и нажмите «Получить сигнал» 🎟️</p>
               </div>
             </div>
           </Card>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={handleRegister}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+            >
+              <Icon name="UserPlus" size={24} className="mr-2" />
+              Зарегистрироваться
+            </Button>
+
+            <Button
+              onClick={() => setScreen('signals')}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+            >
+              <Icon name="Play" size={24} className="mr-2" />
+              К сигналам
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -666,52 +584,50 @@ const Index = () => {
 
   if (screen === 'signals') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-6">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
-            className="mb-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" className="mr-2" />
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 p-6">
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-bold mb-2">Aviator Сигналы</h2>
-              <p className="text-gray-300">Получите прогноз следующего коэффициента</p>
-            </div>
+          <Card className="bg-black/60 border border-[#00F0FF]/30 p-4 sm:p-8 text-center">
+            <h2 className="text-3xl sm:text-5xl font-black mb-6 sm:mb-8" style={{ color: '#00F0FF' }}>
+              🎰 CRASH X
+            </h2>
 
-            {currentSignal && (
-              <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-8 mb-6 text-center shadow-2xl">
-                <p className="text-white/80 text-sm mb-2">Рекомендуемый коэффициент:</p>
-                <p className="text-6xl font-bold text-white">{currentSignal}x</p>
+            {currentSignal !== null && (
+              <div className="mb-6 sm:mb-8 p-6 sm:p-12 bg-black/60 rounded-lg border-2 border-[#FF10F0]/50">
+                <p className="text-lg sm:text-2xl mb-3 sm:mb-4 text-[#00F0FF]">Ваш сигнал:</p>
+                <p className="text-5xl sm:text-8xl font-black animate-pulse-glow" style={{ color: '#FF10F0', textShadow: '0 0 30px rgba(255, 16, 240, 0.5)' }}>
+                  {currentSignal.toString().replace('.', ',')}x
+                </p>
+              </div>
+            )}
+
+            {isWaiting && (
+              <div className="mb-6 p-4 bg-black/40 rounded-lg border border-[#00F0FF]/30">
+                <p className="text-[#00F0FF] text-lg">
+                  ⏱️ Следующий сигнал через: <span className="font-bold text-[#FF10F0]">{timeLeft}с</span>
+                </p>
               </div>
             )}
 
             <Button
               onClick={generateSignal}
+              size="lg"
               disabled={isWaiting}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-6 text-lg disabled:opacity-50"
+              className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isWaiting ? (
-                <>
-                  <Icon name="Clock" className="mr-2 animate-spin" />
-                  Следующий сигнал через {timeLeft}с
-                </>
-              ) : (
-                <>
-                  <Icon name="Zap" className="mr-2" />
-                  Получить сигнал
-                </>
-              )}
+              <Icon name="Zap" size={28} className="mr-2 sm:mr-3" />
+              {currentSignal === null ? 'Получить сигнал' : isWaiting ? `Ожидание (${timeLeft}с)` : 'Следующий сигнал'}
             </Button>
-
-            <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-              <p className="text-sm text-blue-200">
-                Совет: Дождитесь нового раунда в игре Aviator и поставьте на рекомендуемый коэффициент
-              </p>
-            </div>
           </Card>
         </div>
       </div>
@@ -720,161 +636,124 @@ const Index = () => {
 
   if (screen === 'referral') {
     return (
-      <div className="min-h-screen p-6 relative overflow-hidden">
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
         
-        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" className="mr-2" />
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-6">
-            <div className="bg-[#1a1a2e] border-2 border-[#9b87f5]/30 rounded-xl p-6 mb-6">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <p className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>Ваш баланс</p>
-              </div>
-              <div className="text-center mb-4">
-                <p className="text-5xl font-black" style={{ color: '#FF10F0' }}>{balance} ₽</p>
-              </div>
-              <div className="text-center mb-4">
-                <p className="text-2xl font-bold" style={{ color: '#00F0FF' }}>Рефералов</p>
-                <p className="text-4xl font-black" style={{ color: '#FF10F0' }}>{referralCount}</p>
-              </div>
-              
-              <div className="bg-yellow-500/20 border-2 border-yellow-500/50 rounded-lg p-4 mb-4">
-                <div className="flex items-start gap-2">
-                  <Icon name="AlertTriangle" className="text-yellow-400 flex-shrink-0 mt-1" size={24} />
-                  <div>
-                    <p className="font-bold text-white mb-2">⚠️ Внимание!</p>
-                    <p className="text-yellow-200 text-sm">
-                      Если баланс не обновляется, выйдите из аккаунта и зайдите назад. <span className="font-bold">Сохраняйте свои логин и пароль!</span>
+          <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
+              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
+                <div className="flex flex-row justify-around items-center gap-4">
+                  <div className="text-center">
+                    <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Ваш баланс</p>
+                    <p className="text-3xl sm:text-4xl font-black" style={{ color: '#FF10F0' }}>
+                      {balance} ₽
                     </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Рефералов</p>
+                    <p className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>
+                      {referralCount}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 sm:p-4">
+                  <div className="flex items-start gap-2">
+                    <Icon name="AlertTriangle" size={20} className="text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs sm:text-sm text-yellow-200">
+                      <p className="font-bold mb-1">⚠️ Внимание!</p>
+                      <p>Если баланс не обновляется, выйдите из аккаунта и зайдите назад. <strong>Сохраняйте свои логин и пароль!</strong></p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    onClick={handleWithdraw}
+                    className="bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all px-6 py-2"
+                  >
+                    <Icon name="Wallet" size={20} className="mr-2" />
+                    Вывести
+                  </Button>
+                  <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 200 ₽</p>
+                </div>
+              </div>
+
+              <h2 className="text-xl sm:text-3xl font-black mb-4 sm:mb-6 text-center" style={{ color: '#FF10F0' }}>
+                ⭐ Реферальная программа Lusky Bear
+              </h2>
+
+              {user?.referralCode && (
+                <div className="bg-black/60 p-3 rounded-lg border border-[#FF10F0]/30 mb-6">
+                  <h3 className="text-base font-bold text-center mb-2" style={{ color: '#FF10F0' }}>
+                    Ваша реферальная ссылка
+                  </h3>
+                  <p className="text-xs text-center text-[#00F0FF] mb-2">
+                    Отправьте эту ссылку другу для получения рефералов
+                  </p>
+                  <div className="bg-[#1a1a2e] p-2 rounded-lg border border-[#FF10F0]/30 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={`https://t.me/Lusky_bear_bot?start=${user.referralCode}`}
+                      className="flex-1 bg-transparent border-none outline-none text-[#00F0FF] font-mono text-xs px-2 py-1"
+                    />
+                    <Button
+                      onClick={copyReferralLink}
+                      size="sm"
+                      className="bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all text-xs"
+                    >
+                      <Icon name="Copy" size={14} className="mr-1" />
+                      Копировать
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4 sm:space-y-6 text-sm sm:text-base mb-6 sm:mb-8">
+                <p className="text-center">
+                  Зарабатывайте по <span className="text-[#FF10F0] font-bold">20 рублей</span> за приглашённого человека и его траты в казино Lusky Bear
+                </p>
+
+                <div className="bg-black/60 p-4 sm:p-6 rounded-lg border border-[#9b87f5]/30">
+                  <h3 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#00F0FF]">💰 Сколько вы получаете</h3>
+                  <p>🥳 Вы получаете по <strong className="text-[#FF10F0]">20 ₽</strong> за каждого приглашённого, который пополнил баланс на минимальную сумму и получил хотя бы 2 сигнала.</p>
+                  <p className="mt-3 sm:mt-4">Ваш приглашённый получает <strong className="text-[#00F0FF]">360% бонусом</strong> за первое пополнение баланса и бесплатные сигналы в казино Lusky Bear.</p>
+                </div>
+
+                <div className="bg-black/60 p-4 sm:p-6 rounded-lg border border-[#9b87f5]/30">
+                  <h3 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#00F0FF]">🔍 Как это работает</h3>
+                  <ol className="space-y-2 list-decimal list-inside">
+                    <li>Вы отправляете человеку свою реферальную ссылку.</li>
+                    <li>Он переходит по ней, выполняет условия, пополняет баланс и получает точные сигналы.</li>
+                    <li>Ваш баланс пополняется на 20 рублей.</li>
+                    <li>Всё понятно и просто 🎉</li>
+                  </ol>
+                </div>
+
+                <div className="bg-black/60 p-4 sm:p-6 rounded-lg border border-[#9b87f5]/30">
+                  <h3 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#00F0FF]">📌 Основные условия</h3>
+                  <div className="space-y-2 sm:space-y-3">
+                    <p><strong>1️⃣</strong> Выплаты по реферальной программе осуществляются раз в неделю, за этот срок все ваши приглашённые пользователи закрепляются за вами.</p>
+                    <p><strong>2️⃣</strong> Только новые пользователи. Если приглашённый пользователь уже играл в казино Lusky Bear, то он не будет отображаться.</p>
+                    <p><strong>3️⃣</strong> Не нарушайте условия реферальной программы, не накручивайте трафик — только живые пользователи и новые аккаунты. За нарушение соглашения следует аннулирование баланса и блокировка пользователя.</p>
                   </div>
                 </div>
               </div>
 
-              <Button
-                onClick={handleWithdraw}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white mb-4"
-              >
-                <Icon name="Wallet" size={24} className="mr-2" />
-                Вывести
-              </Button>
-
-              <p className="text-center text-sm" style={{ color: '#00F0FF' }}>
-                Минимальная сумма вывода: 200 ₽
+              <p className="text-xs text-center text-[#00F0FF]">
+                Чтобы вывести баланс, напишите администратору и предоставьте скриншоты
               </p>
-            </div>
-
-            <div className="bg-[#1a1a2e] border-2 border-[#FF10F0]/30 rounded-xl p-6">
-              <div className="text-center mb-6">
-                <Icon name="Star" className="w-12 h-12 mx-auto mb-2 text-[#FF10F0]" />
-                <h2 className="text-2xl font-bold" style={{ color: '#FF10F0' }}>
-                  Реферальная программа Lusky Bear
-                </h2>
-              </div>
-
-              <div className="space-y-4 mb-6">
-                <div className="bg-[#0f1419] border border-[#00F0FF]/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3" style={{ color: '#00F0FF' }}>Ваша реферальная ссылка</h3>
-                  <p className="text-sm mb-3 text-gray-300">
-                    Отправьте эту ссылку другу для получения рефералов
-                  </p>
-                  <Input
-                    value={`https://t.me/Lusky_bear_bot?start=${user?.referralCode}`}
-                    readOnly
-                    className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white mb-3"
-                  />
-                  <Button
-                    onClick={copyReferralLink}
-                    className="w-full bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30"
-                  >
-                    <Icon name="Copy" className="mr-2" />
-                    Копировать
-                  </Button>
-                </div>
-
-                <div className="bg-gradient-to-r from-[#FF10F0]/10 to-[#00F0FF]/10 border border-[#FF10F0]/30 rounded-lg p-4">
-                  <p className="text-center font-bold mb-2" style={{ color: '#FF10F0' }}>
-                    Зарабатывайте по 20 рублей за приглашённого человека и его траты в казино Lusky Bear
-                  </p>
-                </div>
-
-                <div className="bg-[#0f1419] border border-[#00F0FF]/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center" style={{ color: '#00F0FF' }}>
-                    <Icon name="DollarSign" className="mr-2 text-[#00F0FF]" />
-                    Сколько вы получаете
-                  </h3>
-                  <p className="mb-3 flex items-start gap-2">
-                    <Icon name="TrendingUp" className="text-green-400 flex-shrink-0 mt-1" />
-                    <span className="text-gray-300">
-                      Вы получаете по <span className="font-bold" style={{ color: '#00F0FF' }}>20 ₽</span> за каждого приглашённого, который пополнил баланс на минимальную сумму и получил хотя бы 2 сигнала.
-                    </span>
-                  </p>
-                  <p className="text-gray-300">
-                    Ваш приглашённый получает <span className="font-bold" style={{ color: '#00F0FF' }}>360% бонусом</span> за первое пополнение баланса и бесплатные сигналы в казино Lusky Bear.
-                  </p>
-                </div>
-
-                <div className="bg-[#0f1419] border border-[#00F0FF]/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center" style={{ color: '#00F0FF' }}>
-                    <Icon name="Search" className="mr-2 text-[#00F0FF]" />
-                    Как это работает
-                  </h3>
-                  <ol className="space-y-2 text-gray-300 text-sm">
-                    <li className="flex gap-2">
-                      <span className="font-bold" style={{ color: '#00F0FF' }}>1.</span>
-                      Вы отправляете человеку свою реферальную ссылку.
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold" style={{ color: '#00F0FF' }}>2.</span>
-                      Он переходит по ней, выполняет условия, пополняет баланс и получает точные сигналы.
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold" style={{ color: '#00F0FF' }}>3.</span>
-                      Ваш баланс пополняется на 20 рублей.
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold" style={{ color: '#00F0FF' }}>4.</span>
-                      Всё понятно и просто 🎉
-                    </li>
-                  </ol>
-                </div>
-
-                <div className="bg-[#0f1419] border border-red-500/30 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 text-red-400 flex items-center">
-                    <Icon name="AlertCircle" className="mr-2" />
-                    Основные условия
-                  </h3>
-                  <ol className="space-y-2 text-gray-300 text-sm">
-                    <li className="flex gap-2">
-                      <span className="font-bold text-[#00F0FF]">1️⃣</span>
-                      Выплаты по реферальной программе осуществляются раз в неделю, за этот срок все ваши приглашённые пользователи закрепляются за вами.
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold text-[#00F0FF]">2️⃣</span>
-                      Только новые пользователи. Если приглашённый пользователь уже играл в казино Lusky Bear, то он не будет отображаться.
-                    </li>
-                    <li className="flex gap-2">
-                      <span className="font-bold text-[#00F0FF]">3️⃣</span>
-                      Не нарушайте условия реферальной программы, не накручивайте трафик — только живые пользователи и новые аккаунты. За нарушение соглашения следует аннулирование баланса и блокировка пользователя.
-                    </li>
-                  </ol>
-                </div>
-
-                <div className="bg-[#0f1419] border border-[#00F0FF]/20 rounded-lg p-4 text-center">
-                  <p className="text-sm" style={{ color: '#00F0FF' }}>
-                    Чтобы вывести баланс, напишите администратору и предоставьте скриншоты
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
+            </Card>
         </div>
       </div>
     );
@@ -882,75 +761,71 @@ const Index = () => {
 
   if (screen === 'vip') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white p-6">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
-            className="mb-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" className="mr-2" />
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 p-6">
-            <div className="text-center mb-8">
-              <Icon name="Crown" size={64} className="mx-auto mb-4 text-yellow-400" />
-              <h2 className="text-3xl font-bold mb-2">VIP Сигналы</h2>
-              <p className="text-gray-300">Премиум прогнозы с повышенной точностью</p>
-            </div>
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#9b87f5' }}>
+              👑 VIP Сигналы
+            </h2>
 
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-yellow-500/50 rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-4 text-center text-yellow-400">
-                  Преимущества VIP
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center">
-                    <Icon name="CheckCircle" className="mr-3 text-green-400" size={20} />
-                    <span>Сигналы с точностью до 95%</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Icon name="CheckCircle" className="mr-3 text-green-400" size={20} />
-                    <span>Приоритетная поддержка 24/7</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Icon name="CheckCircle" className="mr-3 text-green-400" size={20} />
-                    <span>Эксклюзивные стратегии</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Icon name="CheckCircle" className="mr-3 text-green-400" size={20} />
-                    <span>Доступ к CrashX сигналам</span>
-                  </li>
-                </ul>
+            <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🚀</span>
+                <p><strong>1.</strong> VIP сигналы доступны в Telegram боте Lusky Bear.</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button
-                  onClick={() => setScreen('crashx')}
-                  size="lg"
-                  className="h-20 text-lg font-bold bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white"
-                >
-                  <Icon name="Flame" size={24} className="mr-2" />
-                  CrashX Сигналы
-                </Button>
-
-                <Button
-                  size="lg"
-                  className="h-20 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
-                  onClick={() => window.open('https://t.me/Lusky_bear_bot', '_blank')}
-                >
-                  <Icon name="MessageCircle" className="mr-2" />
-                  Связаться
-                </Button>
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🔥</span>
+                <p><strong>2.</strong> Получите доступ к эксклюзивным сигналам с повышенной точностью.</p>
               </div>
 
-              <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
-                <p className="text-sm text-blue-200 text-center">
-                  Чтобы получить VIP доступ, свяжитесь с нами через Telegram
-                </p>
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">👑</span>
+                <p><strong>3.</strong> VIP сигналы обновляются чаще и имеют приоритет в обработке.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🌟</span>
+                <p><strong>4.</strong> Для получения VIP статуса свяжитесь с администратором в боте.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🎰</span>
+                <p><strong>5.</strong> Нажмите кнопку ниже, чтобы перейти в бот и получить VIP доступ.</p>
               </div>
             </div>
           </Card>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={() => window.open('https://t.me/K_Elite_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+            >
+              <Icon name="UserPlus" size={24} className="mr-2" />
+              Зарегистрироваться
+            </Button>
+
+            <Button
+              onClick={() => setScreen('crashx')}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+            >
+              <Icon name="Play" size={24} className="mr-2" />
+              К сигналам
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -958,53 +833,66 @@ const Index = () => {
 
   if (screen === 'crashx') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-900 via-orange-900 to-yellow-900 text-white p-6">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('vip')}
-            className="mb-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" className="mr-2" />
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 p-6">
+          <Card className="bg-black/60 border border-[#00F0FF]/40 p-6 sm:p-8">
             <div className="text-center mb-6">
-              <Icon name="Flame" size={48} className="mx-auto mb-2 text-orange-400" />
-              <h2 className="text-3xl font-bold mb-2">CrashX Сигналы</h2>
-              <p className="text-gray-300">Прогнозы для игры CrashX</p>
+              <div className="text-4xl mb-3">🎰</div>
+              <h1 className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>
+                CRASH X
+              </h1>
             </div>
 
-            {crashXSignal && (
-              <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-8 mb-6 text-center shadow-2xl">
-                <p className="text-white/80 text-sm mb-2">Рекомендуемый коэффициент:</p>
-                <p className="text-6xl font-bold text-white">{crashXSignal}x</p>
+            {crashXSignal === null ? (
+              <Button
+                onClick={generateCrashXSignal}
+                size="lg"
+                className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-2 border-[#9b87f5] transition-all"
+              >
+                <Icon name="Zap" size={28} className="mr-3" />
+                Получить сигнал
+              </Button>
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-black/80 border-2 border-[#9b87f5] rounded-2xl p-6 sm:p-8">
+                  <p className="text-[#00F0FF] text-lg sm:text-xl text-center mb-3">Ваш сигнал:</p>
+                  <p className="text-5xl sm:text-7xl font-black text-center" style={{ color: '#FF10F0' }}>
+                    {crashXSignal.toFixed(2)}x
+                  </p>
+                </div>
+
+                <div className="bg-black/60 border border-[#00F0FF]/30 rounded-xl p-4 sm:p-6 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Icon name="Clock" size={24} className="text-[#00F0FF]" />
+                    <p className="text-[#00F0FF] text-base sm:text-lg">Следующий сигнал через:</p>
+                  </div>
+                  <p className="text-3xl sm:text-4xl font-bold" style={{ color: '#FF10F0' }}>
+                    {crashXTimeLeft}с
+                  </p>
+                </div>
+
+                <Button
+                  onClick={generateCrashXSignal}
+                  disabled={isCrashXWaiting}
+                  size="lg"
+                  className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <Icon name="Zap" size={24} className="mr-2" />
+                  {isCrashXWaiting ? `Ожидание (${crashXTimeLeft}с)` : 'Получить следующий сигнал'}
+                </Button>
               </div>
             )}
-
-            <Button
-              onClick={generateCrashXSignal}
-              disabled={isCrashXWaiting}
-              className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-6 text-lg disabled:opacity-50"
-            >
-              {isCrashXWaiting ? (
-                <>
-                  <Icon name="Clock" className="mr-2 animate-spin" />
-                  Следующий сигнал через {crashXTimeLeft}с
-                </>
-              ) : (
-                <>
-                  <Icon name="Flame" className="mr-2" />
-                  Получить сигнал
-                </>
-              )}
-            </Button>
-
-            <div className="mt-6 p-4 bg-orange-500/20 border border-orange-500/30 rounded-lg">
-              <p className="text-sm text-orange-200">
-                Совет: Используйте сигналы CrashX для максимального выигрыша в игре Crash
-              </p>
-            </div>
           </Card>
         </div>
       </div>
@@ -1023,7 +911,10 @@ const Index = () => {
             </h1>
             <Button
               onClick={() => {
-                handleLogout();
+                setIsAdmin(false);
+                localStorage.removeItem('isAdmin');
+                setScreen('auth');
+                toast.success('Вы вышли из админ-панели');
               }}
               variant="ghost"
               className="text-[#00F0FF] hover:text-[#FF10F0] text-sm"
@@ -1177,16 +1068,6 @@ const Index = () => {
                   Разблокировать пользователя
                 </Button>
               )}
-
-              <div className="pt-4 border-t border-[#FF10F0]/20">
-                <Button
-                  onClick={handleDeleteUser}
-                  className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-500 border-2 border-red-600/50 hover:border-red-600"
-                >
-                  <Icon name="Trash2" size={18} className="mr-2" />
-                  Удалить пользователя
-                </Button>
-              </div>
             </div>
           </Card>
         </div>
