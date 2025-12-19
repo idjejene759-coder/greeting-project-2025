@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'vip';
 
 interface User {
   id: number;
@@ -132,7 +132,7 @@ const Index = () => {
   };
 
   const handleVipSignals = () => {
-    window.open('https://t.me/Lusky_bear_bot', '_blank');
+    setScreen('vip');
   };
 
   const handleWithdraw = () => {
@@ -720,6 +720,67 @@ const Index = () => {
                 Чтобы вывести баланс, напишите администратору и предоставьте скриншоты
               </p>
             </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'vip') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('home')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#9b87f5' }}>
+              👑 VIP Сигналы
+            </h2>
+
+            <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🚀</span>
+                <p><strong>1.</strong> VIP сигналы доступны в Telegram боте Lusky Bear.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🔥</span>
+                <p><strong>2.</strong> Получите доступ к эксклюзивным сигналам с повышенной точностью.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">👑</span>
+                <p><strong>3.</strong> VIP сигналы обновляются чаще и имеют приоритет в обработке.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🌟</span>
+                <p><strong>4.</strong> Для получения VIP статуса свяжитесь с администратором в боте.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">🎰</span>
+                <p><strong>5.</strong> Нажмите кнопку ниже, чтобы перейти в бот и получить VIP доступ.</p>
+              </div>
+            </div>
+          </Card>
+
+          <Button
+            onClick={() => window.open('https://t.me/Lusky_bear_bot', '_blank')}
+            size="lg"
+            className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+          >
+            <Icon name="Crown" size={24} className="mr-2" />
+            Перейти к VIP боту
+          </Button>
         </div>
       </div>
     );
