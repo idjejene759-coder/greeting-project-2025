@@ -38,18 +38,10 @@ const Index = () => {
   const [crashXSignal, setCrashXSignal] = useState<number | null>(null);
   const [crashXTimeLeft, setCrashXTimeLeft] = useState(0);
   const [isCrashXWaiting, setIsCrashXWaiting] = useState(false);
-  const [vipPromoCode, setVipPromoCode] = useState('');
-  const [hasVipAccess, setHasVipAccess] = useState(false);
-  const [showPromoInput, setShowPromoInput] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     const savedAdmin = localStorage.getItem('isAdmin');
-    const savedVipAccess = localStorage.getItem('vipAccess');
-    
-    if (savedVipAccess === 'true') {
-      setHasVipAccess(true);
-    }
     
     if (savedAdmin === 'true') {
       setIsAdmin(true);
@@ -152,27 +144,7 @@ const Index = () => {
   };
 
   const handleVipSignals = () => {
-    if (hasVipAccess) {
-      setScreen('vip');
-    } else {
-      setShowPromoInput(true);
-    }
-  };
-
-  const handlePromoCodeSubmit = () => {
-    const validPromoCodes = ['VIP2024', 'LUSKYVIP', 'PREMIUM'];
-    
-    if (validPromoCodes.includes(vipPromoCode.toUpperCase().trim())) {
-      setHasVipAccess(true);
-      localStorage.setItem('vipAccess', 'true');
-      toast.success('Промокод активирован! Добро пожаловать в VIP!');
-      setShowPromoInput(false);
-      setVipPromoCode('');
-      setScreen('vip');
-    } else {
-      toast.error('Неверный промокод');
-      setVipPromoCode('');
-    }
+    setScreen('vip');
   };
 
   const handleWithdraw = () => {
@@ -619,56 +591,6 @@ const Index = () => {
             <Icon name="DollarSign" size={24} className="mr-2" />
             Вывести средства
           </Button>
-
-          {showPromoInput && (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <Card className="bg-black/90 border border-[#9b87f5]/50 p-6 sm:p-8 max-w-md w-full">
-                <div className="text-center mb-6">
-                  <Icon name="Lock" size={48} className="mx-auto mb-4 text-[#9b87f5]" />
-                  <h2 className="text-2xl sm:text-3xl font-black mb-2" style={{ color: '#9b87f5' }}>
-                    Введите промокод
-                  </h2>
-                  <p className="text-sm text-gray-400">
-                    Для доступа к VIP сигналам требуется промокод
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <Input
-                    type="text"
-                    placeholder="Введите промокод"
-                    value={vipPromoCode}
-                    onChange={(e) => setVipPromoCode(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handlePromoCodeSubmit()}
-                    className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white placeholder:text-gray-500 h-12 text-center text-lg font-semibold"
-                  />
-
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => {
-                        setShowPromoInput(false);
-                        setVipPromoCode('');
-                      }}
-                      variant="outline"
-                      className="flex-1 h-12 bg-transparent border-[#FF10F0]/30 text-[#FF10F0] hover:bg-[#FF10F0]/10"
-                    >
-                      Отмена
-                    </Button>
-                    <Button
-                      onClick={handlePromoCodeSubmit}
-                      className="flex-1 h-12 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white"
-                    >
-                      Применить
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="mt-4 text-center text-xs text-gray-500">
-                  Получите промокод у администратора в Telegram
-                </div>
-              </Card>
-            </div>
-          )}
         </div>
       </div>
     );
