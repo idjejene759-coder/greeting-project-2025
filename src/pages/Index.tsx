@@ -773,14 +773,25 @@ const Index = () => {
             </div>
           </Card>
 
-          <Button
-            onClick={() => window.open('https://t.me/Lusky_bear_bot', '_blank')}
-            size="lg"
-            className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
-          >
-            <Icon name="Crown" size={24} className="mr-2" />
-            Перейти к VIP боту
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={() => window.open('https://t.me/K_Elite_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+            >
+              <Icon name="UserPlus" size={24} className="mr-2" />
+              Зарегистрироваться
+            </Button>
+
+            <Button
+              onClick={() => window.open('https://t.me/Lusky_bear_bot', '_blank')}
+              size="lg"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+            >
+              <Icon name="Play" size={24} className="mr-2" />
+              К сигналам
+            </Button>
+          </div>
         </div>
       </div>
     );
