@@ -79,7 +79,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            elif action == 'update_user':
+            elif action == 'update' or action == 'update_user':
                 user_id = body_data.get('userId')
                 balance = body_data.get('balance')
                 referral_count = body_data.get('referralCount')
@@ -141,7 +141,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            elif action == 'ban_user':
+            elif action == 'ban' or action == 'ban_user':
                 user_id = body_data.get('userId')
                 reason = (body_data.get('reason') or '').strip()
                 
@@ -175,7 +175,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            elif action == 'unban_user':
+            elif action == 'unban' or action == 'unban_user':
                 user_id = body_data.get('userId')
                 
                 if not user_id:
@@ -205,6 +205,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'statusCode': 200,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                     'body': json.dumps({'success': True, 'message': 'Пользователь разблокирован'}),
+                    'isBase64Encoded': False
+                }
+            
+            elif action == 'delete' or action == 'delete_user':
+                user_id = body_data.get('userId')
+                
+                if not user_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'ID пользователя обязателен'}),
+                        'isBase64Encoded': False
+                    }
+                
+                cur.execute("DELETE FROM users WHERE id = %s RETURNING id", (user_id,))
+                result = cur.fetchone()
+                conn.commit()
+                
+                if not result:
+                    return {
+                        'statusCode': 404,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Пользователь не найден'}),
+                        'isBase64Encoded': False
+                    }
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'success': True, 'message': 'Пользователь удалён'}),
                     'isBase64Encoded': False
                 }
             
