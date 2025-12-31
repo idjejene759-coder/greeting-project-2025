@@ -752,6 +752,7 @@ const Index = () => {
                     <Icon name="AlertTriangle" size={20} className="text-yellow-500 flex-shrink-0 mt-0.5" />
                     <div className="text-xs sm:text-sm text-yellow-200">
                       <p className="font-bold mb-1">⚠️ Внимание!</p>
+                      <p className="mb-2">Баланс и количество рефералов обновляются автоматически раз в 6 часов.</p>
                       <p>Если баланс не обновляется, выйдите из аккаунта и зайдите назад. <strong>Сохраняйте свои логин и пароль!</strong></p>
                     </div>
                   </div>
