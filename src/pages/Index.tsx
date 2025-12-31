@@ -465,61 +465,111 @@ const Index = () => {
 
   if (screen === 'home') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
-        
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
-          <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
-        </div>
-
-        <div className="relative z-10 max-w-4xl w-full space-y-8 sm:space-y-12 animate-fade-in">
-          <div className="flex justify-between items-center">
-            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider flex-1" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
-              LUSKY BEAR
-            </h1>
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="text-[#00F0FF] hover:text-[#FF10F0] text-sm"
-            >
-              <Icon name="LogOut" size={20} className="mr-1" />
-              Выход
-            </Button>
+      <>
+        <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+          
+          <div className="absolute inset-0">
+            <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
+            <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
           </div>
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+          <div className="relative z-10 max-w-4xl w-full space-y-8 sm:space-y-12 animate-fade-in">
+            <div className="flex justify-between items-center">
+              <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider flex-1" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+                LUSKY BEAR
+              </h1>
               <Button
-                onClick={() => setScreen('instructions')}
-                size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+                onClick={handleLogout}
+                variant="ghost"
+                className="text-[#00F0FF] hover:text-[#FF10F0] text-sm"
               >
-                <Icon name="Rocket" size={28} className="mr-2 sm:mr-3" />
-                Начать
+                <Icon name="LogOut" size={20} className="mr-1" />
+                Выход
               </Button>
+            </div>
 
-              <Button
-                onClick={() => setScreen('referral')}
-                size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
-              >
-                <Icon name="Users" size={28} className="mr-2 sm:mr-3" />
-                Реферальная система
-              </Button>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <Button
+                  onClick={() => setScreen('instructions')}
+                  size="lg"
+                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+                >
+                  <Icon name="Rocket" size={28} className="mr-2 sm:mr-3" />
+                  Начать
+                </Button>
 
-              <Button
-                onClick={handleVipSignals}
-                size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
-              >
-                <Icon name="Crown" size={28} className="mr-2 sm:mr-3" />
-                VIP Сигналы
-              </Button>
+                <Button
+                  onClick={() => setScreen('referral')}
+                  size="lg"
+                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+                >
+                  <Icon name="Users" size={28} className="mr-2 sm:mr-3" />
+                  Реферальная система
+                </Button>
+
+                <Button
+                  onClick={handleVipSignals}
+                  size="lg"
+                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+                >
+                  <Icon name="Crown" size={28} className="mr-2 sm:mr-3" />
+                  VIP Сигналы
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+        {showVipPasswordModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+            <Card className="bg-[#1a1a2e] border-2 border-[#9b87f5]/50 p-6 max-w-md w-full">
+              <div className="space-y-4">
+                <div className="text-center">
+                  <Icon name="Crown" size={48} className="mx-auto mb-4 text-[#9b87f5]" />
+                  <h2 className="text-2xl font-black mb-2" style={{ color: '#9b87f5' }}>
+                    VIP Сигналы
+                  </h2>
+                  <p className="text-gray-400 text-sm">
+                    Введите пароль для доступа к VIP сигналам
+                  </p>
+                </div>
+
+                <Input
+                  type="password"
+                  placeholder="Введите пароль"
+                  value={vipPassword}
+                  onChange={(e) => setVipPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleVipPasswordSubmit()}
+                  className="bg-black/60 border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  autoFocus
+                />
+
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => {
+                      setShowVipPasswordModal(false);
+                      setVipPassword('');
+                    }}
+                    variant="outline"
+                    className="flex-1 bg-transparent border-[#FF10F0]/30 text-[#FF10F0] hover:bg-[#FF10F0]/10"
+                  >
+                    Отмена
+                  </Button>
+                  <Button
+                    onClick={handleVipPasswordSubmit}
+                    className="flex-1 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white"
+                  >
+                    <Icon name="Unlock" size={18} className="mr-2" />
+                    Войти
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -1088,57 +1138,7 @@ const Index = () => {
     );
   }
 
-  return (
-    <>
-      {showVipPasswordModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <Card className="bg-[#1a1a2e] border-2 border-[#9b87f5]/50 p-6 max-w-md w-full">
-            <div className="space-y-4">
-              <div className="text-center">
-                <Icon name="Crown" size={48} className="mx-auto mb-4 text-[#9b87f5]" />
-                <h2 className="text-2xl font-black mb-2" style={{ color: '#9b87f5' }}>
-                  VIP Сигналы
-                </h2>
-                <p className="text-gray-400 text-sm">
-                  Введите пароль для доступа к VIP сигналам
-                </p>
-              </div>
-
-              <Input
-                type="password"
-                placeholder="Введите пароль"
-                value={vipPassword}
-                onChange={(e) => setVipPassword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleVipPasswordSubmit()}
-                className="bg-black/60 border-[#9b87f5]/30 text-white placeholder:text-gray-500"
-                autoFocus
-              />
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => {
-                    setShowVipPasswordModal(false);
-                    setVipPassword('');
-                  }}
-                  variant="outline"
-                  className="flex-1 bg-transparent border-[#FF10F0]/30 text-[#FF10F0] hover:bg-[#FF10F0]/10"
-                >
-                  Отмена
-                </Button>
-                <Button
-                  onClick={handleVipPasswordSubmit}
-                  className="flex-1 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white"
-                >
-                  <Icon name="Unlock" size={18} className="mr-2" />
-                  Войти
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
-    </>
-  );
+  return null;
 };
 
 export default Index;
