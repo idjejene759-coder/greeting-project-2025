@@ -40,10 +40,16 @@ const Index = () => {
   const [isCrashXWaiting, setIsCrashXWaiting] = useState(false);
   const [showVipPasswordModal, setShowVipPasswordModal] = useState(false);
   const [vipPassword, setVipPassword] = useState('');
+  const [isVipAuthorized, setIsVipAuthorized] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     const savedAdmin = localStorage.getItem('isAdmin');
+    const savedVipAuth = localStorage.getItem('vipAuthorized');
+    
+    if (savedVipAuth === 'true') {
+      setIsVipAuthorized(true);
+    }
     
     if (savedAdmin === 'true') {
       setIsAdmin(true);
@@ -146,13 +152,19 @@ const Index = () => {
   };
 
   const handleVipSignals = () => {
-    setShowVipPasswordModal(true);
+    if (isVipAuthorized) {
+      setScreen('vip');
+    } else {
+      setShowVipPasswordModal(true);
+    }
   };
 
   const handleVipPasswordSubmit = () => {
     if (vipPassword === 'VDUILRE') {
       setShowVipPasswordModal(false);
       setVipPassword('');
+      setIsVipAuthorized(true);
+      localStorage.setItem('vipAuthorized', 'true');
       setScreen('vip');
       toast.success('Доступ к VIP сигналам открыт!');
     } else {
