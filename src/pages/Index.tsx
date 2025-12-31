@@ -413,31 +413,35 @@ const Index = () => {
   if (screen === 'auth') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0118] via-[#1a0f2e] to-[#0f0520]" />
         
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
-          <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-[#FF10F0] rounded-full blur-[120px] opacity-20 animate-pulse-glow" />
+          <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-[#00F0FF] rounded-full blur-[120px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-[#9b87f5] rounded-full blur-[140px] opacity-15 animate-pulse-glow" style={{ animationDelay: '2s' }} />
         </div>
 
         <div className="relative z-10 max-w-md w-full space-y-8 animate-fade-in">
-          <h1 className="text-4xl sm:text-6xl font-black text-center tracking-wider mb-8" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
-            LUSKY BEAR
-          </h1>
+          <div className="text-center mb-8">
+            <h1 className="text-5xl sm:text-7xl font-black tracking-wider mb-4 gradient-text">
+              LUSKY BEAR
+            </h1>
+            <div className="h-1 w-32 mx-auto animated-gradient rounded-full"></div>
+          </div>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6 sm:p-8">
-            <h2 className="text-2xl sm:text-3xl font-black mb-6 text-center" style={{ color: authMode === 'login' ? '#00F0FF' : '#FF10F0' }}>
+          <Card className="glass-card p-8 sm:p-10 shine-effect">
+            <h2 className="text-3xl sm:text-4xl font-black mb-8 text-center gradient-text">
               {authMode === 'login' ? 'Вход' : 'Регистрация'}
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
                 <Input
                   type="text"
                   placeholder="Имя пользователя"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white placeholder:text-gray-500"
+                  className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-14 text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
                   onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
                 />
               </div>
@@ -448,22 +452,22 @@ const Index = () => {
                   placeholder="Пароль"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white placeholder:text-gray-500"
+                  className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-14 text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
                   onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
                 />
               </div>
 
               <Button
                 onClick={handleAuth}
-                className="w-full h-12 text-lg font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+                className="w-full h-14 text-lg font-bold animated-gradient text-white border-0 hover-lift shine-effect"
               >
                 {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
               </Button>
 
-              <div className="text-center">
+              <div className="text-center pt-2">
                 <button
                   onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                  className="text-[#00F0FF] hover:text-[#FF10F0] transition-colors text-sm"
+                  className="text-[#00F0FF] hover:text-[#FF10F0] transition-all text-base font-medium"
                 >
                   {authMode === 'login' ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
                 </button>
@@ -479,54 +483,58 @@ const Index = () => {
     return (
       <>
         <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0a0118] via-[#1a0f2e] to-[#0f0520]" />
           
           <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#FF10F0] rounded-full blur-[100px] opacity-10 animate-pulse-glow" />
-            <div className="absolute bottom-20 right-10 w-48 h-48 sm:w-64 sm:h-64 bg-[#00F0FF] rounded-full blur-[100px] opacity-10 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-20 left-10 w-64 h-64 sm:w-96 sm:h-96 bg-[#FF10F0] rounded-full blur-[120px] opacity-20 animate-pulse-glow" />
+            <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-[#00F0FF] rounded-full blur-[120px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-[#9b87f5] rounded-full blur-[140px] opacity-15 animate-pulse-glow" style={{ animationDelay: '2s' }} />
           </div>
 
-          <div className="relative z-10 max-w-4xl w-full space-y-8 sm:space-y-12 animate-fade-in">
+          <div className="relative z-10 max-w-5xl w-full space-y-10 sm:space-y-14 animate-fade-in">
             <div className="flex justify-between items-center">
-              <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-center tracking-wider flex-1" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
-                LUSKY BEAR
-              </h1>
+              <div className="flex-1 text-center">
+                <h1 className="text-6xl sm:text-8xl md:text-9xl font-black tracking-wider gradient-text mb-4">
+                  LUSKY BEAR
+                </h1>
+                <div className="h-1.5 w-48 mx-auto animated-gradient rounded-full"></div>
+              </div>
               <Button
                 onClick={handleLogout}
                 variant="ghost"
-                className="text-[#00F0FF] hover:text-[#FF10F0] text-sm"
+                className="text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 text-base font-semibold px-6 py-3 rounded-xl transition-all"
               >
-                <Icon name="LogOut" size={20} className="mr-1" />
+                <Icon name="LogOut" size={22} className="mr-2" />
                 Выход
               </Button>
             </div>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <Button
                   onClick={() => setScreen('instructions')}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+                  className="h-28 sm:h-32 text-xl sm:text-2xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
                 >
-                  <Icon name="Rocket" size={28} className="mr-2 sm:mr-3" />
+                  <Icon name="Rocket" size={32} className="mr-3" />
                   Начать
                 </Button>
 
                 <Button
                   onClick={() => setScreen('referral')}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+                  className="h-28 sm:h-32 text-xl sm:text-2xl font-bold glass-card text-[#00F0FF] border-2 border-[#00F0FF]/40 hover:border-[#00F0FF] hover-lift shine-effect"
                 >
-                  <Icon name="Users" size={28} className="mr-2 sm:mr-3" />
+                  <Icon name="Users" size={32} className="mr-3" />
                   Реферальная система
                 </Button>
 
                 <Button
                   onClick={handleVipSignals}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+                  className="h-28 sm:h-32 text-xl sm:text-2xl font-bold glass-card text-[#9b87f5] border-2 border-[#9b87f5]/40 hover:border-[#9b87f5] hover-lift shine-effect"
                 >
-                  <Icon name="Crown" size={28} className="mr-2 sm:mr-3" />
+                  <Icon name="Crown" size={32} className="mr-3" />
                   VIP Сигналы
                 </Button>
               </div>
@@ -535,15 +543,20 @@ const Index = () => {
         </div>
 
         {showVipPasswordModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-            <Card className="bg-[#1a1a2e] border-2 border-[#9b87f5]/50 p-6 max-w-md w-full">
-              <div className="space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+            <Card className="glass-card border-2 border-[#9b87f5]/50 p-8 max-w-md w-full shine-effect">
+              <div className="space-y-6">
                 <div className="text-center">
-                  <Icon name="Crown" size={48} className="mx-auto mb-4 text-[#9b87f5]" />
-                  <h2 className="text-2xl font-black mb-2" style={{ color: '#9b87f5' }}>
+                  <div className="mb-6 relative">
+                    <Icon name="Crown" size={56} className="mx-auto text-[#9b87f5] animate-pulse" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-[#9b87f5] rounded-full blur-xl opacity-50"></div>
+                    </div>
+                  </div>
+                  <h2 className="text-3xl font-black mb-3 gradient-text">
                     VIP Сигналы
                   </h2>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-300 text-base">
                     Введите пароль для доступа к VIP сигналам
                   </p>
                 </div>
@@ -554,26 +567,26 @@ const Index = () => {
                   value={vipPassword}
                   onChange={(e) => setVipPassword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleVipPasswordSubmit()}
-                  className="bg-black/60 border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  className="bg-black/40 border-[#9b87f5]/40 text-white placeholder:text-gray-400 h-14 text-lg backdrop-blur-sm focus:border-[#9b87f5] transition-all"
                   autoFocus
                 />
 
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <Button
                     onClick={() => {
                       setShowVipPasswordModal(false);
                       setVipPassword('');
                     }}
                     variant="outline"
-                    className="flex-1 bg-transparent border-[#FF10F0]/30 text-[#FF10F0] hover:bg-[#FF10F0]/10"
+                    className="flex-1 h-12 bg-transparent border-2 border-[#FF10F0]/40 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all"
                   >
                     Отмена
                   </Button>
                   <Button
                     onClick={handleVipPasswordSubmit}
-                    className="flex-1 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white"
+                    className="flex-1 h-12 animated-gradient text-white border-0 hover-lift shine-effect"
                   >
-                    <Icon name="Unlock" size={18} className="mr-2" />
+                    <Icon name="Unlock" size={20} className="mr-2" />
                     Войти
                   </Button>
                 </div>
