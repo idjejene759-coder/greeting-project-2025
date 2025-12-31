@@ -105,7 +105,7 @@ const Index = () => {
         } catch (error) {
           console.error('Error updating user data:', error);
         }
-      }, 5000);
+      }, 30000);
       
       return () => clearInterval(interval);
     }
