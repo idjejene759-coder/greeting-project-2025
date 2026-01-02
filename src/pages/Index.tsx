@@ -575,6 +575,27 @@ const Index = () => {
     }
   };
 
+  const handleDeleteWithdrawal = async (withdrawalId: number) => {
+    try {
+      const response = await fetch(WITHDRAWAL_URL, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ withdrawalId })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Заявка удалена');
+        loadWithdrawals();
+      } else {
+        toast.error(data.error || 'Ошибка удаления заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
   const handleLogout = () => {
     setUser(null);
     setBalance(0);
@@ -1355,13 +1376,22 @@ const Index = () => {
                                 </Button>
                               </>
                             ) : (
-                              <div className={`flex-1 text-center py-2 rounded-lg font-bold text-sm ${
-                                w.status === 'approved' 
-                                  ? 'bg-green-500/20 text-green-300 border border-green-500/40' 
-                                  : 'bg-red-500/20 text-red-300 border border-red-500/40'
-                              }`}>
-                                {w.status === 'approved' ? '✅ Одобрено' : '❌ Отклонено'}
-                              </div>
+                              <>
+                                <div className={`flex-1 text-center py-2 rounded-lg font-bold text-sm ${
+                                  w.status === 'approved' 
+                                    ? 'bg-green-500/20 text-green-300 border border-green-500/40' 
+                                    : 'bg-red-500/20 text-red-300 border border-red-500/40'
+                                }`}>
+                                  {w.status === 'approved' ? '✅ Одобрено' : '❌ Отклонено'}
+                                </div>
+                                <Button
+                                  onClick={() => handleDeleteWithdrawal(w.id)}
+                                  size="sm"
+                                  className="bg-gray-600 hover:bg-gray-700 text-white"
+                                >
+                                  <Icon name="Trash2" size={16} />
+                                </Button>
+                              </>
                             )}
                           </div>
                         </div>

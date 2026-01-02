@@ -13,7 +13,7 @@ def handler(event: dict, context) -> dict:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type'
             },
             'body': '',
@@ -169,6 +169,54 @@ def handler(event: dict, context) -> dict:
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'body': json.dumps({'success': True, 'message': 'Статус обновлён'}),
+                'isBase64Encoded': False
+            }
+        
+        elif method == 'DELETE':
+            body = json.loads(event.get('body', '{}'))
+            withdrawal_id = body.get('withdrawalId')
+            
+            if not withdrawal_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Missing withdrawalId'}),
+                    'isBase64Encoded': False
+                }
+            
+            cursor.execute("""
+                SELECT status FROM t_p45110186_greeting_project_202.withdrawals
+                WHERE id = %s
+            """, (withdrawal_id,))
+            result = cursor.fetchone()
+            
+            if not result:
+                return {
+                    'statusCode': 404,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Заявка не найдена'}),
+                    'isBase64Encoded': False
+                }
+            
+            if result[0] == 'pending':
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Нельзя удалить заявку со статусом "В ожидании"'}),
+                    'isBase64Encoded': False
+                }
+            
+            cursor.execute("""
+                DELETE FROM t_p45110186_greeting_project_202.withdrawals
+                WHERE id = %s
+            """, (withdrawal_id,))
+            
+            conn.commit()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'success': True, 'message': 'Заявка удалена'}),
                 'isBase64Encoded': False
             }
         
