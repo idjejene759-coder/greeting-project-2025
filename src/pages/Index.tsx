@@ -1252,6 +1252,7 @@ const Index = () => {
                           <Icon name="Users" size={14} className="text-[#FF10F0]" />
                           <span className="text-gray-400">Рефералы:</span>
                           <span className="text-[#FF10F0] font-bold">{u.referralCount}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
