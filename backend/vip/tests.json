@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Check VIP status for non-existent user",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "check_status",
+        "userId": 999999
+      },
+      "expectedStatus": 404,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "List pending VIP requests",
+      "method": "GET",
+      "path": "/?action=list_requests&status=pending",
+      "expectedStatus": 200
+    }
+  ]
+}

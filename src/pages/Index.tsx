@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'vip' | 'crashx' | 'withdrawal_method' | 'withdrawal_sbp' | 'withdrawal_card';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_method' | 'withdrawal_sbp' | 'withdrawal_card';
 
 interface User {
   id: number;
@@ -18,6 +18,8 @@ interface User {
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
 const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
+const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
+const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
 
 const Index = () => {
   const [screen, setScreen] = useState<Screen>('auth');
@@ -39,25 +41,23 @@ const Index = () => {
   const [crashXSignal, setCrashXSignal] = useState<number | null>(null);
   const [crashXTimeLeft, setCrashXTimeLeft] = useState(0);
   const [isCrashXWaiting, setIsCrashXWaiting] = useState(false);
-  const [showVipPasswordModal, setShowVipPasswordModal] = useState(false);
-  const [vipPassword, setVipPassword] = useState('');
-  const [isVipAuthorized, setIsVipAuthorized] = useState(false);
+  const [showVipPaymentModal, setShowVipPaymentModal] = useState(false);
+  const [vipPaymentScreenshot, setVipPaymentScreenshot] = useState('');
+  const [isVip, setIsVip] = useState(false);
+  const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null);
+  const [vipRequestStatus, setVipRequestStatus] = useState<string | null>(null);
+  const [vipRequests, setVipRequests] = useState<any[]>([]);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [sbpPhone, setSbpPhone] = useState('');
   const [sbpName, setSbpName] = useState('');
   const [sbpBank, setSbpBank] = useState('Сбербанк');
   const [cardNumber, setCardNumber] = useState('');
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
-  const [adminView, setAdminView] = useState<'users' | 'withdrawals'>('users');
+  const [adminView, setAdminView] = useState<'users' | 'withdrawals' | 'vip'>('users');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     const savedAdmin = localStorage.getItem('isAdmin');
-    const savedVipAuth = localStorage.getItem('vipAuthorized');
-    
-    if (savedVipAuth === 'true') {
-      setIsVipAuthorized(true);
-    }
     
     if (savedAdmin === 'true') {
       setIsAdmin(true);
@@ -77,6 +77,12 @@ const Index = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (user && !isAdmin) {
+      checkVipStatus();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user && !isAdmin) {
@@ -159,24 +165,141 @@ const Index = () => {
     setTimeLeft(60);
   };
 
-  const handleVipSignals = () => {
-    if (isVipAuthorized) {
-      setScreen('vip');
-    } else {
-      setShowVipPasswordModal(true);
+  const checkVipStatus = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(VIP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'check_status',
+          userId: user.id
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsVip(data.isVip);
+        setVipExpiresAt(data.expiresAt || null);
+        setVipRequestStatus(data.requestStatus || null);
+      }
+    } catch (error) {
+      console.error('Error checking VIP status:', error);
     }
   };
 
-  const handleVipPasswordSubmit = () => {
-    if (vipPassword === 'VDUILRE') {
-      setShowVipPasswordModal(false);
-      setVipPassword('');
-      setIsVipAuthorized(true);
-      localStorage.setItem('vipAuthorized', 'true');
+  const handleVipSignals = async () => {
+    await checkVipStatus();
+    
+    if (isVip) {
       setScreen('vip');
-      toast.success('Доступ к VIP сигналам открыт!');
+    } else if (vipRequestStatus === 'pending') {
+      toast.info('Ваша заявка на VIP в обработке');
+    } else if (vipRequestStatus === 'rejected') {
+      toast.error('Ваша заявка была отклонена. Попробуйте снова.');
+      setVipRequestStatus(null);
+      setShowVipPaymentModal(true);
     } else {
-      toast.error('Неверный пароль!');
+      setShowVipPaymentModal(true);
+    }
+  };
+
+  const handleVipPaymentSubmit = async () => {
+    if (!vipPaymentScreenshot.trim()) {
+      toast.error('Добавьте скриншот оплаты');
+      return;
+    }
+    
+    if (!user) return;
+    
+    try {
+      const response = await fetch(VIP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.dumps({
+          action: 'create_request',
+          userId: user.id,
+          screenshotUrl: vipPaymentScreenshot
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast.success(data.message);
+        setShowVipPaymentModal(false);
+        setVipPaymentScreenshot('');
+        setVipRequestStatus('pending');
+      } else {
+        toast.error(data.error || 'Ошибка отправки заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const loadVipRequests = async () => {
+    try {
+      const response = await fetch(`${VIP_URL}?action=list_requests&status=pending`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setVipRequests(data.requests || []);
+      }
+    } catch (error) {
+      console.error('Error loading VIP requests:', error);
+    }
+  };
+
+  const handleApproveVip = async (requestId: number) => {
+    try {
+      const response = await fetch(VIP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'approve',
+          requestId,
+          adminId: 1
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast.success(data.message);
+        loadVipRequests();
+      } else {
+        toast.error(data.error || 'Ошибка одобрения');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const handleRejectVip = async (requestId: number) => {
+    try {
+      const response = await fetch(VIP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.dumps({
+          action: 'reject',
+          requestId,
+          adminId: 1
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast.success(data.message);
+        loadVipRequests();
+      } else {
+        toast.error(data.error || 'Ошибка отклонения');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
     }
   };
 
@@ -729,7 +852,7 @@ const Index = () => {
           </div>
         </div>
 
-        {showVipPasswordModal && (
+        {showVipPaymentModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
             <Card className="glass-card border-2 border-[#9b87f5]/50 p-5 sm:p-8 max-w-md w-full shine-effect">
               <div className="space-y-4 sm:space-y-6">
@@ -742,28 +865,46 @@ const Index = () => {
                     </div>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-black mb-2 sm:mb-3 gradient-text">
-                    VIP Сигналы
+                    VIP Доступ
                   </h2>
-                  <p className="text-gray-300 text-sm sm:text-base">
-                    Введите пароль для доступа к VIP сигналам
+                  <p className="text-gray-300 text-sm sm:text-base mb-3">
+                    Стоимость: 500 ₽ / месяц
                   </p>
+                  <div className="bg-black/40 p-3 rounded-lg border border-[#9b87f5]/30">
+                    <p className="text-xs text-gray-400 mb-2">Отправьте оплату на кошелек:</p>
+                    <p className="text-xs text-[#00F0FF] font-mono break-all">{CRYPTO_WALLET}</p>
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(CRYPTO_WALLET);
+                        toast.success('Адрес скопирован!');
+                      }}
+                      variant="ghost"
+                      className="w-full mt-2 text-xs text-[#9b87f5] hover:text-white"
+                    >
+                      <Icon name="Copy" size={14} className="mr-1" />
+                      Копировать адрес
+                    </Button>
+                  </div>
                 </div>
 
-                <Input
-                  type="password"
-                  placeholder="Введите пароль"
-                  value={vipPassword}
-                  onChange={(e) => setVipPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleVipPasswordSubmit()}
-                  className="bg-black/40 border-[#9b87f5]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#9b87f5] transition-all"
-                  autoFocus
-                />
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-300">Ссылка на скриншот оплаты</label>
+                  <Input
+                    type="text"
+                    placeholder="https://..."
+                    value={vipPaymentScreenshot}
+                    onChange={(e) => setVipPaymentScreenshot(e.target.value)}
+                    className="bg-black/40 border-[#9b87f5]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#9b87f5] transition-all"
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-400">Загрузите скриншот в любой сервис (imgur.com, imgbb.com) и вставьте ссылку</p>
+                </div>
 
                 <div className="flex gap-3 sm:gap-4">
                   <Button
                     onClick={() => {
-                      setShowVipPasswordModal(false);
-                      setVipPassword('');
+                      setShowVipPaymentModal(false);
+                      setVipPaymentScreenshot('');
                     }}
                     variant="outline"
                     className="flex-1 h-11 sm:h-12 bg-transparent border-2 border-[#FF10F0]/40 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all text-sm sm:text-base"
@@ -771,11 +912,11 @@ const Index = () => {
                     Отмена
                   </Button>
                   <Button
-                    onClick={handleVipPasswordSubmit}
+                    onClick={handleVipPaymentSubmit}
                     className="flex-1 h-11 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-sm sm:text-base"
                   >
-                    <Icon name="Unlock" size={18} className="mr-1 sm:mr-2" />
-                    Войти
+                    <Icon name="Send" size={18} className="mr-1 sm:mr-2" />
+                    Отправить
                   </Button>
                 </div>
               </div>
@@ -1201,32 +1342,48 @@ const Index = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
             <Button
               onClick={() => setAdminView('users')}
-              className={`h-12 sm:h-14 text-base sm:text-lg font-bold ${
+              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
                 adminView === 'users'
                   ? 'bg-gradient-to-br from-[#FF10F0] to-[#c710c0] text-white border-2 border-[#FF10F0]'
                   : 'bg-[#1a1a2e] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60'
               }`}
             >
-              <Icon name="Users" size={20} className="mr-1 sm:mr-2" />
-              <span className="hidden xs:inline">Пользователи</span>
-              <span className="xs:hidden">Юзеры</span>
+              <Icon name="Users" size={18} className="mr-1" />
+              <span className="hidden sm:inline">Юзеры</span>
+              <span className="sm:hidden">👥</span>
             </Button>
             <Button
               onClick={() => {
                 setAdminView('withdrawals');
                 loadWithdrawals();
               }}
-              className={`h-12 sm:h-14 text-base sm:text-lg font-bold ${
+              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
                 adminView === 'withdrawals'
                   ? 'bg-gradient-to-br from-[#00F0FF] to-[#00a8b8] text-white border-2 border-[#00F0FF]'
                   : 'bg-[#1a1a2e] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60'
               }`}
             >
-              <Icon name="Wallet" size={20} className="mr-1 sm:mr-2" />
-              Выводы
+              <Icon name="Wallet" size={18} className="mr-1" />
+              <span className="hidden sm:inline">Выводы</span>
+              <span className="sm:hidden">💰</span>
+            </Button>
+            <Button
+              onClick={() => {
+                setAdminView('vip');
+                loadVipRequests();
+              }}
+              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
+                adminView === 'vip'
+                  ? 'bg-gradient-to-br from-[#9b87f5] to-[#7c3aed] text-white border-2 border-[#9b87f5]'
+                  : 'bg-[#1a1a2e] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60'
+              }`}
+            >
+              <Icon name="Crown" size={18} className="mr-1" />
+              <span className="hidden sm:inline">VIP</span>
+              <span className="sm:hidden">👑</span>
             </Button>
           </div>
 
@@ -1280,6 +1437,81 @@ const Index = () => {
                 </div>
               ))}
             </div>
+              </>
+            )}
+
+            {adminView === 'vip' && (
+              <>
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Icon name="Crown" size={24} className="text-[#9b87f5]" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#9b87f5' }}>
+                    VIP Заявки ({vipRequests.length})
+                  </h2>
+                </div>
+
+                <div className="space-y-3">
+                  {vipRequests.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Icon name="Inbox" size={48} className="text-gray-600 mx-auto mb-3" />
+                      <p className="text-gray-400">Нет VIP заявок</p>
+                    </div>
+                  ) : (
+                    vipRequests.map((req) => (
+                      <div
+                        key={req.id}
+                        className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-4 rounded-xl border border-[#9b87f5]/30"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-base font-bold text-[#9b87f5]">
+                                {req.username} (ID: {req.userId})
+                              </p>
+                              <p className="text-xs text-gray-500">Заявка #{req.id}</p>
+                            </div>
+                          </div>
+
+                          <div className="text-xs text-gray-300">
+                            <p className="flex items-center gap-1.5 mb-2">
+                              <span className="text-gray-500">Скриншот оплаты:</span>
+                            </p>
+                            <a 
+                              href={req.screenshotUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-[#00F0FF] hover:text-[#FF10F0] underline break-all"
+                            >
+                              {req.screenshotUrl}
+                            </a>
+                          </div>
+
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span>{new Date(req.createdAt).toLocaleString('ru-RU')}</span>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => handleApproveVip(req.id)}
+                              size="sm"
+                              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
+                            >
+                              <Icon name="Check" size={16} className="mr-1" />
+                              Одобрить (30 дней)
+                            </Button>
+                            <Button
+                              onClick={() => handleRejectVip(req.id)}
+                              size="sm"
+                              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
+                            >
+                              <Icon name="X" size={16} className="mr-1" />
+                              Отклонить
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </>
             )}
 
