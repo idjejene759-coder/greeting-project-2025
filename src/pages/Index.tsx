@@ -853,91 +853,104 @@ const Index = () => {
         </div>
 
         {showVipPaymentModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-            <Card className="glass-card border-2 border-[#9b87f5]/50 p-5 sm:p-8 max-w-md w-full shine-effect">
-              <div className="space-y-4 sm:space-y-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-lg animate-fade-in overflow-y-auto">
+            <Card className="glass-card border-2 border-[#9b87f5]/60 p-4 sm:p-6 max-w-lg w-full shine-effect my-4 sm:my-8">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="text-center">
-                  <div className="mb-4 sm:mb-6 relative">
-                    <Icon name="Crown" size={48} className="sm:hidden mx-auto text-[#9b87f5] animate-pulse" />
-                    <Icon name="Crown" size={56} className="hidden sm:block mx-auto text-[#9b87f5] animate-pulse" />
+                  <div className="mb-3 sm:mb-4 relative inline-block">
+                    <div className="relative z-10">
+                      <Icon name="Crown" size={40} className="sm:hidden mx-auto text-[#9b87f5] animate-pulse" />
+                      <Icon name="Crown" size={56} className="hidden sm:block mx-auto text-[#9b87f5] animate-pulse" />
+                    </div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#9b87f5] rounded-full blur-xl opacity-50"></div>
+                      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[#9b87f5] rounded-full blur-2xl opacity-60 animate-pulse"></div>
                     </div>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black mb-2 sm:mb-3 gradient-text">
-                    VIP Доступ
+                  <h2 className="text-xl sm:text-2xl font-black mb-2 gradient-text">
+                    💎 VIP Доступ
                   </h2>
-                  <p className="text-gray-300 text-sm sm:text-base mb-3">
-                    Стоимость: 8$ / месяц
-                  </p>
-                  
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-3">
-                    <div className="flex items-start gap-2">
-                      <Icon name="AlertTriangle" size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs text-red-300">
-                        <p className="font-bold mb-1">⚠️ Важно:</p>
-                        <p className="mb-1">• Переводите РОВНО 8 USDT</p>
-                        <p>• Только через сеть The Open Network (TON)</p>
-                      </div>
-                    </div>
+                  <div className="inline-flex items-center justify-center bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] px-4 py-2 rounded-full mb-3">
+                    <p className="text-white font-bold text-sm sm:text-base">
+                      8 USDT / месяц
+                    </p>
                   </div>
-
-                  <div className="bg-black/40 p-3 rounded-lg border border-[#9b87f5]/30">
-                    <p className="text-xs text-gray-400 mb-2">Отправьте оплату на кошелек:</p>
-                    <p className="text-xs text-[#00F0FF] font-mono break-all">{CRYPTO_WALLET}</p>
-                    <Button
-                      onClick={() => {
-                        navigator.clipboard.writeText(CRYPTO_WALLET);
-                        toast.success('Адрес скопирован!');
-                      }}
-                      variant="ghost"
-                      className="w-full mt-2 text-xs text-[#9b87f5] hover:text-white"
-                    >
-                      <Icon name="Copy" size={14} className="mr-1" />
-                      Копировать адрес
-                    </Button>
+                </div>
+                
+                <div className="bg-gradient-to-r from-red-500/15 to-orange-500/15 border border-red-400/40 rounded-xl p-3 sm:p-4">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Icon name="AlertTriangle" size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs sm:text-sm text-red-200 space-y-1">
+                      <p className="font-bold text-red-300">⚠️ Условия оплаты:</p>
+                      <p className="leading-relaxed">• Сумма: <span className="font-bold text-white">РОВНО 8 USDT</span></p>
+                      <p className="leading-relaxed">• Сеть: <span className="font-bold text-white">The Open Network (TON)</span></p>
+                      <p className="leading-relaxed text-orange-200">• Другие суммы и сети не принимаются!</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm text-gray-300">Ссылка на скриншот оплаты</label>
+                <div className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#9b87f5]/40">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name="Wallet" size={16} className="text-[#9b87f5]" />
+                    <p className="text-xs sm:text-sm text-gray-300 font-semibold">Адрес кошелька:</p>
+                  </div>
+                  <div className="bg-black/60 p-2 sm:p-3 rounded-lg border border-[#00F0FF]/30 mb-2">
+                    <p className="text-[10px] sm:text-xs text-[#00F0FF] font-mono break-all leading-relaxed">{CRYPTO_WALLET}</p>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(CRYPTO_WALLET);
+                      toast.success('✅ Адрес скопирован в буфер обмена!');
+                    }}
+                    className="w-full bg-[#9b87f5]/20 hover:bg-[#9b87f5]/30 text-[#9b87f5] border border-[#9b87f5]/40 hover:border-[#9b87f5] transition-all h-9 sm:h-10 text-xs sm:text-sm font-bold"
+                  >
+                    <Icon name="Copy" size={14} className="mr-1.5" />
+                    Копировать адрес
+                  </Button>
+                </div>
+
+                <div className="space-y-1.5 sm:space-y-2">
+                  <label className="text-xs sm:text-sm text-gray-300 font-semibold flex items-center gap-1.5">
+                    <Icon name="Image" size={14} className="text-[#9b87f5]" />
+                    Ссылка на скриншот платежа
+                  </label>
                   <Input
                     type="text"
-                    placeholder="https://..."
+                    placeholder="https://imgur.com/..."
                     value={vipPaymentScreenshot}
                     onChange={(e) => setVipPaymentScreenshot(e.target.value)}
-                    className="bg-black/40 border-[#9b87f5]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#9b87f5] transition-all"
-                    autoFocus
+                    className="bg-black/60 border-[#9b87f5]/50 text-white placeholder:text-gray-500 h-10 sm:h-12 text-sm sm:text-base backdrop-blur-sm focus:border-[#9b87f5] transition-all"
                   />
-                  <p className="text-xs text-gray-400">Загрузите скриншот в любой сервис (imgur.com, imgbb.com) и вставьте ссылку</p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 leading-relaxed">
+                    📸 Загрузите скриншот на <span className="text-[#00F0FF]">imgur.com</span> или <span className="text-[#00F0FF]">imgbb.com</span> и вставьте ссылку
+                  </p>
                 </div>
 
-                <div className="bg-[#9b87f5]/10 border border-[#9b87f5]/30 rounded-lg p-3">
+                <div className="bg-gradient-to-r from-[#9b87f5]/15 to-[#7c3aed]/15 border border-[#9b87f5]/40 rounded-xl p-3">
                   <div className="flex items-start gap-2">
-                    <Icon name="Clock" size={16} className="text-[#9b87f5] flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-300">
-                      Проверка заявки занимает не более 15 минут
+                    <Icon name="Clock" size={18} className="text-[#9b87f5] flex-shrink-0 mt-0.5" />
+                    <p className="text-xs sm:text-sm text-gray-200 leading-relaxed">
+                      ⚡ <span className="font-bold text-white">Проверка заявки до 15 минут.</span> После одобрения VIP активируется автоматически!
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-3 sm:gap-4">
+                <div className="flex gap-2 sm:gap-3 pt-1">
                   <Button
                     onClick={() => {
                       setShowVipPaymentModal(false);
                       setVipPaymentScreenshot('');
                     }}
                     variant="outline"
-                    className="flex-1 h-11 sm:h-12 bg-transparent border-2 border-[#FF10F0]/40 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all text-sm sm:text-base"
+                    className="flex-1 h-10 sm:h-12 bg-transparent border-2 border-[#FF10F0]/50 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all text-xs sm:text-sm font-bold"
                   >
                     Отмена
                   </Button>
                   <Button
                     onClick={handleVipPaymentSubmit}
-                    className="flex-1 h-11 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-sm sm:text-base"
+                    className="flex-1 h-10 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-xs sm:text-sm font-bold shadow-lg shadow-[#9b87f5]/20"
                   >
-                    <Icon name="Send" size={18} className="mr-1 sm:mr-2" />
-                    Отправить
+                    <Icon name="Send" size={16} className="mr-1 sm:mr-1.5" />
+                    Отправить заявку
                   </Button>
                 </div>
               </div>
