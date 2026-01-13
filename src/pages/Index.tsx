@@ -815,13 +815,7 @@ const Index = () => {
               />
 
               <Button
-                onClick={() => {
-                  if (authMode === 'register') {
-                    window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
-                  } else {
-                    handleAuth();
-                  }
-                }}
+                onClick={() => window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold animated-gradient text-white border-0 hover-lift shine-effect"
               >
                 {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
