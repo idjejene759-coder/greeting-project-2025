@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_method' | 'withdrawal_sbp' | 'withdrawal_card';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_method' | 'withdrawal_sbp' | 'withdrawal_card' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
 
 interface User {
   id: number;
@@ -54,6 +54,10 @@ const Index = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [adminView, setAdminView] = useState<'users' | 'withdrawals' | 'vip'>('users');
+  const [cryptoType, setCryptoType] = useState<'USDT' | 'TON' | ''>('');
+  const [cryptoNetwork, setCryptoNetwork] = useState<'TON' | 'TRC20' | ''>('');
+  const [cryptoWallet, setCryptoWallet] = useState('');
+  const [confirmStep, setConfirmStep] = useState(0);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -343,7 +347,68 @@ const Index = () => {
       toast.error('Минимальная сумма вывода 200 рублей');
       return;
     }
-    setScreen('withdrawal_method');
+    setScreen('withdrawal_crypto_select');
+  };
+
+  const handleCryptoWithdrawSubmit = async () => {
+    if (confirmStep < 2) {
+      toast.error('Подтвердите данные дважды');
+      return;
+    }
+
+    const amount = parseFloat(withdrawalAmount);
+    if (isNaN(amount) || amount < 200) {
+      toast.error('Минимальная сумма вывода 200 рублей');
+      return;
+    }
+
+    if (amount > balance) {
+      toast.error('Недостаточно средств');
+      return;
+    }
+
+    try {
+      const details: any = {
+        cryptoType,
+        wallet: cryptoWallet
+      };
+      
+      if (cryptoType === 'USDT') {
+        details.network = cryptoNetwork;
+      }
+
+      const response = await fetch(WITHDRAWAL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.id,
+          username: user?.username,
+          amount,
+          method: 'crypto',
+          details
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success(data.message);
+        setBalance(balance - amount);
+        const updatedUser = { ...user!, balance: balance - amount };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setCryptoType('');
+        setCryptoNetwork('');
+        setCryptoWallet('');
+        setWithdrawalAmount('');
+        setConfirmStep(0);
+        setScreen('referral');
+      } else {
+        toast.error(data.error || 'Ошибка создания заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
   };
 
   const handleWithdrawSbp = async () => {
@@ -1698,7 +1763,7 @@ const Index = () => {
                             <div className="flex items-center gap-2 mb-2">
                               <Icon name="CreditCard" size={14} className="text-[#00F0FF]" />
                               <span className="text-xs font-bold text-[#00F0FF]">
-                                {w.method === 'sbp' ? '🏦 СБП' : '💳 Карта'}
+                                {w.method === 'sbp' ? '🏦 СБП' : w.method === 'card' ? '💳 Карта' : '💰 Криптовалюта'}
                               </span>
                             </div>
                             {w.method === 'sbp' && (
@@ -1722,6 +1787,24 @@ const Index = () => {
                                 <p className="flex items-center gap-1.5">
                                   <span className="text-gray-500">Номер карты:</span>
                                   <span className="font-mono">{w.details.cardNumber}</span>
+                                </p>
+                              </div>
+                            )}
+                            {w.method === 'crypto' && (
+                              <div className="text-xs text-gray-300 space-y-1">
+                                <p className="flex items-center gap-1.5">
+                                  <span className="text-gray-500">Криптовалюта:</span>
+                                  <span className="font-bold text-[#26A17B]">{w.details.cryptoType}</span>
+                                </p>
+                                {w.details.network && (
+                                  <p className="flex items-center gap-1.5">
+                                    <span className="text-gray-500">Сеть:</span>
+                                    <span className="font-semibold">{w.details.network === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}</span>
+                                  </p>
+                                )}
+                                <p className="flex flex-col gap-1">
+                                  <span className="text-gray-500">Адрес кошелька:</span>
+                                  <span className="font-mono break-all text-[#00F0FF]">{w.details.wallet}</span>
                                 </p>
                               </div>
                             )}
@@ -2060,6 +2143,304 @@ const Index = () => {
                 <Icon name="Send" size={20} className="mr-2" />
                 Вывести
               </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'withdrawal_crypto_select') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('referral')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+              💰 Выберите криптовалюту
+            </h2>
+
+            <div className="space-y-4">
+              <div className="mb-4">
+                <label className="text-sm text-[#00F0FF] mb-2 block">Сумма вывода (₽)</label>
+                <Input
+                  type="number"
+                  value={withdrawalAmount}
+                  onChange={(e) => setWithdrawalAmount(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  placeholder="Минимум 200 ₽"
+                />
+                <p className="text-xs text-[#00F0FF] mt-1">Доступно: {balance} ₽</p>
+              </div>
+
+              <Button
+                onClick={() => {
+                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
+                    toast.error('Минимальная сумма вывода 200 рублей');
+                    return;
+                  }
+                  setCryptoType('USDT');
+                  setScreen('withdrawal_crypto_usdt');
+                }}
+                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#26A17B] border-2 border-[#26A17B]/30 hover:border-[#26A17B]/60"
+              >
+                <Icon name="DollarSign" size={24} className="mr-2" />
+                USDT
+              </Button>
+
+              <Button
+                onClick={() => {
+                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
+                    toast.error('Минимальная сумма вывода 200 рублей');
+                    return;
+                  }
+                  setCryptoType('TON');
+                  setScreen('withdrawal_crypto_ton');
+                }}
+                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#0088CC] border-2 border-[#0088CC]/30 hover:border-[#0088CC]/60"
+              >
+                <Icon name="Gem" size={24} className="mr-2" />
+                TON
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'withdrawal_crypto_usdt') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('withdrawal_crypto_select')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#26A17B]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#26A17B' }}>
+              💵 Вывод USDT
+            </h2>
+
+            <div className="space-y-4">
+              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#26A17B]/20 mb-4">
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block">Выберите сеть</label>
+                <select
+                  value={cryptoNetwork}
+                  onChange={(e) => setCryptoNetwork(e.target.value as 'TON' | 'TRC20')}
+                  className="w-full bg-[#1a1a2e] border border-[#26A17B]/30 text-white rounded-md px-3 py-2 focus:outline-none focus:border-[#26A17B]"
+                >
+                  <option value="">Выберите сеть</option>
+                  <option value="TON">The Open Network (TON)</option>
+                  <option value="TRC20">Tron (TRC20)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block">Адрес кошелька USDT</label>
+                <Input
+                  type="text"
+                  value={cryptoWallet}
+                  onChange={(e) => setCryptoWallet(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#26A17B]/30 text-white"
+                  placeholder="Введите адрес кошелька"
+                />
+              </div>
+
+              <Button
+                onClick={() => {
+                  if (!cryptoNetwork) {
+                    toast.error('Выберите сеть');
+                    return;
+                  }
+                  if (!cryptoWallet.trim()) {
+                    toast.error('Введите адрес кошелька');
+                    return;
+                  }
+                  setConfirmStep(0);
+                  setScreen('withdrawal_crypto_confirm');
+                }}
+                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#26A17B] border-2 border-[#26A17B]/30 hover:border-[#26A17B]/60"
+              >
+                <Icon name="ArrowRight" size={20} className="mr-2" />
+                Далее
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'withdrawal_crypto_ton') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('withdrawal_crypto_select')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#0088CC]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#0088CC' }}>
+              💎 Вывод TON
+            </h2>
+
+            <div className="space-y-4">
+              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#0088CC]/20 mb-4">
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block">Адрес TON кошелька</label>
+                <Input
+                  type="text"
+                  value={cryptoWallet}
+                  onChange={(e) => setCryptoWallet(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#0088CC]/30 text-white"
+                  placeholder="UQ..."
+                />
+              </div>
+
+              <Button
+                onClick={() => {
+                  if (!cryptoWallet.trim()) {
+                    toast.error('Введите адрес кошелька');
+                    return;
+                  }
+                  setConfirmStep(0);
+                  setScreen('withdrawal_crypto_confirm');
+                }}
+                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#0088CC] border-2 border-[#0088CC]/30 hover:border-[#0088CC]/60"
+              >
+                <Icon name="ArrowRight" size={20} className="mr-2" />
+                Далее
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'withdrawal_crypto_confirm') {
+    const borderColor = cryptoType === 'USDT' ? '#26A17B' : '#0088CC';
+    const textColor = cryptoType === 'USDT' ? '#26A17B' : '#0088CC';
+
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => {
+              if (cryptoType === 'USDT') {
+                setScreen('withdrawal_crypto_usdt');
+              } else {
+                setScreen('withdrawal_crypto_ton');
+              }
+              setConfirmStep(0);
+            }}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border p-6" style={{ borderColor: `${borderColor}40` }}>
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: textColor }}>
+              ⚠️ Подтверждение данных
+            </h2>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+                <p className="text-sm text-gray-400 mb-2">Криптовалюта:</p>
+                <p className="text-xl font-bold" style={{ color: textColor }}>{cryptoType}</p>
+              </div>
+
+              {cryptoType === 'USDT' && (
+                <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+                  <p className="text-sm text-gray-400 mb-2">Сеть:</p>
+                  <p className="text-xl font-bold" style={{ color: textColor }}>
+                    {cryptoNetwork === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}
+                  </p>
+                </div>
+              )}
+
+              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+                <p className="text-sm text-gray-400 mb-2">Адрес кошелька:</p>
+                <p className="text-sm font-mono break-all" style={{ color: textColor }}>{cryptoWallet}</p>
+              </div>
+
+              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+                <p className="text-sm text-gray-400 mb-2">Сумма вывода:</p>
+                <p className="text-xl font-bold text-[#FF10F0]">{withdrawalAmount} ₽</p>
+              </div>
+            </div>
+
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <Icon name="AlertTriangle" size={24} className="text-red-400 flex-shrink-0 mt-1" />
+                <div className="text-sm text-red-200">
+                  <p className="font-bold mb-2">⚠️ ВНИМАНИЕ!</p>
+                  <p className="mb-2">Проверьте правильность введённых данных!</p>
+                  <p className="text-red-300">Средства будут отправлены на указанный адрес. Убедитесь, что вы выбрали правильную сеть и адрес кошелька.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Button
+                onClick={() => {
+                  setConfirmStep(confirmStep + 1);
+                  if (confirmStep === 0) {
+                    toast.info('Подтвердите ещё раз');
+                  }
+                }}
+                disabled={confirmStep >= 2}
+                className="w-full h-12 bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-400 border-2 border-yellow-500/50 hover:border-yellow-500"
+              >
+                <Icon name="AlertCircle" size={20} className="mr-2" />
+                {confirmStep === 0 ? 'Подтвердить данные (1/2)' : 'Подтвердить данные (2/2)'}
+              </Button>
+
+              {confirmStep >= 2 && (
+                <Button
+                  onClick={handleCryptoWithdrawSubmit}
+                  className="w-full h-12 animated-gradient text-white border-0 hover-lift shine-effect font-bold"
+                >
+                  <Icon name="Send" size={20} className="mr-2" />
+                  Отправить заявку
+                </Button>
+              )}
             </div>
           </Card>
         </div>
