@@ -208,6 +208,72 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            elif action == 'pin_user':
+                user_id = body_data.get('userId')
+                
+                if not user_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'ID пользователя обязателен'}),
+                        'isBase64Encoded': False
+                    }
+                
+                cur.execute(
+                    "UPDATE users SET is_pinned = TRUE WHERE id = %s RETURNING id",
+                    (user_id,)
+                )
+                result = cur.fetchone()
+                conn.commit()
+                
+                if not result:
+                    return {
+                        'statusCode': 404,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Пользователь не найден'}),
+                        'isBase64Encoded': False
+                    }
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'success': True, 'message': 'Пользователь закреплён'}),
+                    'isBase64Encoded': False
+                }
+            
+            elif action == 'unpin_user':
+                user_id = body_data.get('userId')
+                
+                if not user_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'ID пользователя обязателен'}),
+                        'isBase64Encoded': False
+                    }
+                
+                cur.execute(
+                    "UPDATE users SET is_pinned = FALSE WHERE id = %s RETURNING id",
+                    (user_id,)
+                )
+                result = cur.fetchone()
+                conn.commit()
+                
+                if not result:
+                    return {
+                        'statusCode': 404,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Пользователь не найден'}),
+                        'isBase64Encoded': False
+                    }
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'success': True, 'message': 'Пользователь откреплён'}),
+                    'isBase64Encoded': False
+                }
+            
             else:
                 return {
                     'statusCode': 400,
@@ -217,13 +283,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
         
         elif method == 'GET':
-            # Не показываем заблокированных пользователей старше 7 дней (но не удаляем из БД)
+            # Показываем: закреплённых пользователей + пользователей за последние 7 дней
             cur.execute(
                 """
-                SELECT id, username, balance, referral_count, is_banned, ban_reason, created_at 
+                SELECT id, username, balance, referral_count, is_banned, ban_reason, created_at, is_pinned 
                 FROM users 
-                WHERE NOT (is_banned = TRUE AND banned_at < CURRENT_TIMESTAMP - INTERVAL '7 days')
-                ORDER BY created_at DESC
+                WHERE is_pinned = TRUE OR created_at >= CURRENT_TIMESTAMP - INTERVAL '7 days'
+                ORDER BY is_pinned DESC, created_at DESC
                 """
             )
             users = cur.fetchall()
@@ -237,7 +303,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'referralCount': user[3],
                     'isBanned': user[4] or False,
                     'banReason': user[5],
-                    'createdAt': user[6].isoformat() if user[6] else None
+                    'createdAt': user[6].isoformat() if user[6] else None,
+                    'isPinned': user[7] or False
                 })
             
             return {

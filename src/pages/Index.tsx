@@ -671,6 +671,52 @@ const Index = () => {
     }
   };
 
+  const handlePinUser = async (userId: number) => {
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'pin_user',
+          userId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('⭐ ' + data.message);
+        await loadAdminUsers();
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const handleUnpinUser = async (userId: number) => {
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'unpin_user',
+          userId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('✅ ' + data.message);
+        await loadAdminUsers();
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
   const loadWithdrawals = async () => {
     try {
       const response = await fetch(WITHDRAWAL_URL);
@@ -1470,17 +1516,22 @@ const Index = () => {
               {adminUsers.map((u) => (
                 <div
                   key={u.id}
-                  className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#FF10F0]/20 hover:border-[#FF10F0]/60 cursor-pointer"
-                  onClick={() => {
-                    setSelectedUser(u);
-                    setEditBalance(u.balance.toString());
-                    setEditReferrals(u.referralCount.toString());
-                    setScreen('admin_user');
-                  }}
+                  className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#FF10F0]/20 hover:border-[#FF10F0]/60"
                 >
                   <div className="flex justify-between items-start gap-3">
-                    <div className="flex-1 min-w-0">
+                    <div 
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={() => {
+                        setSelectedUser(u);
+                        setEditBalance(u.balance.toString());
+                        setEditReferrals(u.referralCount.toString());
+                        setScreen('admin_user');
+                      }}
+                    >
                       <div className="flex items-center gap-2 mb-1">
+                        {u.isPinned && (
+                          <Icon name="Pin" size={14} className="text-yellow-400 flex-shrink-0" />
+                        )}
                         <p className="text-sm sm:text-base font-bold text-[#FF10F0] truncate">{u.username}</p>
                         {u.isBanned && (
                           <span className="text-xs bg-red-500/30 text-red-300 px-2 py-0.5 rounded-full border border-red-500/50 flex-shrink-0">
@@ -1502,6 +1553,21 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (u.isPinned) {
+                          handleUnpinUser(u.id);
+                        } else {
+                          handlePinUser(u.id);
+                        }
+                      }}
+                      size="sm"
+                      className={`flex-shrink-0 ${u.isPinned ? 'bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/40' : 'bg-gray-700/50 hover:bg-gray-700/70 text-gray-400 border border-gray-600/40'}`}
+                      title={u.isPinned ? 'Открепить' : 'Закрепить'}
+                    >
+                      <Icon name="Pin" size={16} />
+                    </Button>
                   </div>
                 </div>
               ))}
