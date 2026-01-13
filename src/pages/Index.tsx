@@ -54,6 +54,7 @@ const Index = () => {
   const [cryptoNetwork, setCryptoNetwork] = useState<'TON' | 'TRC20' | ''>('');
   const [cryptoWallet, setCryptoWallet] = useState('');
   const [confirmStep, setConfirmStep] = useState(0);
+  const [hasClickedRegister, setHasClickedRegister] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -440,6 +441,7 @@ const Index = () => {
   };
 
   const handleRegister = () => {
+    setHasClickedRegister(true);
     window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
   };
 
@@ -1066,7 +1068,8 @@ const Index = () => {
             <Button
               onClick={() => setScreen('signals')}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+              disabled={!hasClickedRegister}
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Icon name="Play" size={24} className="mr-2" />
               К сигналам
