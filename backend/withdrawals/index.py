@@ -91,7 +91,7 @@ def handler(event: dict, context) -> dict:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'Минимальная сумма вывода 200 рублей'}),
+                    'body': json.dumps({'error': 'Минимальная сумма вывода 200 USDT'}),
                     'isBase64Encoded': False
                 }
             

@@ -108,7 +108,7 @@ const Index = () => {
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 
                 if (balanceChanged) {
-                  toast.info(`💰 Ваш баланс обновлён: ${currentUser.balance} ₽`);
+                  toast.info(`💰 Ваш баланс обновлён: ${currentUser.balance} USDT`);
                 }
                 if (referralsChanged) {
                   toast.info(`👥 Рефералов: ${currentUser.referralCount}`);
@@ -340,7 +340,7 @@ const Index = () => {
 
   const handleWithdraw = () => {
     if (balance < 200) {
-      toast.error('Минимальная сумма вывода 200 рублей');
+      toast.error('Минимальная сумма вывода 200 USDT');
       return;
     }
     setScreen('withdrawal_crypto_select');
@@ -354,7 +354,7 @@ const Index = () => {
 
     const amount = parseFloat(withdrawalAmount);
     if (isNaN(amount) || amount < 200) {
-      toast.error('Минимальная сумма вывода 200 рублей');
+      toast.error('Минимальная сумма вывода 200 USDT');
       return;
     }
 
@@ -1150,7 +1150,7 @@ const Index = () => {
                   <div className="text-center">
                     <p className="text-xs sm:text-sm text-[#00F0FF] mb-1">Ваш баланс</p>
                     <p className="text-3xl sm:text-4xl font-black" style={{ color: '#FF10F0' }}>
-                      {balance} ₽
+                      {balance} USDT
                     </p>
                   </div>
                   <div className="text-center">
@@ -1180,7 +1180,7 @@ const Index = () => {
                     <Icon name="Wallet" size={20} className="mr-2" />
                     Вывести
                   </Button>
-                  <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 200 ₽</p>
+                  <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 200 USDT</p>
                 </div>
               </div>
 
@@ -1217,12 +1217,12 @@ const Index = () => {
 
               <div className="space-y-4 sm:space-y-6 text-sm sm:text-base mb-6 sm:mb-8">
                 <p className="text-center">
-                  Зарабатывайте по <span className="text-[#FF10F0] font-bold">20 рублей</span> за приглашённого человека и его траты в казино Lusky Bear
+                  Зарабатывайте по <span className="text-[#FF10F0] font-bold">20 USDT</span> за приглашённого человека и его траты в казино Lusky Bear
                 </p>
 
                 <div className="bg-black/60 p-4 sm:p-6 rounded-lg border border-[#9b87f5]/30">
                   <h3 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-[#00F0FF]">💰 Сколько вы получаете</h3>
-                  <p>🥳 Вы получаете по <strong className="text-[#FF10F0]">20 ₽</strong> за каждого приглашённого, который пополнил баланс на минимальную сумму и получил хотя бы 2 сигнала.</p>
+                  <p>🥳 Вы получаете по <strong className="text-[#FF10F0]">20 USDT</strong> за каждого приглашённого, который пополнил баланс на минимальную сумму и получил хотя бы 2 сигнала.</p>
                   <p className="mt-3 sm:mt-4">Ваш приглашённый получает <strong className="text-[#00F0FF]">360% бонусом</strong> за первое пополнение баланса и бесплатные сигналы в казино Lusky Bear.</p>
                 </div>
 
@@ -1231,7 +1231,7 @@ const Index = () => {
                   <ol className="space-y-2 list-decimal list-inside">
                     <li>Вы отправляете человеку свою реферальную ссылку.</li>
                     <li>Он переходит по ней, выполняет условия, пополняет баланс и получает точные сигналы.</li>
-                    <li>Ваш баланс пополняется на 20 рублей.</li>
+                    <li>Ваш баланс пополняется на 20 USDT.</li>
                     <li>Всё понятно и просто 🎉</li>
                   </ol>
                 </div>
@@ -1507,7 +1507,7 @@ const Index = () => {
                         <div className="flex items-center gap-1">
                           <Icon name="Wallet" size={14} className="text-[#00F0FF]" />
                           <span className="text-gray-400">Баланс:</span>
-                          <span className="text-[#00F0FF] font-bold">{u.balance} ₽</span>
+                          <span className="text-[#00F0FF] font-bold">{u.balance} USDT</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Icon name="Users" size={14} className="text-[#FF10F0]" />
@@ -1653,7 +1653,7 @@ const Index = () => {
                               <p className="text-xs text-gray-500 mb-2">ID юзера: {w.userId} • Заявка #{w.id}</p>
                             </div>
                             <div className="flex-shrink-0">
-                              <p className="text-xl sm:text-2xl font-black text-[#FF10F0]">{w.amount} ₽</p>
+                              <p className="text-xl sm:text-2xl font-black text-[#FF10F0]">{w.amount} USDT</p>
                             </div>
                           </div>
 
@@ -1776,7 +1776,7 @@ const Index = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm text-[#00F0FF] mb-2 block">Баланс (₽)</label>
+                  <label className="text-sm text-[#00F0FF] mb-2 block">Баланс (USDT)</label>
                   <Input
                     type="number"
                     value={editBalance}
@@ -2058,7 +2058,7 @@ const Index = () => {
               <Button
                 onClick={() => {
                   if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
-                    toast.error('Минимальная сумма вывода 200 рублей');
+                    toast.error('Минимальная сумма вывода 200 USDT');
                     return;
                   }
                   setCryptoType('USDT');
@@ -2073,7 +2073,7 @@ const Index = () => {
               <Button
                 onClick={() => {
                   if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
-                    toast.error('Минимальная сумма вывода 200 рублей');
+                    toast.error('Минимальная сумма вывода 200 USDT');
                     return;
                   }
                   setCryptoType('TON');
@@ -2113,7 +2113,7 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#26A17B]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} USDT</span></p>
               </div>
 
               <div>
@@ -2187,7 +2187,7 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#0088CC]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} USDT</span></p>
               </div>
 
               <div>
