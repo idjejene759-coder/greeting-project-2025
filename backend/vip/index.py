@@ -268,6 +268,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if action == 'list_requests':
                 status_filter = query_params.get('status', 'pending')
                 
+                # Удаляем обработанные заявки старше 7 дней
+                cur.execute(
+                    """
+                    DELETE FROM vip_requests 
+                    WHERE status IN ('approved', 'rejected') 
+                    AND processed_at < CURRENT_TIMESTAMP - INTERVAL '7 days'
+                    """
+                )
+                conn.commit()
+                
                 cur.execute(
                     """
                     SELECT vr.id, vr.user_id, u.username, vr.payment_screenshot_url, 
