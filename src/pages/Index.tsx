@@ -411,7 +411,7 @@ const Index = () => {
 
   const copyReferralLink = () => {
     if (user?.referralCode) {
-      const referralLink = `https://t.me/Lusky_bear_bot?start=${user.referralCode}`;
+      const referralLink = `https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ`;
       navigator.clipboard.writeText(referralLink);
       toast.success('Ссылка скопирована в буфер обмена!');
     }
@@ -1200,7 +1200,7 @@ const Index = () => {
                     <input
                       type="text"
                       readOnly
-                      value={`https://t.me/Lusky_bear_bot?start=${user.referralCode}`}
+                      value={`https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ`}
                       className="flex-1 bg-transparent border-none outline-none text-[#00F0FF] font-mono text-xs px-2 py-1"
                     />
                     <Button
@@ -2044,21 +2044,22 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="mb-4">
-                <label className="text-sm text-[#00F0FF] mb-2 block">Сумма вывода (₽)</label>
+                <p className="text-center text-[#00F0FF] font-semibold mb-3">Минимальный вывод от 10$</p>
+                <label className="text-sm text-[#00F0FF] mb-2 block">Сумма вывода ($)</label>
                 <Input
                   type="number"
                   value={withdrawalAmount}
                   onChange={(e) => setWithdrawalAmount(e.target.value)}
                   className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
-                  placeholder="Минимум 200 ₽"
+                  placeholder="Минимум 10$"
                 />
-                <p className="text-xs text-[#00F0FF] mt-1">Доступно: {balance} ₽</p>
+                <p className="text-xs text-[#00F0FF] mt-1">Доступно: {balance}$</p>
               </div>
 
               <Button
                 onClick={() => {
-                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
-                    toast.error('Минимальная сумма вывода 200 USDT');
+                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 10) {
+                    toast.error('Минимальная сумма вывода 10$');
                     return;
                   }
                   setCryptoType('USDT');
@@ -2072,8 +2073,8 @@ const Index = () => {
 
               <Button
                 onClick={() => {
-                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 200) {
-                    toast.error('Минимальная сумма вывода 200 USDT');
+                  if (!withdrawalAmount || parseFloat(withdrawalAmount) < 10) {
+                    toast.error('Минимальная сумма вывода 10$');
                     return;
                   }
                   setCryptoType('TON');
@@ -2113,7 +2114,7 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#26A17B]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} USDT</span></p>
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
               </div>
 
               <div>
@@ -2187,7 +2188,7 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#0088CC]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} USDT</span></p>
+                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
               </div>
 
               <div>
