@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_method' | 'withdrawal_sbp' | 'withdrawal_card' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
 
 interface User {
   id: number;
@@ -48,10 +48,6 @@ const Index = () => {
   const [vipRequestStatus, setVipRequestStatus] = useState<string | null>(null);
   const [vipRequests, setVipRequests] = useState<any[]>([]);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
-  const [sbpPhone, setSbpPhone] = useState('');
-  const [sbpName, setSbpName] = useState('');
-  const [sbpBank, setSbpBank] = useState('Сбербанк');
-  const [cardNumber, setCardNumber] = useState('');
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [adminView, setAdminView] = useState<'users' | 'withdrawals' | 'vip'>('users');
   const [cryptoType, setCryptoType] = useState<'USDT' | 'TON' | ''>('');
@@ -411,105 +407,7 @@ const Index = () => {
     }
   };
 
-  const handleWithdrawSbp = async () => {
-    if (!sbpPhone || !sbpName || !sbpBank) {
-      toast.error('Заполните все поля');
-      return;
-    }
 
-    const amount = parseFloat(withdrawalAmount);
-    if (isNaN(amount) || amount < 200) {
-      toast.error('Минимальная сумма вывода 200 рублей');
-      return;
-    }
-
-    if (amount > balance) {
-      toast.error('Недостаточно средств');
-      return;
-    }
-
-    try {
-      const response = await fetch(WITHDRAWAL_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user?.id,
-          username: user?.username,
-          amount,
-          method: 'sbp',
-          details: { phone: sbpPhone, name: sbpName, bank: sbpBank }
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success(data.message);
-        setBalance(balance - amount);
-        const updatedUser = { ...user!, balance: balance - amount };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setSbpPhone('');
-        setSbpName('');
-        setSbpBank('Сбербанк');
-        setWithdrawalAmount('');
-        setScreen('referral');
-      } else {
-        toast.error(data.error || 'Ошибка создания заявки');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
-
-  const handleWithdrawCard = async () => {
-    if (!cardNumber) {
-      toast.error('Введите номер карты');
-      return;
-    }
-
-    const amount = parseFloat(withdrawalAmount);
-    if (isNaN(amount) || amount < 200) {
-      toast.error('Минимальная сумма вывода 200 рублей');
-      return;
-    }
-
-    if (amount > balance) {
-      toast.error('Недостаточно средств');
-      return;
-    }
-
-    try {
-      const response = await fetch(WITHDRAWAL_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user?.id,
-          username: user?.username,
-          amount,
-          method: 'card',
-          details: { cardNumber }
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success(data.message);
-        setBalance(balance - amount);
-        const updatedUser = { ...user!, balance: balance - amount };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setCardNumber('');
-        setWithdrawalAmount('');
-        setScreen('referral');
-      } else {
-        toast.error(data.error || 'Ошибка создания заявки');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
 
   const copyReferralLink = () => {
     if (user?.referralCode) {
@@ -1761,53 +1659,27 @@ const Index = () => {
 
                           <div className="bg-black/40 rounded-lg p-2 sm:p-3 border border-[#00F0FF]/10">
                             <div className="flex items-center gap-2 mb-2">
-                              <Icon name="CreditCard" size={14} className="text-[#00F0FF]" />
+                              <Icon name="Coins" size={14} className="text-[#00F0FF]" />
                               <span className="text-xs font-bold text-[#00F0FF]">
-                                {w.method === 'sbp' ? '🏦 СБП' : w.method === 'card' ? '💳 Карта' : '💰 Криптовалюта'}
+                                💰 Криптовалюта
                               </span>
                             </div>
-                            {w.method === 'sbp' && (
-                              <div className="text-xs text-gray-300 space-y-1">
+                            <div className="text-xs text-gray-300 space-y-1">
+                              <p className="flex items-center gap-1.5">
+                                <span className="text-gray-500">Криптовалюта:</span>
+                                <span className="font-bold text-[#26A17B]">{w.details.cryptoType}</span>
+                              </p>
+                              {w.details.network && (
                                 <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Телефон:</span>
-                                  <span className="font-mono">{w.details.phone}</span>
+                                  <span className="text-gray-500">Сеть:</span>
+                                  <span className="font-semibold">{w.details.network === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}</span>
                                 </p>
-                                <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Имя:</span>
-                                  <span>{w.details.name}</span>
-                                </p>
-                                <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Банк:</span>
-                                  <span className="font-semibold">{w.details.bank}</span>
-                                </p>
-                              </div>
-                            )}
-                            {w.method === 'card' && (
-                              <div className="text-xs text-gray-300">
-                                <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Номер карты:</span>
-                                  <span className="font-mono">{w.details.cardNumber}</span>
-                                </p>
-                              </div>
-                            )}
-                            {w.method === 'crypto' && (
-                              <div className="text-xs text-gray-300 space-y-1">
-                                <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Криптовалюта:</span>
-                                  <span className="font-bold text-[#26A17B]">{w.details.cryptoType}</span>
-                                </p>
-                                {w.details.network && (
-                                  <p className="flex items-center gap-1.5">
-                                    <span className="text-gray-500">Сеть:</span>
-                                    <span className="font-semibold">{w.details.network === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}</span>
-                                  </p>
-                                )}
-                                <p className="flex flex-col gap-1">
-                                  <span className="text-gray-500">Адрес кошелька:</span>
-                                  <span className="font-mono break-all text-[#00F0FF]">{w.details.wallet}</span>
-                                </p>
-                              </div>
-                            )}
+                              )}
+                              <p className="flex flex-col gap-1">
+                                <span className="text-gray-500">Адрес кошелька:</span>
+                                <span className="font-mono break-all text-[#00F0FF]">{w.details.wallet}</span>
+                              </p>
+                            </div>
                           </div>
 
                           <div className="flex items-center justify-between text-xs text-gray-500">
