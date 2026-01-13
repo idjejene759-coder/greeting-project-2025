@@ -815,7 +815,7 @@ const Index = () => {
               />
 
               <Button
-                onClick={() => window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+                onClick={handleAuth}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold animated-gradient text-white border-0 hover-lift shine-effect"
               >
                 {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
@@ -867,7 +867,7 @@ const Index = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
               <Button
-                onClick={() => window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+                onClick={() => setScreen('instructions')}
                 size="lg"
                 className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
               >
