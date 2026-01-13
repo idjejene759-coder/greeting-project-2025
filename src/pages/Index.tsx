@@ -1180,7 +1180,7 @@ const Index = () => {
                     <Icon name="Wallet" size={20} className="mr-2" />
                     Вывести
                   </Button>
-                  <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 200 USDT</p>
+                  <p className="text-xs text-[#00F0FF] mt-2">Минимальная сумма вывода: 10 USDT</p>
                 </div>
               </div>
 

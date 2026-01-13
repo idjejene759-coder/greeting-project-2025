@@ -87,11 +87,11 @@ def handler(event: dict, context) -> dict:
                     'isBase64Encoded': False
                 }
             
-            if amount < 200:
+            if amount < 10:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'Минимальная сумма вывода 200 USDT'}),
+                    'body': json.dumps({'error': 'Минимальная сумма вывода 10 USDT'}),
                     'isBase64Encoded': False
                 }
             

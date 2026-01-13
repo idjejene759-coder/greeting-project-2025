@@ -13,7 +13,7 @@
       "body": {
         "userId": 1,
         "username": "testuser",
-        "amount": 100,
+        "amount": 5,
         "method": "sbp",
         "details": {"phone": "+79001234567"}
       },
