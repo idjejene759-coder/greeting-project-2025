@@ -1132,6 +1132,27 @@ const Index = () => {
               {currentSignal === null ? 'Получить сигнал' : isWaiting ? `Ожидание (${timeLeft}с)` : 'Следующий сигнал'}
             </Button>
           </Card>
+
+          <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-6">
+            <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[#00F0FF]">
+              📋 Инструкция
+            </h3>
+            <div className="space-y-3 text-sm sm:text-base mb-6">
+              <p>1. Зарегистрируйтесь в казино по кнопке ниже</p>
+              <p>2. Пополните баланс на любую сумму</p>
+              <p>3. Зайдите в игру CRASH X</p>
+              <p>4. Нажмите "Получить сигнал" выше</p>
+              <p>5. Ставьте по полученному сигналу</p>
+            </div>
+            <Button
+              onClick={() => window.open('https://t.me/LB_Seed_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+              size="lg"
+              className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+            >
+              <Icon name="UserPlus" size={24} className="mr-2" />
+              Зарегистрироваться
+            </Button>
+          </Card>
         </div>
       </div>
     );
