@@ -284,12 +284,15 @@ def handle_callback(cursor, body: dict) -> dict:
     Like standard OAuth callback.
     """
     token = body.get("token")
+    print(f"[DEBUG] Callback received token: {token}")
     if not token:
         return cors_response(400, {"error": "Missing token"})
 
     token_data = get_auth_token(cursor, token)
+    print(f"[DEBUG] Token data from DB: {token_data}")
 
     if not token_data:
+        print(f"[DEBUG] Token not found in DB. Token hash: {hash_token(token)}")
         return cors_response(404, {"error": "Token not found"})
 
     # Check if expired (handle both naive and aware datetime from DB)
