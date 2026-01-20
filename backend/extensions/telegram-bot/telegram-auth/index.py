@@ -171,13 +171,12 @@ def create_or_update_user(
             RETURNING id, email, name, avatar_url, telegram_id
         """, (display_name, photo_url, telegram_id))
     else:
-        # Create new user with username from telegram
-        user_username = username or f"tg_{telegram_id}"
+        # Create new user
         cursor.execute(f"""
-            INSERT INTO {schema}users (telegram_id, username, telegram_username, telegram_first_name, telegram_last_name, name, avatar_url, password_hash, created_at, updated_at, last_login_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, '', NOW(), NOW(), NOW())
+            INSERT INTO {schema}users (telegram_id, name, avatar_url, email_verified, password_hash, created_at, updated_at, last_login_at)
+            VALUES (%s, %s, %s, TRUE, '', NOW(), NOW(), NOW())
             RETURNING id, email, name, avatar_url, telegram_id
-        """, (telegram_id, user_username, username, first_name, last_name, display_name, photo_url))
+        """, (telegram_id, display_name, photo_url))
 
     row = cursor.fetchone()
     return {

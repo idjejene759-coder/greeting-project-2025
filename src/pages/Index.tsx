@@ -789,11 +789,11 @@ const Index = () => {
   if (screen === 'auth') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-500 to-gray-600" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0118] via-[#1a0f2e] to-[#0f0520]" />
         
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-gray-400 rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
-          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-gray-500 rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#FF10F0] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
+          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#00F0FF] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
         </div>
 
         <div className="relative z-10 max-w-md w-full space-y-4 sm:space-y-6 animate-fade-in">
@@ -815,7 +815,7 @@ const Index = () => {
                 placeholder="Имя пользователя"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="bg-gray-700/40 border-gray-500/40 text-gray-100 placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-gray-400 transition-all"
+                className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
@@ -824,7 +824,7 @@ const Index = () => {
                 placeholder="Пароль"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-700/40 border-gray-500/40 text-gray-100 placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-gray-400 transition-all"
+                className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
@@ -836,9 +836,9 @@ const Index = () => {
               </Button>
 
               <div className="relative flex items-center gap-3 my-4">
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-400/30 to-transparent"></div>
-                <span className="text-gray-300 text-xs sm:text-sm">или</span>
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-400/30 to-transparent"></div>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#FF10F0]/30 to-transparent"></div>
+                <span className="text-gray-400 text-xs sm:text-sm">или</span>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#FF10F0]/30 to-transparent"></div>
               </div>
 
               <TelegramLoginButton
