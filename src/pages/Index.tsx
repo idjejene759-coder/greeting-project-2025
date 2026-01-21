@@ -1144,60 +1144,60 @@ const Index = () => {
 
   if (screen === 'referral') {
     return (
-      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+      <div className="min-h-screen p-3 sm:p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
         
-        <div className="relative z-10 max-w-2xl mx-auto space-y-4 animate-fade-in py-4">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-3 sm:space-y-4 animate-fade-in py-3 sm:py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
-            <Icon name="ArrowLeft" size={20} className="mr-2" />
-            Назад
+            <Icon name="ArrowLeft" size={18} className="mr-1.5" />
+            <span className="text-sm sm:text-base">Назад</span>
           </Button>
 
-          <Card className="bg-white/95 backdrop-blur-sm border-0 rounded-3xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-purple-600">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Icon name="Clock" size={24} className="text-purple-600" />
+          <Card className="bg-white/95 backdrop-blur-sm border-0 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden">
+            <div className="flex items-center mb-4 sm:mb-6 pb-3 sm:pb-4 border-b-2 border-purple-600">
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Icon name="Clock" size={20} className="sm:w-6 sm:h-6 text-purple-600" />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">За всё время</h2>
-                  <div className="h-1 w-32 bg-gradient-to-r from-purple-600 to-purple-400 rounded-full mt-1"></div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">За всё время</h2>
+                  <div className="h-1 w-20 sm:w-32 bg-gradient-to-r from-purple-600 to-purple-400 rounded-full mt-1"></div>
                 </div>
               </div>
             </div>
 
             <div className="space-y-0">
-              <div className="flex justify-between items-center py-4 border-b border-gray-200">
-                <span className="text-gray-700 text-lg font-medium">Переходы:</span>
-                <span className="text-gray-800 text-xl font-bold">0</span>
+              <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
+                <span className="text-gray-700 text-sm sm:text-lg font-medium">Переходы:</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
               </div>
 
-              <div className="flex justify-between items-center py-4 border-b border-gray-200">
-                <span className="text-gray-700 text-lg font-medium">Регистрации:</span>
-                <span className="text-gray-800 text-xl font-bold">0</span>
+              <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
+                <span className="text-gray-700 text-sm sm:text-lg font-medium">Регистрации:</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
               </div>
 
-              <div className="flex justify-between items-center py-4 border-b border-gray-200">
-                <span className="text-gray-700 text-lg font-medium">Первые депозиты:</span>
-                <span className="text-gray-800 text-xl font-bold">0</span>
+              <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
+                <span className="text-gray-700 text-sm sm:text-lg font-medium whitespace-nowrap">Первые депозиты:</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
               </div>
             </div>
 
-            <div className="mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-5 border-2 border-purple-200">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Link" size={20} className="text-purple-600" />
-                <h3 className="text-gray-800 font-bold text-lg">Ваша реферальная ссылка</h3>
+            <div className="mt-4 sm:mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-purple-200">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                <Icon name="Link" size={18} className="text-purple-600 flex-shrink-0" />
+                <h3 className="text-gray-800 font-bold text-sm sm:text-lg">Ваша реферальная ссылка</h3>
               </div>
-              <div className="bg-white rounded-xl p-3 border border-purple-300 flex items-center gap-2">
+              <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 border border-purple-300 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <input
                   type="text"
                   readOnly
                   value={`https://cubistime.ru?ref=${user?.id || 0}`}
-                  className="flex-1 bg-transparent border-none outline-none text-purple-700 font-mono text-sm"
+                  className="flex-1 bg-transparent border-none outline-none text-purple-700 font-mono text-xs sm:text-sm overflow-x-auto whitespace-nowrap"
                 />
                 <Button
                   onClick={() => {
@@ -1205,19 +1205,19 @@ const Index = () => {
                     toast.success('✅ Ссылка скопирована!');
                   }}
                   size="sm"
-                  className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-4 py-2 rounded-lg transition-all"
+                  className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
                 >
-                  <Icon name="Copy" size={16} className="mr-1" />
+                  <Icon name="Copy" size={14} className="mr-1" />
                   Копировать
                 </Button>
               </div>
               <p className="text-gray-600 text-xs mt-2">Отправьте эту ссылку друзьям для получения дохода</p>
             </div>
 
-            <div className="mt-4">
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-6 text-center shadow-lg">
-                <p className="text-white text-xl font-semibold mb-2">Доход:</p>
-                <p className="text-white text-4xl font-black">0 ₽</p>
+            <div className="mt-3 sm:mt-4">
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
+                <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">Доход:</p>
+                <p className="text-white text-3xl sm:text-4xl font-black">0 ₽</p>
               </div>
             </div>
           </Card>
