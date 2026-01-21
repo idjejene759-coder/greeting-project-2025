@@ -867,23 +867,34 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
-              <Button
-                onClick={() => setScreen('instructions')}
-                size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
-              >
-                <Icon name="Rocket" size={24} className="mr-2" />
-                Начать
-              </Button>
+            <div className="space-y-3 sm:space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
+                <Button
+                  onClick={() => setScreen('instructions')}
+                  size="lg"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
+                >
+                  <Icon name="Rocket" size={24} className="mr-2" />
+                  Начать
+                </Button>
+
+                <Button
+                  onClick={handleVipSignals}
+                  size="lg"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#9b87f5] border-2 border-[#9b87f5]/40 hover:border-[#9b87f5] hover-lift shine-effect"
+                >
+                  <Icon name="Crown" size={24} className="mr-2" />
+                  VIP Сигналы
+                </Button>
+              </div>
 
               <Button
-                onClick={handleVipSignals}
+                onClick={() => setScreen('referral')}
                 size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#9b87f5] border-2 border-[#9b87f5]/40 hover:border-[#9b87f5] hover-lift shine-effect"
+                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#00F0FF] border-2 border-[#00F0FF]/40 hover:border-[#00F0FF] hover-lift shine-effect"
               >
-                <Icon name="Crown" size={24} className="mr-2" />
-                VIP Сигналы
+                <Icon name="Users" size={24} className="mr-2" />
+                <span className="break-words">Реферальная программа</span>
               </Button>
             </div>
           </div>
