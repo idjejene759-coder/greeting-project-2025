@@ -1059,7 +1059,7 @@ const Index = () => {
             <Button
               onClick={() => {
                 setHasClickedRegister(true);
-                window.open('https://t.me/LB_Seed_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
+                window.open('https://t.me/LB_Instantwin_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
               }}
               size="lg"
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
