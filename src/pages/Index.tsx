@@ -867,7 +867,7 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
               <Button
                 onClick={() => setScreen('instructions')}
                 size="lg"
@@ -875,15 +875,6 @@ const Index = () => {
               >
                 <Icon name="Rocket" size={24} className="mr-2" />
                 Начать
-              </Button>
-
-              <Button
-                onClick={() => setScreen('referral')}
-                size="lg"
-                className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#00F0FF] border-2 border-[#00F0FF]/40 hover:border-[#00F0FF] hover-lift shine-effect"
-              >
-                <Icon name="Users" size={24} className="mr-2" />
-                Реферальная система
               </Button>
 
               <Button
