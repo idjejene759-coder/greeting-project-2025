@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Get referral statistics",
+      "method": "GET",
+      "path": "/?userId=1",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "clicks": "number",
+        "registrations": "number",
+        "deposits": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Track referral click",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "track_click",
+        "refUserId": 1
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

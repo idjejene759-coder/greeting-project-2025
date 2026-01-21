@@ -19,6 +19,7 @@ const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9
 const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
 const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
+const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
 
 const Index = () => {
@@ -55,6 +56,9 @@ const Index = () => {
   const [cryptoWallet, setCryptoWallet] = useState('');
   const [confirmStep, setConfirmStep] = useState(0);
   const [hasClickedRegister, setHasClickedRegister] = useState(false);
+  const [referralClicks, setReferralClicks] = useState(0);
+  const [referralRegistrations, setReferralRegistrations] = useState(0);
+  const [referralDeposits, setReferralDeposits] = useState(0);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -71,6 +75,15 @@ const Index = () => {
         setBalance(userData.balance || 0);
         setReferralCount(userData.referralCount || 0);
         setScreen('home');
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const refUserId = urlParams.get('ref');
+        
+        if (refUserId && userData.id !== parseInt(refUserId)) {
+          trackReferralClick(parseInt(refUserId));
+        } else if (refUserId && userData.id === parseInt(refUserId)) {
+          toast.error('Вы не можете переходить по своей реферальной ссылке');
+        }
       } catch (error) {
         console.error('Error parsing user data:', error);
         localStorage.removeItem('user');
@@ -84,6 +97,12 @@ const Index = () => {
       checkVipStatus();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (screen === 'referral' && user) {
+      loadReferralStats();
+    }
+  }, [screen, user]);
 
   useEffect(() => {
     if (user && !isAdmin) {
@@ -445,6 +464,54 @@ const Index = () => {
     window.open('https://t.me/LB_Min_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
   };
 
+  const loadReferralStats = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(`${REFERRAL_URL}?userId=${user.id}`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setReferralClicks(data.clicks || 0);
+        setReferralRegistrations(data.registrations || 0);
+        setReferralDeposits(data.deposits || 0);
+      }
+    } catch (error) {
+      console.error('Error loading referral stats:', error);
+    }
+  };
+
+  const trackReferralClick = async (refUserId: number) => {
+    try {
+      await fetch(REFERRAL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'track_click',
+          refUserId
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking click:', error);
+    }
+  };
+
+  const trackReferralRegistration = async (refUserId: number, newUserId: number) => {
+    try {
+      await fetch(REFERRAL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'track_registration',
+          refUserId,
+          newUserId
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking registration:', error);
+    }
+  };
+
   const handleAuth = async () => {
     if (!username.trim() || !password.trim()) {
       toast.error('Введите имя пользователя и пароль');
@@ -519,6 +586,10 @@ const Index = () => {
           const registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
           registeredAccounts.push(userData.username);
           localStorage.setItem('registeredAccounts', JSON.stringify(registeredAccounts));
+          
+          if (referralCode) {
+            await trackReferralRegistration(parseInt(referralCode), userData.id);
+          }
         }
         
         toast.success(authMode === 'login' ? 'Вы вошли в систему!' : 'Регистрация успешна!');
@@ -1173,17 +1244,17 @@ const Index = () => {
             <div className="space-y-0">
               <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
                 <span className="text-gray-700 text-sm sm:text-lg font-medium">Переходы:</span>
-                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralClicks}</span>
               </div>
 
               <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
                 <span className="text-gray-700 text-sm sm:text-lg font-medium">Регистрации:</span>
-                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralRegistrations}</span>
               </div>
 
               <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
                 <span className="text-gray-700 text-sm sm:text-lg font-medium whitespace-nowrap">Первые депозиты:</span>
-                <span className="text-gray-800 text-lg sm:text-xl font-bold">0</span>
+                <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralDeposits}</span>
               </div>
             </div>
 
