@@ -63,6 +63,19 @@ const Index = () => {
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     const savedAdmin = localStorage.getItem('isAdmin');
+    const urlParams = new URLSearchParams(window.location.search);
+    const refUserId = urlParams.get('ref');
+    
+    if (refUserId) {
+      const trackedRefs = JSON.parse(localStorage.getItem('trackedRefs') || '[]');
+      const refKey = `ref_${refUserId}`;
+      
+      if (!trackedRefs.includes(refKey)) {
+        trackReferralClick(parseInt(refUserId));
+        trackedRefs.push(refKey);
+        localStorage.setItem('trackedRefs', JSON.stringify(trackedRefs));
+      }
+    }
     
     if (savedAdmin === 'true') {
       setIsAdmin(true);
@@ -75,15 +88,6 @@ const Index = () => {
         setBalance(userData.balance || 0);
         setReferralCount(userData.referralCount || 0);
         setScreen('home');
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const refUserId = urlParams.get('ref');
-        
-        if (refUserId && userData.id !== parseInt(refUserId)) {
-          trackReferralClick(parseInt(refUserId));
-        } else if (refUserId && userData.id === parseInt(refUserId)) {
-          toast.error('Вы не можете переходить по своей реферальной ссылке');
-        }
       } catch (error) {
         console.error('Error parsing user data:', error);
         localStorage.removeItem('user');
