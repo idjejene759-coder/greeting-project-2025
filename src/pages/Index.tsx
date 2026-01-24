@@ -1326,7 +1326,7 @@ const Index = () => {
                 <div className="mt-3 sm:mt-4">
                   <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
                     <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">Доход:</p>
-                    <p className="text-white text-3xl sm:text-4xl font-black">{referralRegistrations * 15} ₽</p>
+                    <p className="text-white text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
                   </div>
                 </div>
               </>
@@ -1408,11 +1408,12 @@ const Index = () => {
                   <>
                     <div>
                       <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">
-                        Сумма вывода <span className="text-gray-500 font-normal text-sm">(минимум 10$)</span>
+                        Сумма вывода <span className="text-gray-500 font-normal text-sm">(минимум 10$, доступно: {(referralRegistrations * 0.5).toFixed(2)}$)</span>
                       </label>
                       <input
                         type="number"
                         min="10"
+                        max={referralRegistrations * 0.5}
                         step="0.01"
                         value={refWithdrawalAmount}
                         onChange={(e) => setRefWithdrawalAmount(e.target.value)}
@@ -1434,8 +1435,15 @@ const Index = () => {
 
                     <Button
                       onClick={() => {
-                        if (!refWithdrawalAmount || parseFloat(refWithdrawalAmount) < 10) {
+                        const availableBalance = referralRegistrations * 0.5;
+                        const withdrawalAmount = parseFloat(refWithdrawalAmount);
+                        
+                        if (!refWithdrawalAmount || withdrawalAmount < 10) {
                           toast.error('Минимальная сумма вывода 10$');
+                          return;
+                        }
+                        if (withdrawalAmount > availableBalance) {
+                          toast.error(`Недостаточно средств. Доступно: ${availableBalance.toFixed(2)}$`);
                           return;
                         }
                         if (refWithdrawalCrypto === 'USDT' && !refWithdrawalNetwork) {
