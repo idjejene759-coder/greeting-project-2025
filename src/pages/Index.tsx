@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
 
 interface User {
   id: number;
@@ -16,6 +16,7 @@ interface User {
 }
 
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
+const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
 const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
 const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
@@ -32,7 +33,12 @@ const Index = () => {
   const [referralCount, setReferralCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminUsers, setAdminUsers] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [editBalance, setEditBalance] = useState('');
+  const [editReferrals, setEditReferrals] = useState('');
+  const [banReason, setBanReason] = useState('');
   const [crashXSignal, setCrashXSignal] = useState<number | null>(null);
   const [crashXTimeLeft, setCrashXTimeLeft] = useState(0);
   const [isCrashXWaiting, setIsCrashXWaiting] = useState(false);
@@ -44,7 +50,7 @@ const Index = () => {
   const [vipRequests, setVipRequests] = useState<any[]>([]);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
-
+  const [adminView, setAdminView] = useState<'users' | 'withdrawals' | 'vip'>('users');
   const [cryptoType, setCryptoType] = useState<'USDT' | 'TON' | ''>('');
   const [cryptoNetwork, setCryptoNetwork] = useState<'TON' | 'TRC20' | ''>('');
   const [cryptoWallet, setCryptoWallet] = useState('');
@@ -62,6 +68,7 @@ const Index = () => {
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
+    const savedAdmin = localStorage.getItem('isAdmin');
     const urlParams = new URLSearchParams(window.location.search);
     const refUserId = urlParams.get('ref');
     
@@ -76,7 +83,11 @@ const Index = () => {
       }
     }
     
-    if (savedUser) {
+    if (savedAdmin === 'true') {
+      setIsAdmin(true);
+      loadAdminUsers();
+      setScreen('admin');
+    } else if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
         setUser(userData);
@@ -92,7 +103,7 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isAdmin) {
       checkVipStatus();
     }
   }, [user]);
@@ -103,7 +114,46 @@ const Index = () => {
     }
   }, [screen, user]);
 
-
+  useEffect(() => {
+    if (user && !isAdmin) {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(ADMIN_URL);
+          const data = await response.json();
+          if (data.users) {
+            const currentUser = data.users.find((u: any) => u.id === user.id);
+            if (currentUser) {
+              const balanceChanged = currentUser.balance !== balance;
+              const referralsChanged = currentUser.referralCount !== referralCount;
+              
+              if (balanceChanged || referralsChanged) {
+                setBalance(currentUser.balance);
+                setReferralCount(currentUser.referralCount);
+                const updatedUser = {
+                  ...user,
+                  balance: currentUser.balance,
+                  referralCount: currentUser.referralCount
+                };
+                setUser(updatedUser);
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                
+                if (balanceChanged) {
+                  toast.info(`💰 Ваш баланс обновлён: ${currentUser.balance} USDT`);
+                }
+                if (referralsChanged) {
+                  toast.info(`👥 Рефералов: ${currentUser.referralCount}`);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error updating user data:', error);
+        }
+      }, 21600000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [user?.id, isAdmin, balance, referralCount]);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -479,6 +529,31 @@ const Index = () => {
     }
 
     try {
+      if (username.trim() === 'admin345') {
+        const response = await fetch(ADMIN_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'login',
+            username: username.trim(),
+            password: password.trim()
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          setIsAdmin(true);
+          localStorage.setItem('isAdmin', 'true');
+          toast.success('Добро пожаловать, администратор!');
+          await loadAdminUsers();
+          setScreen('admin');
+          setUsername('');
+          setPassword('');
+          return;
+        }
+      }
+
       if (authMode === 'register') {
         const registeredAccounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
         if (registeredAccounts.length >= 2) {
@@ -541,7 +616,235 @@ const Index = () => {
     }
   };
 
+  const loadAdminUsers = async () => {
+    try {
+      const response = await fetch(ADMIN_URL);
+      const data = await response.json();
+      if (data.users) {
+        setAdminUsers(data.users);
+      }
+    } catch (error) {
+      console.error('Load users error:', error);
+      toast.error('Ошибка загрузки пользователей');
+    }
+  };
 
+  const handleUpdateUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_user',
+          userId: selectedUser.id,
+          balance: editBalance ? parseInt(editBalance) : undefined,
+          referralCount: editReferrals ? parseInt(editReferrals) : undefined
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Данные пользователя обновлены');
+        await loadAdminUsers();
+        setScreen('admin');
+        setSelectedUser(null);
+        setEditBalance('');
+        setEditReferrals('');
+      } else {
+        toast.error(data.error || 'Ошибка обновления');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения с сервером');
+    }
+  };
+
+  const handleBanUser = async () => {
+    if (!selectedUser || !banReason.trim()) {
+      toast.error('Укажите причину блокировки');
+      return;
+    }
+
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'ban_user',
+          userId: selectedUser.id,
+          reason: banReason.trim()
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Пользователь заблокирован');
+        await loadAdminUsers();
+        setScreen('admin');
+        setSelectedUser(null);
+        setBanReason('');
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения с сервером');
+    }
+  };
+
+  const handleUnbanUser = async (userId: number) => {
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'unban_user',
+          userId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Пользователь разблокирован');
+        await loadAdminUsers();
+        setScreen('admin');
+        setSelectedUser(null);
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения с сервером');
+    }
+  };
+
+  const handlePinUser = async (userId: number) => {
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'pin_user',
+          userId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('⭐ ' + data.message);
+        await loadAdminUsers();
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const handleUnpinUser = async (userId: number) => {
+    try {
+      const response = await fetch(ADMIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'unpin_user',
+          userId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('✅ ' + data.message);
+        await loadAdminUsers();
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const loadWithdrawals = async () => {
+    try {
+      const response = await fetch(WITHDRAWAL_URL);
+      const data = await response.json();
+      if (data.withdrawals) {
+        setWithdrawals(data.withdrawals);
+      }
+    } catch (error) {
+      console.error('Error loading withdrawals:', error);
+      toast.error('Ошибка загрузки заявок');
+    }
+  };
+
+  const handleApproveWithdrawal = async (withdrawalId: number) => {
+    try {
+      const response = await fetch(WITHDRAWAL_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          withdrawalId,
+          status: 'approved'
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Заявка одобрена');
+        loadWithdrawals();
+      } else {
+        toast.error(data.error || 'Ошибка обработки заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const handleRejectWithdrawal = async (withdrawalId: number) => {
+    try {
+      const response = await fetch(WITHDRAWAL_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          withdrawalId,
+          status: 'rejected'
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Заявка отклонена, средства возвращены');
+        loadWithdrawals();
+        loadAdminUsers();
+      } else {
+        toast.error(data.error || 'Ошибка обработки заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
+
+  const handleDeleteWithdrawal = async (withdrawalId: number) => {
+    try {
+      const response = await fetch(WITHDRAWAL_URL, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ withdrawalId })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Заявка удалена');
+        loadWithdrawals();
+      } else {
+        toast.error(data.error || 'Ошибка удаления заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка сети');
+    }
+  };
 
   const handleLogout = () => {
     setUser(null);
@@ -1307,29 +1610,44 @@ const Index = () => {
     );
   }
 
-
-
-  if (screen === 'withdrawal_method') {
+  if (screen === 'admin') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
         
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
-          <Button
-            onClick={() => setScreen('referral')}
-            variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
-          >
-            <Icon name="ArrowLeft" size={20} className="mr-2" />
-            Назад
-          </Button>
+        <div className="relative z-10 max-w-6xl mx-auto space-y-6 py-4">
+          <div className="flex justify-between items-center flex-wrap gap-3">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+              👑 АДМИН-ПАНЕЛЬ
+            </h1>
+            <Button
+              onClick={() => {
+                setIsAdmin(false);
+                localStorage.removeItem('isAdmin');
+                setScreen('auth');
+                toast.success('Вы вышли из админ-панели');
+              }}
+              size="sm"
+              className="bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-600/30"
+            >
+              <Icon name="LogOut" size={18} className="mr-1" />
+              Выход
+            </Button>
+          </div>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
-              💸 Выберите метод вывода
-            </h2>
-
-            <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
+            <Button
+              onClick={() => setAdminView('users')}
+              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
+                adminView === 'users'
+                  ? 'bg-gradient-to-br from-[#FF10F0] to-[#c710c0] text-white border-2 border-[#FF10F0]'
+                  : 'bg-[#1a1a2e] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60'
+              }`}
+            >
+              <Icon name="Users" size={18} className="mr-1" />
+              <span className="hidden sm:inline">Юзеры</span>
+              <span className="sm:hidden">👥</span>
+            </Button>
             <Button
               onClick={() => {
                 setAdminView('withdrawals');
