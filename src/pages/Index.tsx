@@ -59,6 +59,8 @@ const Index = () => {
   const [referralClicks, setReferralClicks] = useState(0);
   const [referralRegistrations, setReferralRegistrations] = useState(0);
   const [referralDeposits, setReferralDeposits] = useState(0);
+  const [showReferralMenu, setShowReferralMenu] = useState(false);
+  const [referralView, setReferralView] = useState<'main' | 'withdrawal'>('main');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -1243,56 +1245,94 @@ const Index = () => {
                   <div className="h-1 w-20 sm:w-32 bg-gradient-to-r from-purple-600 to-purple-400 rounded-full mt-1"></div>
                 </div>
               </div>
-              <button className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <Icon name="MoreVertical" size={20} className="text-gray-600" />
-              </button>
-            </div>
-
-            <div className="space-y-0">
-              <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
-                <span className="text-gray-700 text-sm sm:text-lg font-medium">Переходы:</span>
-                <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralClicks}</span>
-              </div>
-
-              <div className="flex justify-between items-center py-3 sm:py-4 gap-2">
-                <span className="text-gray-700 text-sm sm:text-lg font-medium">Регистрации:</span>
-                <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralRegistrations}</span>
-              </div>
-            </div>
-
-            <div className="mt-4 sm:mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-purple-200">
-              <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-                <Icon name="Link" size={18} className="text-purple-600 flex-shrink-0" />
-                <h3 className="text-gray-800 font-bold text-sm sm:text-lg">Ваша реферальная ссылка</h3>
-              </div>
-              <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 border border-purple-300 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={`https://cubistime.ru?ref=${user?.id || 0}`}
-                  className="flex-1 bg-transparent border-none outline-none text-purple-700 font-mono text-xs sm:text-sm overflow-x-auto whitespace-nowrap"
-                />
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(`https://cubistime.ru?ref=${user?.id || 0}`);
-                    toast.success('✅ Ссылка скопирована!');
-                  }}
-                  size="sm"
-                  className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
+              <div className="relative">
+                <button 
+                  onClick={() => setShowReferralMenu(!showReferralMenu)}
+                  className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <Icon name="Copy" size={14} className="mr-1" />
-                  Копировать
-                </Button>
+                  <Icon name="MoreVertical" size={20} className="text-gray-600" />
+                </button>
+                
+                {showReferralMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
+                    <button
+                      onClick={() => {
+                        setReferralView('main');
+                        setShowReferralMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'main' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
+                    >
+                      Главная
+                    </button>
+                    <button
+                      onClick={() => {
+                        setReferralView('withdrawal');
+                        setShowReferralMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'withdrawal' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
+                    >
+                      Вывод
+                    </button>
+                  </div>
+                )}
               </div>
-              <p className="text-gray-600 text-xs mt-2">Отправьте эту ссылку друзьям для получения дохода</p>
             </div>
 
-            <div className="mt-3 sm:mt-4">
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
-                <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">Доход:</p>
-                <p className="text-white text-3xl sm:text-4xl font-black">{referralRegistrations * 15} ₽</p>
+            {referralView === 'main' && (
+              <>
+                <div className="space-y-0">
+                  <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
+                    <span className="text-gray-700 text-sm sm:text-lg font-medium">Переходы:</span>
+                    <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralClicks}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center py-3 sm:py-4 gap-2">
+                    <span className="text-gray-700 text-sm sm:text-lg font-medium">Регистрации:</span>
+                    <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralRegistrations}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 sm:mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-purple-200">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <Icon name="Link" size={18} className="text-purple-600 flex-shrink-0" />
+                    <h3 className="text-gray-800 font-bold text-sm sm:text-lg">Ваша реферальная ссылка</h3>
+                  </div>
+                  <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 border border-purple-300 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={`https://cubistime.ru?ref=${user?.id || 0}`}
+                      className="flex-1 bg-transparent border-none outline-none text-purple-700 font-mono text-xs sm:text-sm overflow-x-auto whitespace-nowrap"
+                    />
+                    <Button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`https://cubistime.ru?ref=${user?.id || 0}`);
+                        toast.success('✅ Ссылка скопирована!');
+                      }}
+                      size="sm"
+                      className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
+                    >
+                      <Icon name="Copy" size={14} className="mr-1" />
+                      Копировать
+                    </Button>
+                  </div>
+                  <p className="text-gray-600 text-xs mt-2">Отправьте эту ссылку друзьям для получения дохода</p>
+                </div>
+
+                <div className="mt-3 sm:mt-4">
+                  <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
+                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">Доход:</p>
+                    <p className="text-white text-3xl sm:text-4xl font-black">{referralRegistrations * 15} ₽</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {referralView === 'withdrawal' && (
+              <div className="mt-4">
+                <p className="text-gray-600 text-center py-8">Страница вывода в разработке</p>
               </div>
-            </div>
+            )}
           </Card>
         </div>
       </div>
