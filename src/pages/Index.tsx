@@ -1412,10 +1412,12 @@ const Index = () => {
                       </label>
                       <input
                         type="number"
+                        min="10"
+                        step="0.01"
                         value={refWithdrawalAmount}
                         onChange={(e) => setRefWithdrawalAmount(e.target.value)}
                         placeholder="Введите сумму в $"
-                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors"
+                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
                       />
                     </div>
 
@@ -1426,7 +1428,7 @@ const Index = () => {
                         value={refWithdrawalWallet}
                         onChange={(e) => setRefWithdrawalWallet(e.target.value)}
                         placeholder="Введите адрес кошелька"
-                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors"
+                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
                       />
                     </div>
 
