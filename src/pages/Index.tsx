@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_withdrawals' | 'admin_vip' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
 
 interface User {
   id: number;
@@ -47,10 +47,7 @@ const Index = () => {
   const [isVip, setIsVip] = useState(false);
   const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null);
   const [vipRequestStatus, setVipRequestStatus] = useState<string | null>(null);
-  const [vipRequests, setVipRequests] = useState<any[]>([]);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
-  const [withdrawals, setWithdrawals] = useState<any[]>([]);
-  const [adminView, setAdminView] = useState<'users' | 'withdrawals' | 'vip'>('users');
   const [cryptoType, setCryptoType] = useState<'USDT' | 'TON' | ''>('');
   const [cryptoNetwork, setCryptoNetwork] = useState<'TON' | 'TRC20' | ''>('');
   const [cryptoWallet, setCryptoWallet] = useState('');
@@ -278,95 +275,7 @@ const Index = () => {
     }
   };
 
-  const loadVipRequests = async () => {
-    try {
-      const response = await fetch(`${VIP_URL}?action=list_requests&status=pending`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        setVipRequests(data.requests || []);
-      }
-    } catch (error) {
-      console.error('Error loading VIP requests:', error);
-    }
-  };
 
-  const handleApproveVip = async (requestId: number) => {
-    try {
-      const response = await fetch(VIP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'approve',
-          requestId,
-          adminId: 1
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        toast.success(data.message);
-        loadVipRequests();
-      } else {
-        toast.error(data.error || 'Ошибка одобрения');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
-
-  const handleRejectVip = async (requestId: number) => {
-    try {
-      const response = await fetch(VIP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.dumps({
-          action: 'reject',
-          requestId,
-          adminId: 1
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        toast.success(data.message);
-        loadVipRequests();
-      } else {
-        toast.error(data.error || 'Ошибка отклонения');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
-
-  const handleDeleteVip = async (requestId: number) => {
-    if (!confirm('Удалить эту VIP-заявку?')) return;
-    
-    try {
-      const response = await fetch(VIP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'delete',
-          requestId,
-          adminId: 1
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        toast.success('✅ ' + data.message);
-        loadVipRequests();
-      } else {
-        toast.error('❌ ' + (data.error || 'Ошибка удаления'));
-      }
-    } catch (error) {
-      toast.error('❌ Ошибка сети');
-    }
-  };
 
   const handleWithdraw = () => {
     if (balance < 200) {
@@ -763,88 +672,7 @@ const Index = () => {
     }
   };
 
-  const loadWithdrawals = async () => {
-    try {
-      const response = await fetch(WITHDRAWAL_URL);
-      const data = await response.json();
-      if (data.withdrawals) {
-        setWithdrawals(data.withdrawals);
-      }
-    } catch (error) {
-      console.error('Error loading withdrawals:', error);
-      toast.error('Ошибка загрузки заявок');
-    }
-  };
 
-  const handleApproveWithdrawal = async (withdrawalId: number) => {
-    try {
-      const response = await fetch(WITHDRAWAL_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          withdrawalId,
-          status: 'approved'
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success('Заявка одобрена');
-        loadWithdrawals();
-      } else {
-        toast.error(data.error || 'Ошибка обработки заявки');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
-
-  const handleRejectWithdrawal = async (withdrawalId: number) => {
-    try {
-      const response = await fetch(WITHDRAWAL_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          withdrawalId,
-          status: 'rejected'
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success('Заявка отклонена, средства возвращены');
-        loadWithdrawals();
-        loadAdminUsers();
-      } else {
-        toast.error(data.error || 'Ошибка обработки заявки');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
-
-  const handleDeleteWithdrawal = async (withdrawalId: number) => {
-    try {
-      const response = await fetch(WITHDRAWAL_URL, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ withdrawalId })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        toast.success('Заявка удалена');
-        loadWithdrawals();
-      } else {
-        toast.error(data.error || 'Ошибка удаления заявки');
-      }
-    } catch (error) {
-      toast.error('Ошибка сети');
-    }
-  };
 
   const handleLogout = () => {
     setUser(null);
@@ -1635,60 +1463,15 @@ const Index = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
-            <Button
-              onClick={() => setAdminView('users')}
-              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
-                adminView === 'users'
-                  ? 'bg-gradient-to-br from-[#FF10F0] to-[#c710c0] text-white border-2 border-[#FF10F0]'
-                  : 'bg-[#1a1a2e] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60'
-              }`}
-            >
-              <Icon name="Users" size={18} className="mr-1" />
-              <span className="hidden sm:inline">Юзеры</span>
-              <span className="sm:hidden">👥</span>
-            </Button>
-            <Button
-              onClick={() => {
-                setAdminView('withdrawals');
-                loadWithdrawals();
-              }}
-              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
-                adminView === 'withdrawals'
-                  ? 'bg-gradient-to-br from-[#00F0FF] to-[#00a8b8] text-white border-2 border-[#00F0FF]'
-                  : 'bg-[#1a1a2e] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60'
-              }`}
-            >
-              <Icon name="Wallet" size={18} className="mr-1" />
-              <span className="hidden sm:inline">Выводы</span>
-              <span className="sm:hidden">💰</span>
-            </Button>
-            <Button
-              onClick={() => {
-                setAdminView('vip');
-                loadVipRequests();
-              }}
-              className={`h-12 sm:h-14 text-sm sm:text-base font-bold ${
-                adminView === 'vip'
-                  ? 'bg-gradient-to-br from-[#9b87f5] to-[#7c3aed] text-white border-2 border-[#9b87f5]'
-                  : 'bg-[#1a1a2e] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60'
-              }`}
-            >
-              <Icon name="Crown" size={18} className="mr-1" />
-              <span className="hidden sm:inline">VIP</span>
-              <span className="sm:hidden">👑</span>
-            </Button>
-          </div>
+
 
           <Card className="bg-black/70 backdrop-blur-sm border border-[#FF10F0]/30 p-3 sm:p-6 shadow-2xl">
-            {adminView === 'users' && (
-              <>
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Icon name="Users" size={24} className="text-[#00F0FF]" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#00F0FF' }}>
-                    Пользователи ({adminUsers.length})
-                  </h2>
-                </div>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Icon name="Users" size={24} className="text-[#00F0FF]" />
+              <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#00F0FF' }}>
+                Пользователи
+              </h2>
+            </div>
 
             <div className="space-y-2">
               {adminUsers.map((u) => (
@@ -1750,203 +1533,6 @@ const Index = () => {
                 </div>
               ))}
             </div>
-              </>
-            )}
-
-            {adminView === 'vip' && (
-              <>
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Icon name="Crown" size={24} className="text-[#9b87f5]" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#9b87f5' }}>
-                    VIP Заявки ({vipRequests.length})
-                  </h2>
-                </div>
-
-                <div className="space-y-3">
-                  {vipRequests.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Icon name="Inbox" size={48} className="text-gray-600 mx-auto mb-3" />
-                      <p className="text-gray-400">Нет VIP заявок</p>
-                    </div>
-                  ) : (
-                    vipRequests.map((req) => (
-                      <div
-                        key={req.id}
-                        className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-4 rounded-xl border border-[#9b87f5]/30"
-                      >
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-base font-bold text-[#9b87f5]">
-                                {req.username} (ID: {req.userId})
-                              </p>
-                              <p className="text-xs text-gray-500">Заявка #{req.id}</p>
-                            </div>
-                          </div>
-
-                          <div className="text-xs text-gray-300">
-                            <p className="flex items-center gap-1.5 mb-2">
-                              <span className="text-gray-500">Скриншот оплаты:</span>
-                            </p>
-                            <a 
-                              href={req.screenshotUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-[#00F0FF] hover:text-[#FF10F0] underline break-all"
-                            >
-                              {req.screenshotUrl}
-                            </a>
-                          </div>
-
-                          <div className="flex items-center justify-between text-xs text-gray-500">
-                            <span>{new Date(req.createdAt).toLocaleString('ru-RU')}</span>
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => handleApproveVip(req.id)}
-                              size="sm"
-                              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
-                            >
-                              <Icon name="Check" size={16} className="mr-1" />
-                              <span className="hidden sm:inline">Одобрить (30 дней)</span>
-                              <span className="sm:hidden">✅ Одобрить</span>
-                            </Button>
-                            <Button
-                              onClick={() => handleRejectVip(req.id)}
-                              size="sm"
-                              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
-                            >
-                              <Icon name="X" size={16} className="mr-1" />
-                              <span className="hidden sm:inline">Отклонить</span>
-                              <span className="sm:hidden">❌</span>
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteVip(req.id)}
-                              size="sm"
-                              className="bg-gray-700 hover:bg-gray-800 text-white"
-                            >
-                              <Icon name="Trash2" size={16} />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </>
-            )}
-
-            {adminView === 'withdrawals' && (
-              <>
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Icon name="Wallet" size={24} className="text-[#00F0FF]" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#00F0FF' }}>
-                    Заявки на вывод ({withdrawals.length})
-                  </h2>
-                </div>
-
-                <div className="space-y-3">
-                  {withdrawals.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Icon name="Inbox" size={48} className="text-gray-600 mx-auto mb-3" />
-                      <p className="text-gray-400">Нет заявок на вывод</p>
-                    </div>
-                  ) : (
-                    withdrawals.map((w) => (
-                      <div
-                        key={w.id}
-                        className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#00F0FF]/20"
-                      >
-                        <div className="flex flex-col gap-3">
-                          <div className="flex justify-between items-start gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Icon name="User" size={16} className="text-[#00F0FF] flex-shrink-0" />
-                                <p className="text-sm sm:text-base font-bold text-[#00F0FF] truncate">{w.username}</p>
-                              </div>
-                              <p className="text-xs text-gray-500 mb-2">ID юзера: {w.userId} • Заявка #{w.id}</p>
-                            </div>
-                            <div className="flex-shrink-0">
-                              <p className="text-xl sm:text-2xl font-black text-[#FF10F0]">{w.amount} USDT</p>
-                            </div>
-                          </div>
-
-                          <div className="bg-black/40 rounded-lg p-2 sm:p-3 border border-[#00F0FF]/10">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Icon name="Coins" size={14} className="text-[#00F0FF]" />
-                              <span className="text-xs font-bold text-[#00F0FF]">
-                                💰 Криптовалюта
-                              </span>
-                            </div>
-                            <div className="text-xs text-gray-300 space-y-1">
-                              <p className="flex items-center gap-1.5">
-                                <span className="text-gray-500">Криптовалюта:</span>
-                                <span className="font-bold text-[#26A17B]">{w.details.cryptoType}</span>
-                              </p>
-                              {w.details.network && (
-                                <p className="flex items-center gap-1.5">
-                                  <span className="text-gray-500">Сеть:</span>
-                                  <span className="font-semibold">{w.details.network === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}</span>
-                                </p>
-                              )}
-                              <p className="flex flex-col gap-1">
-                                <span className="text-gray-500">Адрес кошелька:</span>
-                                <span className="font-mono break-all text-[#00F0FF]">{w.details.wallet}</span>
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between text-xs text-gray-500">
-                            <span>{new Date(w.createdAt).toLocaleString('ru-RU')}</span>
-                          </div>
-
-                          <div className="flex gap-2">
-                            {w.status === 'pending' ? (
-                              <>
-                                <Button
-                                  onClick={() => handleApproveWithdrawal(w.id)}
-                                  size="sm"
-                                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
-                                >
-                                  <Icon name="Check" size={16} className="mr-1" />
-                                  Одобрить
-                                </Button>
-                                <Button
-                                  onClick={() => handleRejectWithdrawal(w.id)}
-                                  size="sm"
-                                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
-                                >
-                                  <Icon name="X" size={16} className="mr-1" />
-                                  Отклонить
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <div className={`flex-1 text-center py-2 rounded-lg font-bold text-sm ${
-                                  w.status === 'approved' 
-                                    ? 'bg-green-500/20 text-green-300 border border-green-500/40' 
-                                    : 'bg-red-500/20 text-red-300 border border-red-500/40'
-                                }`}>
-                                  {w.status === 'approved' ? '✅ Одобрено' : '❌ Отклонено'}
-                                </div>
-                                <Button
-                                  onClick={() => handleDeleteWithdrawal(w.id)}
-                                  size="sm"
-                                  className="bg-gray-600 hover:bg-gray-700 text-white"
-                                >
-                                  <Icon name="Trash2" size={16} />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </>
-            )}
           </Card>
         </div>
       </div>
