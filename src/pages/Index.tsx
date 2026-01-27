@@ -1046,33 +1046,33 @@ const Index = () => {
 
           <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
             <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#FF10F0' }}>
-              ⚡ Инструкция для правильной работы ⚡
+              🌟 Инструкция 🌟
             </h2>
 
             <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🚀</span>
-                <p><strong>1.</strong> Зарегистрируйте совершенно новый аккаунт.</p>
+                <span className="text-2xl sm:text-3xl">📢</span>
+                <p><strong>1.</strong> Зарегистрируйтесь в Lucky bear.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🔥</span>
-                <p><strong>2.</strong> Вы получаете бесплатный бонус в размере 50 рублей, при желании введите промокод.</p>
-              </div>
-
-              <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">👑</span>
-                <p><strong>3.</strong> Пополните баланс на любую сумму. Можно играть и на бонус, но в этом случае казино будет вас сливать.</p>
+                <span className="text-2xl sm:text-3xl">💰</span>
+                <p><strong>2.</strong> Пополните баланс на минимальную сумму.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🌟</span>
-                <p><strong>4.</strong> Зайдите в игру Tower Rush и сделайте 2 ставки — это нужно, чтобы казино увидело, что вы не бот.</p>
+                <p><strong>3.</strong> Перейдите в Lucky bear и найдите игру CRASH X.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🎰</span>
-                <p><strong>5.</strong> Затем зайдите в игру CRASH X и нажмите «Получить сигнал» 🎟️</p>
+                <span className="text-2xl sm:text-3xl">🚀</span>
+                <p><strong>4.</strong> Нажмите кнопку к сигналам и получайте точные сигналы.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">⏳</span>
+                <p><strong>5.</strong> Интервал между сигналами 60 секунд.</p>
               </div>
             </div>
           </Card>
@@ -1426,33 +1426,33 @@ const Index = () => {
 
           <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-8">
             <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#9b87f5' }}>
-              👑 VIP Сигналы
+              🌟 VIP Инструкция 🌟
             </h2>
 
             <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🚀</span>
-                <p><strong>1.</strong> VIP сигналы доступны в Telegram боте Lusky Bear.</p>
+                <span className="text-2xl sm:text-3xl">📢</span>
+                <p><strong>1.</strong> Зарегистрируйтесь в Lucky bear.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🔥</span>
-                <p><strong>2.</strong> Получите доступ к эксклюзивным сигналам с повышенной точностью.</p>
-              </div>
-
-              <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">👑</span>
-                <p><strong>3.</strong> VIP сигналы обновляются чаще и имеют приоритет в обработке.</p>
+                <span className="text-2xl sm:text-3xl">💰</span>
+                <p><strong>2.</strong> Пополните баланс на минимальную сумму.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🌟</span>
-                <p><strong>4.</strong> Для получения VIP статуса свяжитесь с администратором в боте.</p>
+                <p><strong>3.</strong> Перейдите в Lucky bear и найдите игру CRASH X.</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl">🎰</span>
-                <p><strong>5.</strong> Нажмите кнопку ниже, чтобы перейти в бот и получить VIP доступ.</p>
+                <span className="text-2xl sm:text-3xl">🚀</span>
+                <p><strong>4.</strong> Нажмите кнопку к сигналам и получайте точные сигналы.</p>
+              </div>
+
+              <div className="flex gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl">⏳</span>
+                <p><strong>5.</strong> Интервал между сигналами 60 секунд.</p>
               </div>
             </div>
           </Card>
