@@ -62,6 +62,78 @@ const Index = () => {
   const [refWithdrawalNetwork, setRefWithdrawalNetwork] = useState<'TON' | 'TRC20' | 'SPL' | ''>('');
   const [refWithdrawalWallet, setRefWithdrawalWallet] = useState('');
   const [refWithdrawalAmount, setRefWithdrawalAmount] = useState('');
+  const [language, setLanguage] = useState<'ru' | 'en'>('ru');
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+
+  const translations = {
+    ru: {
+      home: 'Главная',
+      instructions: 'Инструкция',
+      signals: 'Сигналы',
+      referral: 'Реферальная программа',
+      vip: 'VIP Сигналы',
+      crashx: 'CRASH X',
+      withdrawal: 'Вывод средств',
+      logout: 'Выйти',
+      login: 'Вход',
+      register: 'Регистрация',
+      username: 'Имя пользователя',
+      password: 'Пароль',
+      balance: 'Баланс',
+      referrals: 'Рефералы',
+      getSignal: 'Получить сигнал',
+      waiting: 'Ожидание',
+      coefficient: 'Коэффициент',
+      time: 'Время',
+      sec: 'сек',
+      welcome: 'Добро пожаловать',
+      admin: 'АДМИН-ПАНЕЛЬ',
+      summary: 'Сводка',
+      players: 'Игроки',
+      support: 'Поддержка',
+      tools: 'Инструменты',
+      customization: 'Кастомизация',
+      exit: 'Выход'
+    },
+    en: {
+      home: 'Home',
+      instructions: 'Instructions',
+      signals: 'Signals',
+      referral: 'Referral Program',
+      vip: 'VIP Signals',
+      crashx: 'CRASH X',
+      withdrawal: 'Withdrawal',
+      logout: 'Logout',
+      login: 'Login',
+      register: 'Register',
+      username: 'Username',
+      password: 'Password',
+      balance: 'Balance',
+      referrals: 'Referrals',
+      getSignal: 'Get Signal',
+      waiting: 'Waiting',
+      coefficient: 'Coefficient',
+      time: 'Time',
+      sec: 'sec',
+      welcome: 'Welcome',
+      admin: 'ADMIN PANEL',
+      summary: 'Summary',
+      players: 'Players',
+      support: 'Support',
+      tools: 'Tools',
+      customization: 'Customization',
+      exit: 'Exit'
+    }
+  };
+
+  const t = translations[language];
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('language') as 'ru' | 'en' | null;
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -766,14 +838,53 @@ const Index = () => {
                 </h1>
                 <div className="h-1 w-32 sm:w-40 mx-auto sm:mx-0 animated-gradient rounded-full"></div>
               </div>
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                className="text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
-              >
-                <Icon name="LogOut" size={18} className="mr-1 sm:mr-2" />
-                Выход
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Button
+                    onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                    variant="ghost"
+                    className="w-10 h-10 p-0 text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 rounded-lg transition-all border border-[#00F0FF]/30"
+                  >
+                    <span className="text-sm font-bold">{language === 'ru' ? 'RU' : 'EN'}</span>
+                  </Button>
+                  {showLanguageMenu && (
+                    <div className="absolute top-12 right-0 bg-[#1a1a2e] border border-[#FF10F0]/30 rounded-lg overflow-hidden shadow-xl z-50 min-w-[100px]">
+                      <button
+                        onClick={() => {
+                          setLanguage('ru');
+                          localStorage.setItem('language', 'ru');
+                          setShowLanguageMenu(false);
+                        }}
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FF10F0]/20 transition-colors ${
+                          language === 'ru' ? 'bg-[#FF10F0]/10 text-[#FF10F0] font-bold' : 'text-gray-300'
+                        }`}
+                      >
+                        🇷🇺 Русский
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLanguage('en');
+                          localStorage.setItem('language', 'en');
+                          setShowLanguageMenu(false);
+                        }}
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#00F0FF]/20 transition-colors ${
+                          language === 'en' ? 'bg-[#00F0FF]/10 text-[#00F0FF] font-bold' : 'text-gray-300'
+                        }`}
+                      >
+                        🇬🇧 English
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  className="text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
+                >
+                  <Icon name="LogOut" size={18} className="mr-1 sm:mr-2" />
+                  {t.logout}
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-3 sm:space-y-5">
@@ -784,7 +895,7 @@ const Index = () => {
                   className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
                 >
                   <Icon name="Rocket" size={24} className="mr-2" />
-                  Начать
+                  {language === 'ru' ? 'Начать' : 'Start'}
                 </Button>
 
                 <Button
@@ -793,7 +904,7 @@ const Index = () => {
                   className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#9b87f5] border-2 border-[#9b87f5]/40 hover:border-[#9b87f5] hover-lift shine-effect"
                 >
                   <Icon name="Crown" size={24} className="mr-2" />
-                  VIP Сигналы
+                  {language === 'ru' ? 'VIP Сигналы' : 'VIP Signals'}
                 </Button>
               </div>
 
@@ -803,7 +914,7 @@ const Index = () => {
                 className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#00F0FF] border-2 border-[#00F0FF]/40 hover:border-[#00F0FF] hover-lift shine-effect"
               >
                 <Icon name="Users" size={24} className="mr-2" />
-                <span className="break-words">Реферальная программа</span>
+                <span className="break-words">{language === 'ru' ? 'Реферальная программа' : 'Referral Program'}</span>
               </Button>
             </div>
           </div>
