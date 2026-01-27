@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
 
 interface User {
   id: number;
@@ -64,6 +64,10 @@ const Index = () => {
   const [refWithdrawalAmount, setRefWithdrawalAmount] = useState('');
   const [language, setLanguage] = useState<'ru' | 'en'>('ru');
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [customRegisterUrl, setCustomRegisterUrl] = useState('');
+  const [customSiteName, setCustomSiteName] = useState('LUSKY BEAR');
+  const [tempRegisterUrl, setTempRegisterUrl] = useState('');
+  const [tempSiteName, setTempSiteName] = useState('');
 
   const translations = {
     ru: {
@@ -226,6 +230,16 @@ const Index = () => {
     const savedLanguage = localStorage.getItem('language') as 'ru' | 'en' | null;
     if (savedLanguage) {
       setLanguage(savedLanguage);
+    }
+    
+    const savedRegisterUrl = localStorage.getItem('customRegisterUrl');
+    if (savedRegisterUrl) {
+      setCustomRegisterUrl(savedRegisterUrl);
+    }
+    
+    const savedSiteName = localStorage.getItem('customSiteName');
+    if (savedSiteName) {
+      setCustomSiteName(savedSiteName);
     }
   }, []);
 
@@ -862,7 +876,7 @@ const Index = () => {
         <div className="relative z-10 max-w-md w-full space-y-4 sm:space-y-6 animate-fade-in">
           <div className="text-center mb-4">
             <h1 className="text-4xl sm:text-6xl font-black tracking-wider mb-2 gradient-text">
-              LUSKY BEAR
+              {customSiteName}
             </h1>
             <div className="h-1 w-24 sm:w-32 mx-auto animated-gradient rounded-full"></div>
           </div>
@@ -928,7 +942,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
               <div className="flex-1 text-center sm:text-left">
                 <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-wider gradient-text mb-2">
-                  LUSKY BEAR
+                  {customSiteName}
                 </h1>
                 <div className="h-1 w-32 sm:w-40 mx-auto sm:mx-0 animated-gradient rounded-full"></div>
               </div>
@@ -1175,7 +1189,8 @@ const Index = () => {
             <Button
               onClick={() => {
                 setHasClickedRegister(true);
-                window.open('https://t.me/LB_Instantwin_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank');
+                const urlToOpen = customRegisterUrl || 'https://t.me/LB_Instantwin_bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ';
+                window.open(urlToOpen, '_blank');
               }}
               size="lg"
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
@@ -1553,7 +1568,10 @@ const Index = () => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
-              onClick={() => window.open('https://t.me/K_Elite_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ', '_blank')}
+              onClick={() => {
+                const urlToOpen = customRegisterUrl || 'https://t.me/K_Elite_Bot/app?startapp=eHd1PTE3MDQwMjgzNzcmbT1uZXRsbzU1NSZjPWRlZmF1bHQ';
+                window.open(urlToOpen, '_blank');
+              }}
               size="lg"
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
             >
@@ -1707,7 +1725,14 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+            <Card 
+              onClick={() => {
+                setTempRegisterUrl(customRegisterUrl);
+                setTempSiteName(customSiteName);
+                setScreen('admin_customization');
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer"
+            >
               <div className="flex items-center gap-3">
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Paintbrush" size={24} className="text-[#a8a8d8]" />
@@ -1716,6 +1741,107 @@ const Index = () => {
               </div>
             </Card>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'admin_customization') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            {language === 'ru' ? 'Назад' : 'Back'}
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#9b87f5' }}>
+              ⚙️ {language === 'ru' ? 'Кастомизация' : 'Customization'}
+            </h2>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">
+                  {language === 'ru' ? '🌐 Название сайта' : '🌐 Site Name'}
+                </label>
+                <Input
+                  type="text"
+                  value={tempSiteName}
+                  onChange={(e) => setTempSiteName(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  placeholder={language === 'ru' ? 'Например: LUSKY BEAR' : 'Example: LUSKY BEAR'}
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  {language === 'ru' ? 'Это название будет отображаться на всех страницах сайта' : 'This name will be displayed on all pages of the site'}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">
+                  {language === 'ru' ? '🔗 Ссылка на регистрацию' : '🔗 Registration Link'}
+                </label>
+                <Input
+                  type="text"
+                  value={tempRegisterUrl}
+                  onChange={(e) => setTempRegisterUrl(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  placeholder="https://t.me/..."
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  {language === 'ru' ? 'Эта ссылка будет использоваться на кнопке "Зарегистрироваться" в инструкциях' : 'This link will be used on the "Register" button in instructions'}
+                </p>
+              </div>
+
+              <Button
+                onClick={() => {
+                  if (tempSiteName.trim()) {
+                    setCustomSiteName(tempSiteName.trim());
+                    localStorage.setItem('customSiteName', tempSiteName.trim());
+                  }
+                  
+                  if (tempRegisterUrl.trim()) {
+                    setCustomRegisterUrl(tempRegisterUrl.trim());
+                    localStorage.setItem('customRegisterUrl', tempRegisterUrl.trim());
+                  }
+                  
+                  toast.success(language === 'ru' ? '✅ Настройки успешно применены!' : '✅ Settings successfully applied!');
+                  setScreen('admin');
+                }}
+                className="w-full h-12 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-0 text-lg font-bold"
+              >
+                <Icon name="Check" size={20} className="mr-2" />
+                {language === 'ru' ? 'Применить' : 'Apply'}
+              </Button>
+
+              <div className="bg-gradient-to-r from-yellow-500/15 to-orange-500/15 border border-yellow-400/40 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <Icon name="Info" size={20} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-yellow-200 space-y-1">
+                    <p className="font-bold text-yellow-300">
+                      {language === 'ru' ? 'ℹ️ Информация:' : 'ℹ️ Information:'}
+                    </p>
+                    <p className="leading-relaxed">
+                      {language === 'ru' 
+                        ? '• Изменения применятся сразу после нажатия кнопки "Применить"' 
+                        : '• Changes will be applied immediately after clicking "Apply"'}
+                    </p>
+                    <p className="leading-relaxed">
+                      {language === 'ru'
+                        ? '• Настройки сохраняются в браузере пользователей'
+                        : '• Settings are saved in users\' browsers'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     );
