@@ -93,7 +93,54 @@ const Index = () => {
       support: 'Поддержка',
       tools: 'Инструменты',
       customization: 'Кастомизация',
-      exit: 'Выход'
+      exit: 'Выход',
+      noAccount: 'Нет аккаунта? Зарегистрируйтесь',
+      hasAccount: 'Уже есть аккаунт? Войдите',
+      enterBtn: 'Войти',
+      registerBtn: 'Зарегистрироваться',
+      back: 'Назад',
+      instructionTitle: '🌟 Инструкция 🌟',
+      step1: '1. Зарегистрируйтесь в Lucky bear.',
+      step2: '2. Пополните баланс на минимальную сумму.',
+      step3: '3. Перейдите в Lucky bear и найдите игру CRASH X.',
+      step4: '4. Нажмите кнопку к сигналам и получайте точные сигналы.',
+      step5: '5. Интервал между сигналами 60 секунд.',
+      registerNow: 'Зарегистрироваться',
+      toSignals: 'К сигналам',
+      yourSignal: 'Ваш сигнал:',
+      nextSignalIn: 'Следующий сигнал через:',
+      nextSignal: 'Следующий сигнал',
+      vipInstruction: '🌟 VIP Инструкция 🌟',
+      allTime: 'За всё время',
+      clicks: 'Переходы:',
+      registrations: 'Регистрации:',
+      yourRefLink: 'Ваша реферальная ссылка',
+      sendToFriends: 'Отправьте эту ссылку друзьям для получения дохода',
+      income: 'Доход:',
+      copy: 'Копировать',
+      main: 'Главная',
+      withdrawalMethod: 'Способ вывода',
+      network: 'Сеть',
+      withdrawAmount: 'Сумма вывода',
+      minAmount: 'минимум 10$, доступно:',
+      walletAddress: 'Адрес кошелька',
+      enterWallet: 'Введите адрес кошелька',
+      withdrawFunds: 'Вывести средства',
+      vipAccess: '💎 VIP Доступ',
+      perMonth: '8 USDT / месяц',
+      paymentConditions: '⚠️ Условия оплаты:',
+      amount: 'Сумма:',
+      exactly: 'РОВНО 8 USDT',
+      tonNetwork: 'The Open Network (TON)',
+      otherNotAccepted: 'Другие суммы и сети не принимаются!',
+      walletAddr: 'Адрес кошелька:',
+      copyAddress: 'Копировать адрес',
+      screenshotLink: 'Ссылка на скриншот платежа',
+      uploadInstruction: '📸 Загрузите скриншот на imgur.com или imgbb.com и вставьте ссылку',
+      reviewTime: '⚡ Проверка заявки до 15 минут. После одобрения VIP активируется автоматически!',
+      cancel: 'Отмена',
+      sendRequest: 'Отправить заявку',
+      enterAmount: 'Введите сумму в $'
     },
     en: {
       home: 'Home',
@@ -122,7 +169,54 @@ const Index = () => {
       support: 'Support',
       tools: 'Tools',
       customization: 'Customization',
-      exit: 'Exit'
+      exit: 'Exit',
+      noAccount: "Don't have an account? Register",
+      hasAccount: 'Already have an account? Login',
+      enterBtn: 'Login',
+      registerBtn: 'Register',
+      back: 'Back',
+      instructionTitle: '🌟 Instructions 🌟',
+      step1: '1. Register in Lucky bear.',
+      step2: '2. Deposit the minimum amount.',
+      step3: '3. Go to Lucky bear and find the CRASH X game.',
+      step4: '4. Click the signals button and get accurate signals.',
+      step5: '5. Interval between signals is 60 seconds.',
+      registerNow: 'Register',
+      toSignals: 'To Signals',
+      yourSignal: 'Your signal:',
+      nextSignalIn: 'Next signal in:',
+      nextSignal: 'Next Signal',
+      vipInstruction: '🌟 VIP Instructions 🌟',
+      allTime: 'All Time',
+      clicks: 'Clicks:',
+      registrations: 'Registrations:',
+      yourRefLink: 'Your referral link',
+      sendToFriends: 'Send this link to friends to earn income',
+      income: 'Income:',
+      copy: 'Copy',
+      main: 'Main',
+      withdrawalMethod: 'Withdrawal Method',
+      network: 'Network',
+      withdrawAmount: 'Withdrawal Amount',
+      minAmount: 'minimum 10$, available:',
+      walletAddress: 'Wallet Address',
+      enterWallet: 'Enter wallet address',
+      withdrawFunds: 'Withdraw Funds',
+      vipAccess: '💎 VIP Access',
+      perMonth: '8 USDT / month',
+      paymentConditions: '⚠️ Payment Conditions:',
+      amount: 'Amount:',
+      exactly: 'EXACTLY 8 USDT',
+      tonNetwork: 'The Open Network (TON)',
+      otherNotAccepted: 'Other amounts and networks are not accepted!',
+      walletAddr: 'Wallet Address:',
+      copyAddress: 'Copy Address',
+      screenshotLink: 'Payment screenshot link',
+      uploadInstruction: '📸 Upload screenshot to imgur.com or imgbb.com and paste the link',
+      reviewTime: '⚡ Application review takes up to 15 minutes. VIP will be activated automatically after approval!',
+      cancel: 'Cancel',
+      sendRequest: 'Send Request',
+      enterAmount: 'Enter amount in $'
     }
   };
 
@@ -775,13 +869,13 @@ const Index = () => {
 
           <Card className="glass-card p-5 sm:p-8 shine-effect">
             <h2 className="text-2xl sm:text-3xl font-black mb-5 sm:mb-6 text-center gradient-text">
-              {authMode === 'login' ? 'Вход' : 'Регистрация'}
+              {authMode === 'login' ? t.login : t.register}
             </h2>
 
             <div className="space-y-3 sm:space-y-4">
               <Input
                 type="text"
-                placeholder="Имя пользователя"
+                placeholder={t.username}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
@@ -790,7 +884,7 @@ const Index = () => {
 
               <Input
                 type="password"
-                placeholder="Пароль"
+                placeholder={t.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
@@ -801,7 +895,7 @@ const Index = () => {
                 onClick={handleAuth}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold animated-gradient text-white border-0 hover-lift shine-effect"
               >
-                {authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+                {authMode === 'login' ? t.enterBtn : t.registerBtn}
               </Button>
 
               <div className="text-center pt-1">
@@ -809,7 +903,7 @@ const Index = () => {
                   onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
                   className="text-[#00F0FF] hover:text-[#FF10F0] transition-all text-sm sm:text-base font-medium"
                 >
-                  {authMode === 'login' ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
+                  {authMode === 'login' ? t.noAccount : t.hasAccount}
                 </button>
               </div>
             </div>
@@ -935,11 +1029,11 @@ const Index = () => {
                     </div>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black mb-2 gradient-text">
-                    💎 VIP Доступ
+                    {t.vipAccess}
                   </h2>
                   <div className="inline-flex items-center justify-center bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] px-4 py-2 rounded-full mb-3">
                     <p className="text-white font-bold text-sm sm:text-base">
-                      8 USDT / месяц
+                      {t.perMonth}
                     </p>
                   </div>
                 </div>
@@ -948,10 +1042,10 @@ const Index = () => {
                   <div className="flex items-start gap-2 sm:gap-3">
                     <Icon name="AlertTriangle" size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
                     <div className="text-xs sm:text-sm text-red-200 space-y-1">
-                      <p className="font-bold text-red-300">⚠️ Условия оплаты:</p>
-                      <p className="leading-relaxed">• Сумма: <span className="font-bold text-white">РОВНО 8 USDT</span></p>
-                      <p className="leading-relaxed">• Сеть: <span className="font-bold text-white">The Open Network (TON)</span></p>
-                      <p className="leading-relaxed text-orange-200">• Другие суммы и сети не принимаются!</p>
+                      <p className="font-bold text-red-300">{t.paymentConditions}</p>
+                      <p className="leading-relaxed">• {t.amount} <span className="font-bold text-white">{t.exactly}</span></p>
+                      <p className="leading-relaxed">• {t.network}: <span className="font-bold text-white">{t.tonNetwork}</span></p>
+                      <p className="leading-relaxed text-orange-200">• {t.otherNotAccepted}</p>
                     </div>
                   </div>
                 </div>
@@ -959,7 +1053,7 @@ const Index = () => {
                 <div className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#9b87f5]/40">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon name="Wallet" size={16} className="text-[#9b87f5]" />
-                    <p className="text-xs sm:text-sm text-gray-300 font-semibold">Адрес кошелька:</p>
+                    <p className="text-xs sm:text-sm text-gray-300 font-semibold">{t.walletAddr}</p>
                   </div>
                   <div className="bg-black/60 p-2 sm:p-3 rounded-lg border border-[#00F0FF]/30 mb-2">
                     <p className="text-[10px] sm:text-xs text-[#00F0FF] font-mono break-all leading-relaxed">{CRYPTO_WALLET}</p>
@@ -967,19 +1061,19 @@ const Index = () => {
                   <Button
                     onClick={() => {
                       navigator.clipboard.writeText(CRYPTO_WALLET);
-                      toast.success('✅ Адрес скопирован в буфер обмена!');
+                      toast.success(language === 'ru' ? '✅ Адрес скопирован в буфер обмена!' : '✅ Address copied to clipboard!');
                     }}
                     className="w-full bg-[#9b87f5]/20 hover:bg-[#9b87f5]/30 text-[#9b87f5] border border-[#9b87f5]/40 hover:border-[#9b87f5] transition-all h-9 sm:h-10 text-xs sm:text-sm font-bold"
                   >
                     <Icon name="Copy" size={14} className="mr-1.5" />
-                    Копировать адрес
+                    {t.copyAddress}
                   </Button>
                 </div>
 
                 <div className="space-y-1.5 sm:space-y-2">
                   <label className="text-xs sm:text-sm text-gray-300 font-semibold flex items-center gap-1.5">
                     <Icon name="Image" size={14} className="text-[#9b87f5]" />
-                    Ссылка на скриншот платежа
+                    {t.screenshotLink}
                   </label>
                   <Input
                     type="text"
@@ -989,7 +1083,7 @@ const Index = () => {
                     className="bg-black/60 border-[#9b87f5]/50 text-white placeholder:text-gray-500 h-10 sm:h-12 text-sm sm:text-base backdrop-blur-sm focus:border-[#9b87f5] transition-all"
                   />
                   <p className="text-[10px] sm:text-xs text-gray-400 leading-relaxed">
-                    📸 Загрузите скриншот на <span className="text-[#00F0FF]">imgur.com</span> или <span className="text-[#00F0FF]">imgbb.com</span> и вставьте ссылку
+                    {t.uploadInstruction}
                   </p>
                 </div>
 
@@ -997,7 +1091,7 @@ const Index = () => {
                   <div className="flex items-start gap-2">
                     <Icon name="Clock" size={18} className="text-[#9b87f5] flex-shrink-0 mt-0.5" />
                     <p className="text-xs sm:text-sm text-gray-200 leading-relaxed">
-                      ⚡ <span className="font-bold text-white">Проверка заявки до 15 минут.</span> После одобрения VIP активируется автоматически!
+                      {t.reviewTime}
                     </p>
                   </div>
                 </div>
@@ -1011,14 +1105,14 @@ const Index = () => {
                     variant="outline"
                     className="flex-1 h-10 sm:h-12 bg-transparent border-2 border-[#FF10F0]/50 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all text-xs sm:text-sm font-bold"
                   >
-                    Отмена
+                    {t.cancel}
                   </Button>
                   <Button
                     onClick={handleVipPaymentSubmit}
                     className="flex-1 h-10 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-xs sm:text-sm font-bold shadow-lg shadow-[#9b87f5]/20"
                   >
                     <Icon name="Send" size={16} className="mr-1 sm:mr-1.5" />
-                    Отправить заявку
+                    {t.sendRequest}
                   </Button>
                 </div>
               </div>
@@ -1041,38 +1135,38 @@ const Index = () => {
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
-            Назад
+            {t.back}
           </Button>
 
           <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
             <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#FF10F0' }}>
-              🌟 Инструкция 🌟
+              {t.instructionTitle}
             </h2>
 
             <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">📢</span>
-                <p><strong>1.</strong> Зарегистрируйтесь в Lucky bear.</p>
+                <p>{t.step1}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">💰</span>
-                <p><strong>2.</strong> Пополните баланс на минимальную сумму.</p>
+                <p>{t.step2}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🌟</span>
-                <p><strong>3.</strong> Перейдите в Lucky bear и найдите игру CRASH X.</p>
+                <p>{t.step3}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🚀</span>
-                <p><strong>4.</strong> Нажмите кнопку к сигналам и получайте точные сигналы.</p>
+                <p>{t.step4}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">⏳</span>
-                <p><strong>5.</strong> Интервал между сигналами 60 секунд.</p>
+                <p>{t.step5}</p>
               </div>
             </div>
           </Card>
@@ -1087,13 +1181,13 @@ const Index = () => {
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
-              Зарегистрироваться
+              {t.registerNow}
             </Button>
 
             <Button
               onClick={() => {
                 if (!hasClickedRegister) {
-                  toast.error('⚠️ Сначала нажмите "Зарегистрироваться", а затем переходите к сигналам!');
+                  toast.error(language === 'ru' ? '⚠️ Сначала нажмите "Зарегистрироваться", а затем переходите к сигналам!' : '⚠️ First click "Register", then proceed to signals!');
                 } else {
                   setScreen('signals');
                 }
@@ -1102,7 +1196,7 @@ const Index = () => {
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
             >
               <Icon name="Play" size={24} className="mr-2" />
-              К сигналам
+              {t.toSignals}
             </Button>
           </div>
         </div>
@@ -1122,7 +1216,7 @@ const Index = () => {
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
-            Назад
+            {t.back}
           </Button>
 
           <Card className="bg-black/60 border border-[#00F0FF]/30 p-4 sm:p-8 text-center">
@@ -1132,7 +1226,7 @@ const Index = () => {
 
             {currentSignal !== null && (
               <div className="mb-6 sm:mb-8 p-6 sm:p-12 bg-black/60 rounded-lg border-2 border-[#FF10F0]/50">
-                <p className="text-lg sm:text-2xl mb-3 sm:mb-4 text-[#00F0FF]">Ваш сигнал:</p>
+                <p className="text-lg sm:text-2xl mb-3 sm:mb-4 text-[#00F0FF]">{t.yourSignal}</p>
                 <p className="text-5xl sm:text-8xl font-black animate-pulse-glow" style={{ color: '#FF10F0', textShadow: '0 0 30px rgba(255, 16, 240, 0.5)' }}>
                   {currentSignal.toString().replace('.', ',')}x
                 </p>
@@ -1142,7 +1236,7 @@ const Index = () => {
             {isWaiting && (
               <div className="mb-6 p-4 bg-black/40 rounded-lg border border-[#00F0FF]/30">
                 <p className="text-[#00F0FF] text-lg">
-                  ⏱️ Следующий сигнал через: <span className="font-bold text-[#FF10F0]">{timeLeft}с</span>
+                  ⏱️ {t.nextSignalIn} <span className="font-bold text-[#FF10F0]">{timeLeft}{t.sec}</span>
                 </p>
               </div>
             )}
@@ -1154,7 +1248,7 @@ const Index = () => {
               className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Icon name="Zap" size={28} className="mr-2 sm:mr-3" />
-              {currentSignal === null ? 'Получить сигнал' : isWaiting ? `Ожидание (${timeLeft}с)` : 'Следующий сигнал'}
+              {currentSignal === null ? t.getSignal : isWaiting ? `${t.waiting} (${timeLeft}${t.sec})` : t.nextSignal}
             </Button>
           </Card>
         </div>
@@ -1174,7 +1268,7 @@ const Index = () => {
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
             <Icon name="ArrowLeft" size={18} className="mr-1.5" />
-            <span className="text-sm sm:text-base">Назад</span>
+            <span className="text-sm sm:text-base">{t.back}</span>
           </Button>
 
           <Card className="bg-white/95 backdrop-blur-sm border-0 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden">
@@ -1184,7 +1278,7 @@ const Index = () => {
                   <Icon name="Clock" size={20} className="sm:w-6 sm:h-6 text-purple-600" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">За всё время</h2>
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">{t.allTime}</h2>
                   <div className="h-1 w-20 sm:w-32 bg-gradient-to-r from-purple-600 to-purple-400 rounded-full mt-1"></div>
                 </div>
               </div>
@@ -1205,7 +1299,7 @@ const Index = () => {
                       }}
                       className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'main' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
                     >
-                      Главная
+                      {t.main}
                     </button>
                     <button
                       onClick={() => {
@@ -1214,7 +1308,7 @@ const Index = () => {
                       }}
                       className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'withdrawal' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
                     >
-                      Вывод
+                      {t.withdrawal}
                     </button>
                   </div>
                 )}
@@ -1225,12 +1319,12 @@ const Index = () => {
               <>
                 <div className="space-y-0">
                   <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
-                    <span className="text-gray-700 text-sm sm:text-lg font-medium">Переходы:</span>
+                    <span className="text-gray-700 text-sm sm:text-lg font-medium">{t.clicks}</span>
                     <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralClicks}</span>
                   </div>
 
                   <div className="flex justify-between items-center py-3 sm:py-4 gap-2">
-                    <span className="text-gray-700 text-sm sm:text-lg font-medium">Регистрации:</span>
+                    <span className="text-gray-700 text-sm sm:text-lg font-medium">{t.registrations}</span>
                     <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralRegistrations}</span>
                   </div>
                 </div>
@@ -1238,7 +1332,7 @@ const Index = () => {
                 <div className="mt-4 sm:mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-purple-200">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
                     <Icon name="Link" size={18} className="text-purple-600 flex-shrink-0" />
-                    <h3 className="text-gray-800 font-bold text-sm sm:text-lg">Ваша реферальная ссылка</h3>
+                    <h3 className="text-gray-800 font-bold text-sm sm:text-lg">{t.yourRefLink}</h3>
                   </div>
                   <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 border border-purple-300 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <input
@@ -1256,15 +1350,15 @@ const Index = () => {
                       className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
                     >
                       <Icon name="Copy" size={14} className="mr-1" />
-                      Копировать
+                      {t.copy}
                     </Button>
                   </div>
-                  <p className="text-gray-600 text-xs mt-2">Отправьте эту ссылку друзьям для получения дохода</p>
+                  <p className="text-gray-600 text-xs mt-2">{t.sendToFriends}</p>
                 </div>
 
                 <div className="mt-3 sm:mt-4">
                   <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
-                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">Доход:</p>
+                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t.income}</p>
                     <p className="text-white text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
                   </div>
                 </div>
@@ -1274,7 +1368,7 @@ const Index = () => {
             {referralView === 'withdrawal' && (
               <div className="mt-4 space-y-4">
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">Способ вывода</label>
+                  <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.withdrawalMethod}</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => {
@@ -1307,7 +1401,7 @@ const Index = () => {
 
                 {refWithdrawalCrypto === 'USDT' && (
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">Сеть</label>
+                    <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.network}</label>
                     <div className="space-y-2">
                       <button
                         onClick={() => setRefWithdrawalNetwork('TON')}
@@ -1347,7 +1441,7 @@ const Index = () => {
                   <>
                     <div>
                       <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">
-                        Сумма вывода <span className="text-gray-500 font-normal text-sm">(минимум 10$, доступно: {(referralRegistrations * 0.5).toFixed(2)}$)</span>
+                        {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({t.minAmount} {(referralRegistrations * 0.5).toFixed(2)}$)</span>
                       </label>
                       <input
                         type="number"
@@ -1356,18 +1450,18 @@ const Index = () => {
                         step="0.01"
                         value={refWithdrawalAmount}
                         onChange={(e) => setRefWithdrawalAmount(e.target.value)}
-                        placeholder="Введите сумму в $"
+                        placeholder={t.enterAmount}
                         className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">Адрес кошелька</label>
+                      <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.walletAddress}</label>
                       <input
                         type="text"
                         value={refWithdrawalWallet}
                         onChange={(e) => setRefWithdrawalWallet(e.target.value)}
-                        placeholder="Введите адрес кошелька"
+                        placeholder={t.enterWallet}
                         className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
                       />
                     </div>
@@ -1378,26 +1472,26 @@ const Index = () => {
                         const withdrawalAmount = parseFloat(refWithdrawalAmount);
                         
                         if (!refWithdrawalAmount || withdrawalAmount < 10) {
-                          toast.error('Минимальная сумма вывода 10$');
+                          toast.error(language === 'ru' ? 'Минимальная сумма вывода 10$' : 'Minimum withdrawal amount is 10$');
                           return;
                         }
                         if (withdrawalAmount > availableBalance) {
-                          toast.error(`Недостаточно средств. Доступно: ${availableBalance.toFixed(2)}$`);
+                          toast.error(language === 'ru' ? `Недостаточно средств. Доступно: ${availableBalance.toFixed(2)}$` : `Insufficient funds. Available: ${availableBalance.toFixed(2)}$`);
                           return;
                         }
                         if (refWithdrawalCrypto === 'USDT' && !refWithdrawalNetwork) {
-                          toast.error('Выберите сеть');
+                          toast.error(language === 'ru' ? 'Выберите сеть' : 'Select network');
                           return;
                         }
                         if (!refWithdrawalWallet) {
-                          toast.error('Введите адрес кошелька');
+                          toast.error(language === 'ru' ? 'Введите адрес кошелька' : 'Enter wallet address');
                           return;
                         }
-                        toast.success('Заявка на вывод отправлена!');
+                        toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
                       }}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-lg"
                     >
-                      Вывести средства
+                      {t.withdrawFunds}
                     </Button>
                   </>
                 )}
@@ -1426,33 +1520,33 @@ const Index = () => {
 
           <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-8">
             <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#9b87f5' }}>
-              🌟 VIP Инструкция 🌟
+              {t.vipInstruction}
             </h2>
 
             <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">📢</span>
-                <p><strong>1.</strong> Зарегистрируйтесь в Lucky bear.</p>
+                <p>{t.step1}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">💰</span>
-                <p><strong>2.</strong> Пополните баланс на минимальную сумму.</p>
+                <p>{t.step2}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🌟</span>
-                <p><strong>3.</strong> Перейдите в Lucky bear и найдите игру CRASH X.</p>
+                <p>{t.step3}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">🚀</span>
-                <p><strong>4.</strong> Нажмите кнопку к сигналам и получайте точные сигналы.</p>
+                <p>{t.step4}</p>
               </div>
 
               <div className="flex gap-3 sm:gap-4">
                 <span className="text-2xl sm:text-3xl">⏳</span>
-                <p><strong>5.</strong> Интервал между сигналами 60 секунд.</p>
+                <p>{t.step5}</p>
               </div>
             </div>
           </Card>
@@ -1464,7 +1558,7 @@ const Index = () => {
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
-              Зарегистрироваться
+              {t.registerNow}
             </Button>
 
             <Button
@@ -1473,7 +1567,7 @@ const Index = () => {
               className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
             >
               <Icon name="Play" size={24} className="mr-2" />
-              К сигналам
+              {t.toSignals}
             </Button>
           </div>
         </div>
@@ -1493,7 +1587,7 @@ const Index = () => {
             className="text-[#00F0FF] hover:text-[#FF10F0]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
-            Назад
+            {t.back}
           </Button>
 
           <Card className="bg-black/60 border border-[#00F0FF]/40 p-6 sm:p-8">
@@ -1511,12 +1605,12 @@ const Index = () => {
                 className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-2 border-[#9b87f5] transition-all"
               >
                 <Icon name="Zap" size={28} className="mr-3" />
-                Получить сигнал
+                {t.getSignal}
               </Button>
             ) : (
               <div className="space-y-4">
                 <div className="bg-black/80 border-2 border-[#9b87f5] rounded-2xl p-6 sm:p-8">
-                  <p className="text-[#00F0FF] text-lg sm:text-xl text-center mb-3">Ваш сигнал:</p>
+                  <p className="text-[#00F0FF] text-lg sm:text-xl text-center mb-3">{t.yourSignal}</p>
                   <p className="text-5xl sm:text-7xl font-black text-center" style={{ color: '#FF10F0' }}>
                     {crashXSignal.toFixed(2)}x
                   </p>
@@ -1525,10 +1619,10 @@ const Index = () => {
                 <div className="bg-black/60 border border-[#00F0FF]/30 rounded-xl p-4 sm:p-6 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <Icon name="Clock" size={24} className="text-[#00F0FF]" />
-                    <p className="text-[#00F0FF] text-base sm:text-lg">Следующий сигнал через:</p>
+                    <p className="text-[#00F0FF] text-base sm:text-lg">{t.nextSignalIn}</p>
                   </div>
                   <p className="text-3xl sm:text-4xl font-bold" style={{ color: '#FF10F0' }}>
-                    {crashXTimeLeft}с
+                    {crashXTimeLeft}{t.sec}
                   </p>
                 </div>
 
@@ -1539,7 +1633,7 @@ const Index = () => {
                   className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <Icon name="Zap" size={24} className="mr-2" />
-                  {isCrashXWaiting ? `Ожидание (${crashXTimeLeft}с)` : 'Получить следующий сигнал'}
+                  {isCrashXWaiting ? `${t.waiting} (${crashXTimeLeft}${t.sec})` : t.getSignal}
                 </Button>
               </div>
             )}
@@ -1557,20 +1651,20 @@ const Index = () => {
         <div className="relative z-10 max-w-6xl mx-auto space-y-6 py-4">
           <div className="flex justify-between items-center flex-wrap gap-3">
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-black" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
-              👑 АДМИН-ПАНЕЛЬ
+              👑 {t.admin}
             </h1>
             <Button
               onClick={() => {
                 setIsAdmin(false);
                 localStorage.removeItem('isAdmin');
                 setScreen('auth');
-                toast.success('Вы вышли из админ-панели');
+                toast.success(language === 'ru' ? 'Вы вышли из админ-панели' : 'Logged out from admin panel');
               }}
               size="sm"
               className="bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-600/30"
             >
               <Icon name="LogOut" size={18} className="mr-1" />
-              Выход
+              {t.exit}
             </Button>
           </div>
 
@@ -1582,7 +1676,7 @@ const Index = () => {
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Grid" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Сводка</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.summary}</h3>
               </div>
             </Card>
 
@@ -1591,7 +1685,7 @@ const Index = () => {
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Users" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Игроки</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.players}</h3>
               </div>
             </Card>
 
@@ -1600,7 +1694,7 @@ const Index = () => {
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="MessageCircle" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Поддержка</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.support}</h3>
               </div>
             </Card>
 
@@ -1609,7 +1703,7 @@ const Index = () => {
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Wrench" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Инструменты</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.tools}</h3>
               </div>
             </Card>
 
@@ -1618,7 +1712,7 @@ const Index = () => {
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Paintbrush" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Кастомизация</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.customization}</h3>
               </div>
             </Card>
           </div>
