@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Send support message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "userId": 1,
+        "username": "testuser",
+        "message": "Test support message",
+        "isAdminReply": false
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "id": "number",
+        "createdAt": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get user messages",
+      "method": "GET",
+      "path": "/?userId=1",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "messages": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

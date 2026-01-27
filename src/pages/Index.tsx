@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'admin_players' | 'admin_support' | 'admin_support_chat' | 'admin_withdrawals' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm' | 'support_chat';
 
 interface User {
   id: number;
@@ -20,6 +20,8 @@ const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafd
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
 const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
 const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
+const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
+const SUPPORT_URL = 'https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
 
 const Index = () => {
@@ -68,6 +70,13 @@ const Index = () => {
   const [customSiteName, setCustomSiteName] = useState('LUSKY BEAR');
   const [tempRegisterUrl, setTempRegisterUrl] = useState('');
   const [tempSiteName, setTempSiteName] = useState('');
+  const [allPlayers, setAllPlayers] = useState<any[]>([]);
+  const [supportChats, setSupportChats] = useState<any[]>([]);
+  const [selectedChat, setSelectedChat] = useState<any | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [supportMessage, setSupportMessage] = useState('');
+  const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 
   const translations = {
     ru: {
@@ -472,8 +481,8 @@ const Index = () => {
     }
 
     const amount = parseFloat(withdrawalAmount);
-    if (isNaN(amount) || amount < 200) {
-      toast.error('Минимальная сумма вывода 200 USDT');
+    if (isNaN(amount) || amount < 10) {
+      toast.error('Минимальная сумма вывода 10 USDT');
       return;
     }
 
@@ -483,15 +492,6 @@ const Index = () => {
     }
 
     try {
-      const details: any = {
-        cryptoType,
-        wallet: cryptoWallet
-      };
-      
-      if (cryptoType === 'USDT') {
-        details.network = cryptoNetwork;
-      }
-
       const response = await fetch(WITHDRAWAL_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -499,19 +499,15 @@ const Index = () => {
           userId: user?.id,
           username: user?.username,
           amount,
-          method: 'crypto',
-          details
+          network: cryptoNetwork || 'TON',
+          walletAddress: cryptoWallet
         })
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
-        toast.success(data.message);
-        setBalance(balance - amount);
-        const updatedUser = { ...user!, balance: balance - amount };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        toast.success(data.message || 'Заявка подана администратору');
         setCryptoType('');
         setCryptoNetwork('');
         setCryptoWallet('');
@@ -1023,6 +1019,25 @@ const Index = () => {
               >
                 <Icon name="Users" size={24} className="mr-2" />
                 <span className="break-words">{language === 'ru' ? 'Реферальная программа' : 'Referral Program'}</span>
+              </Button>
+
+              <Button
+                onClick={async () => {
+                  if (!user) return;
+                  try {
+                    const res = await fetch(`${SUPPORT_URL}?userId=${user.id}`);
+                    const data = await res.json();
+                    setChatMessages(data.messages || []);
+                    setScreen('support_chat');
+                  } catch (err) {
+                    toast.error(language === 'ru' ? 'Ошибка загрузки чата' : 'Chat load error');
+                  }
+                }}
+                size="lg"
+                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
+              >
+                <Icon name="MessageCircle" size={24} className="mr-2" />
+                <span className="break-words">{language === 'ru' ? 'Поддержка 💬' : 'Support 💬'}</span>
               </Button>
             </div>
           </div>
@@ -1698,7 +1713,18 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+            <Card 
+              onClick={async () => {
+                try {
+                  const res = await fetch(PLAYERS_URL);
+                  const data = await res.json();
+                  setAllPlayers(data.players || []);
+                  setScreen('admin_players');
+                } catch (err) {
+                  toast.error('Ошибка загрузки игроков');
+                }
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="Users" size={24} className="text-[#a8a8d8]" />
@@ -1707,7 +1733,18 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+            <Card 
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${SUPPORT_URL}?isAdmin=true`);
+                  const data = await res.json();
+                  setSupportChats(data.chats || []);
+                  setScreen('admin_support');
+                } catch (err) {
+                  toast.error('Ошибка загрузки чатов');
+                }
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
                   <Icon name="MessageCircle" size={24} className="text-[#a8a8d8]" />
@@ -1716,12 +1753,23 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+            <Card 
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${WITHDRAWAL_URL}?status=pending`);
+                  const data = await res.json();
+                  setWithdrawalRequests(data.withdrawals || []);
+                  setScreen('admin_withdrawals');
+                } catch (err) {
+                  toast.error('Ошибка загрузки заявок');
+                }
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Wrench" size={24} className="text-[#a8a8d8]" />
+                  <Icon name="Wallet" size={24} className="text-[#a8a8d8]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.tools}</h3>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Заявки на вывод</h3>
               </div>
             </Card>
 
@@ -2430,7 +2478,423 @@ const Index = () => {
     );
   }
 
+  if (screen === 'admin_players') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
+              👥 Все игроки ({allPlayers.length})
+            </h2>
+
+            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              {allPlayers.map((player) => (
+                <Card key={player.id} className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-lg font-bold text-[#9b87f5]">{player.username}</p>
+                      <div className="text-sm text-gray-400 space-y-1 mt-2">
+                        <p>💰 Баланс: {player.balance} USDT</p>
+                        <p>👥 Рефералов: {player.referralCount}</p>
+                        <p>📅 Регистрация: {new Date(player.createdAt).toLocaleDateString()}</p>
+                        {player.isVip && <p className="text-yellow-400">⭐ VIP</p>}
+                        {player.isBanned && <p className="text-red-400">🚫 Заблокирован</p>}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'admin_support') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold gradient-text">
+                💬 Чаты поддержки ({supportChats.length})
+              </h2>
+            </div>
+
+            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              {supportChats.map((chat) => (
+                <Card 
+                  key={chat.userId}
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`${SUPPORT_URL}?userId=${chat.userId}`);
+                      const data = await res.json();
+                      setChatMessages(data.messages || []);
+                      setSelectedChat(chat);
+                      setScreen('admin_support_chat');
+                    } catch (err) {
+                      toast.error('Ошибка загрузки сообщений');
+                    }
+                  }}
+                  className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors cursor-pointer"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="text-lg font-bold text-[#9b87f5]">{chat.username}</p>
+                      <p className="text-sm text-gray-400 mt-1">{chat.lastMessage}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(chat.lastMessageTime).toLocaleString()}
+                      </p>
+                    </div>
+                    {chat.unreadCount > 0 && (
+                      <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                        {chat.unreadCount}
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              ))}
+              {supportChats.length === 0 && (
+                <p className="text-center text-gray-400 py-8">Нет сообщений</p>
+              )}
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'admin_support_chat' && selectedChat) {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin_support')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
+              Чат с {selectedChat.username}
+            </h2>
+
+            <div className="space-y-3 max-h-[400px] overflow-y-auto mb-4 p-4 bg-[#0a0a1a] rounded-lg">
+              {chatMessages.map((msg) => (
+                <div 
+                  key={msg.id}
+                  className={`p-3 rounded-lg ${msg.isAdminReply ? 'bg-blue-900/30 ml-8' : 'bg-gray-800/50 mr-8'}`}
+                >
+                  <p className="text-sm font-semibold text-[#9b87f5] mb-1">
+                    {msg.isAdminReply ? `Админ (${msg.adminUsername})` : selectedChat.username}
+                  </p>
+                  <p className="text-white">{msg.message}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {new Date(msg.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <Input
+                value={supportMessage}
+                onChange={(e) => setSupportMessage(e.target.value)}
+                placeholder="Введите ответ..."
+                className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && supportMessage.trim()) {
+                    fetch(SUPPORT_URL, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: selectedChat.userId,
+                        username: selectedChat.username,
+                        message: supportMessage,
+                        isAdminReply: true,
+                        adminUsername: 'Admin'
+                      })
+                    }).then(() => {
+                      setSupportMessage('');
+                      fetch(`${SUPPORT_URL}?userId=${selectedChat.userId}`)
+                        .then(r => r.json())
+                        .then(d => setChatMessages(d.messages || []));
+                    });
+                  }
+                }}
+              />
+              <Button
+                onClick={async () => {
+                  if (!supportMessage.trim()) return;
+                  
+                  try {
+                    await fetch(SUPPORT_URL, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: selectedChat.userId,
+                        username: selectedChat.username,
+                        message: supportMessage,
+                        isAdminReply: true,
+                        adminUsername: 'Admin'
+                      })
+                    });
+                    
+                    setSupportMessage('');
+                    const res = await fetch(`${SUPPORT_URL}?userId=${selectedChat.userId}`);
+                    const data = await res.json();
+                    setChatMessages(data.messages || []);
+                    toast.success('Сообщение отправлено');
+                  } catch (err) {
+                    toast.error('Ошибка отправки');
+                  }
+                }}
+                className="bg-[#9b87f5] hover:bg-[#8b77e5]"
+              >
+                <Icon name="Send" size={20} />
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'admin_withdrawals') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
+              💸 Заявки на вывод ({withdrawalRequests.length})
+            </h2>
+
+            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+              {withdrawalRequests.map((req) => (
+                <Card key={req.id} className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-lg font-bold text-[#9b87f5]">{req.username}</p>
+                        <p className="text-sm text-gray-400">ID заявки: {req.id}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-green-400">{req.amount} USDT</p>
+                        <p className="text-sm text-gray-400">{req.network}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-[#0a0a1a] p-3 rounded-lg">
+                      <p className="text-xs text-gray-500 mb-1">Адрес кошелька:</p>
+                      <p className="text-sm text-white font-mono break-all">{req.walletAddress}</p>
+                    </div>
+
+                    <p className="text-xs text-gray-400">
+                      Дата: {new Date(req.createdAt).toLocaleString()}
+                    </p>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        onClick={async () => {
+                          try {
+                            await fetch(WITHDRAWAL_URL, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                withdrawalId: req.id,
+                                action: 'approve',
+                                adminNote: 'Одобрено'
+                              })
+                            });
+                            toast.success('Заявка одобрена');
+                            setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                          } catch (err) {
+                            toast.error('Ошибка');
+                          }
+                        }}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        <Icon name="Check" size={18} className="mr-1" />
+                        Одобрить
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          try {
+                            await fetch(WITHDRAWAL_URL, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                withdrawalId: req.id,
+                                action: 'reject',
+                                adminNote: 'Отклонено'
+                              })
+                            });
+                            toast.success('Заявка отклонена');
+                            setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                          } catch (err) {
+                            toast.error('Ошибка');
+                          }
+                        }}
+                        className="flex-1 bg-red-600 hover:bg-red-700"
+                      >
+                        <Icon name="X" size={18} className="mr-1" />
+                        Отклонить
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+              {withdrawalRequests.length === 0 && (
+                <p className="text-center text-gray-400 py-8">Нет новых заявок</p>
+              )}
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'support_chat') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('home')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            {language === 'ru' ? 'Назад' : 'Back'}
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
+              💬 {language === 'ru' ? 'Поддержка' : 'Support'}
+            </h2>
+
+            <div className="space-y-3 max-h-[400px] overflow-y-auto mb-4 p-4 bg-[#0a0a1a] rounded-lg">
+              {chatMessages.map((msg) => (
+                <div 
+                  key={msg.id}
+                  className={`p-3 rounded-lg ${msg.isAdminReply ? 'bg-blue-900/30 ml-8' : 'bg-gray-800/50 mr-8'}`}
+                >
+                  <p className="text-sm font-semibold text-[#9b87f5] mb-1">
+                    {msg.isAdminReply ? 'Поддержка' : user?.username}
+                  </p>
+                  <p className="text-white">{msg.message}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {new Date(msg.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <Input
+                value={supportMessage}
+                onChange={(e) => setSupportMessage(e.target.value)}
+                placeholder={language === 'ru' ? 'Введите сообщение...' : 'Type a message...'}
+                className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && supportMessage.trim() && user) {
+                    fetch(SUPPORT_URL, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: user.id,
+                        username: user.username,
+                        message: supportMessage,
+                        isAdminReply: false
+                      })
+                    }).then(() => {
+                      setSupportMessage('');
+                      fetch(`${SUPPORT_URL}?userId=${user.id}`)
+                        .then(r => r.json())
+                        .then(d => setChatMessages(d.messages || []));
+                    });
+                  }
+                }}
+              />
+              <Button
+                onClick={async () => {
+                  if (!supportMessage.trim() || !user) return;
+                  
+                  try {
+                    await fetch(SUPPORT_URL, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: user.id,
+                        username: user.username,
+                        message: supportMessage,
+                        isAdminReply: false
+                      })
+                    });
+                    
+                    setSupportMessage('');
+                    const res = await fetch(`${SUPPORT_URL}?userId=${user.id}`);
+                    const data = await res.json();
+                    setChatMessages(data.messages || []);
+                    toast.success(language === 'ru' ? 'Сообщение отправлено' : 'Message sent');
+                  } catch (err) {
+                    toast.error(language === 'ru' ? 'Ошибка отправки' : 'Send error');
+                  }
+                }}
+                className="bg-[#9b87f5] hover:bg-[#8b77e5]"
+              >
+                <Icon name="Send" size={20} />
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 };
+
+export default Index;
 
 export default Index;

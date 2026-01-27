@@ -34,20 +34,16 @@ def handler(event: dict, context) -> dict:
     
     try:
         if method == 'GET':
-            # Удаляем обработанные заявки на вывод старше 7 дней
-            cursor.execute("""
-                DELETE FROM t_p45110186_greeting_project_202.withdrawals
-                WHERE status IN ('approved', 'rejected')
-                AND processed_at < CURRENT_TIMESTAMP - INTERVAL '7 days'
-            """)
-            conn.commit()
+            params = event.get('queryStringParameters') or {}
+            status_filter = params.get('status', 'pending')
             
             cursor.execute("""
-                SELECT id, user_id, username, amount, method, details, status, 
-                       created_at, processed_at
-                FROM t_p45110186_greeting_project_202.withdrawals
+                SELECT id, user_id, username, amount, network, wallet_address, status, 
+                       created_at, processed_at, admin_note
+                FROM t_p45110186_greeting_project_202.withdrawal_requests
+                WHERE status = %s
                 ORDER BY created_at DESC
-            """)
+            """, (status_filter,))
             rows = cursor.fetchall()
             
             withdrawals = []
@@ -57,11 +53,12 @@ def handler(event: dict, context) -> dict:
                     'userId': row[1],
                     'username': row[2],
                     'amount': float(row[3]),
-                    'method': row[4],
-                    'details': row[5],
+                    'network': row[4],
+                    'walletAddress': row[5],
                     'status': row[6],
                     'createdAt': row[7].isoformat() if row[7] else None,
-                    'processedAt': row[8].isoformat() if row[8] else None
+                    'processedAt': row[8].isoformat() if row[8] else None,
+                    'adminNote': row[9]
                 })
             
             return {
@@ -76,10 +73,10 @@ def handler(event: dict, context) -> dict:
             user_id = body.get('userId')
             username = body.get('username')
             amount = body.get('amount')
-            withdrawal_method = body.get('method')
-            details = body.get('details')
+            network = body.get('network')
+            wallet_address = body.get('walletAddress')
             
-            if not all([user_id, username, amount, withdrawal_method, details]):
+            if not all([user_id, username, amount, network, wallet_address]):
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -110,20 +107,13 @@ def handler(event: dict, context) -> dict:
                 }
             
             cursor.execute("""
-                INSERT INTO t_p45110186_greeting_project_202.withdrawals
-                (user_id, username, amount, method, details, status)
+                INSERT INTO t_p45110186_greeting_project_202.withdrawal_requests
+                (user_id, username, amount, network, wallet_address, status)
                 VALUES (%s, %s, %s, %s, %s, 'pending')
                 RETURNING id
-            """, (user_id, username, amount, withdrawal_method, json.dumps(details)))
+            """, (user_id, username, amount, network, wallet_address))
             
             withdrawal_id = cursor.fetchone()[0]
-            
-            cursor.execute("""
-                UPDATE t_p45110186_greeting_project_202.users
-                SET balance = balance - %s
-                WHERE id = %s
-            """, (amount, user_id))
-            
             conn.commit()
             
             return {
@@ -140,36 +130,52 @@ def handler(event: dict, context) -> dict:
         elif method == 'PUT':
             body = json.loads(event.get('body', '{}'))
             withdrawal_id = body.get('withdrawalId')
-            status = body.get('status')
+            action = body.get('action')
+            admin_note = body.get('adminNote', '')
             
-            if not withdrawal_id or not status:
+            if not withdrawal_id or action not in ['approve', 'reject']:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'Missing withdrawalId or status'}),
+                    'body': json.dumps({'error': 'Invalid request'}),
                     'isBase64Encoded': False
                 }
             
-            if status == 'rejected':
-                cursor.execute("""
-                    SELECT user_id, amount FROM t_p45110186_greeting_project_202.withdrawals
-                    WHERE id = %s
-                """, (withdrawal_id,))
-                result = cursor.fetchone()
-                
-                if result:
-                    user_id, amount = result
-                    cursor.execute("""
-                        UPDATE t_p45110186_greeting_project_202.users
-                        SET balance = balance + %s
-                        WHERE id = %s
-                    """, (amount, user_id))
-            
             cursor.execute("""
-                UPDATE t_p45110186_greeting_project_202.withdrawals
-                SET status = %s, processed_at = %s
+                SELECT user_id, amount, status 
+                FROM t_p45110186_greeting_project_202.withdrawal_requests
                 WHERE id = %s
-            """, (status, datetime.now(), withdrawal_id))
+            """, (withdrawal_id,))
+            result = cursor.fetchone()
+            
+            if not result or result[2] != 'pending':
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Request not found or already processed'}),
+                    'isBase64Encoded': False
+                }
+            
+            user_id, amount = result[0], result[1]
+            
+            if action == 'approve':
+                cursor.execute("""
+                    UPDATE t_p45110186_greeting_project_202.users
+                    SET balance = balance - %s
+                    WHERE id = %s
+                """, (amount, user_id))
+                
+                cursor.execute("""
+                    UPDATE t_p45110186_greeting_project_202.withdrawal_requests
+                    SET status = 'approved', processed_at = %s, admin_note = %s
+                    WHERE id = %s
+                """, (datetime.now(), admin_note, withdrawal_id))
+            else:
+                cursor.execute("""
+                    UPDATE t_p45110186_greeting_project_202.withdrawal_requests
+                    SET status = 'rejected', processed_at = %s, admin_note = %s
+                    WHERE id = %s
+                """, (datetime.now(), admin_note, withdrawal_id))
             
             conn.commit()
             
