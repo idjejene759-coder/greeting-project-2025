@@ -1465,17 +1465,52 @@ const Index = () => {
 
 
 
-          <Card className="bg-black/70 backdrop-blur-sm border border-[#FF10F0]/30 p-6 shadow-2xl text-center">
-            <div className="py-12">
-              <Icon name="Shield" size={64} className="text-[#FF10F0] mx-auto mb-4 opacity-50" />
-              <h2 className="text-2xl font-bold text-[#FF10F0] mb-2">
-                Админ панель
-              </h2>
-              <p className="text-gray-400">
-                Вы вошли в админ панель
-              </p>
-            </div>
-          </Card>
+          <div className="space-y-4">
+            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="Grid" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Сводка</h3>
+              </div>
+            </Card>
+
+            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="Users" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Игроки</h3>
+              </div>
+            </Card>
+
+            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="MessageCircle" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Поддержка</h3>
+              </div>
+            </Card>
+
+            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="Wrench" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Инструменты</h3>
+              </div>
+            </Card>
+
+            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="Paintbrush" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Кастомизация</h3>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     );
