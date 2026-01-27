@@ -1465,73 +1465,15 @@ const Index = () => {
 
 
 
-          <Card className="bg-black/70 backdrop-blur-sm border border-[#FF10F0]/30 p-3 sm:p-6 shadow-2xl">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Icon name="Users" size={24} className="text-[#00F0FF]" />
-              <h2 className="text-xl sm:text-2xl font-bold text-center" style={{ color: '#00F0FF' }}>
-                Пользователи
+          <Card className="bg-black/70 backdrop-blur-sm border border-[#FF10F0]/30 p-6 shadow-2xl text-center">
+            <div className="py-12">
+              <Icon name="Shield" size={64} className="text-[#FF10F0] mx-auto mb-4 opacity-50" />
+              <h2 className="text-2xl font-bold text-[#FF10F0] mb-2">
+                Админ панель
               </h2>
-            </div>
-
-            <div className="space-y-2">
-              {adminUsers.map((u) => (
-                <div
-                  key={u.id}
-                  className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#FF10F0]/20 hover:border-[#FF10F0]/60"
-                >
-                  <div className="flex justify-between items-start gap-3">
-                    <div 
-                      className="flex-1 min-w-0 cursor-pointer"
-                      onClick={() => {
-                        setSelectedUser(u);
-                        setEditBalance(u.balance.toString());
-                        setEditReferrals(u.referralCount.toString());
-                        setScreen('admin_user');
-                      }}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        {u.isPinned && (
-                          <Icon name="Pin" size={14} className="text-yellow-400 flex-shrink-0" />
-                        )}
-                        <p className="text-sm sm:text-base font-bold text-[#FF10F0] truncate">{u.username}</p>
-                        {u.isBanned && (
-                          <span className="text-xs bg-red-500/30 text-red-300 px-2 py-0.5 rounded-full border border-red-500/50 flex-shrink-0">
-                            🚫
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500 mb-2">ID: {u.id}</p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                        <div className="flex items-center gap-1">
-                          <Icon name="Wallet" size={14} className="text-[#00F0FF]" />
-                          <span className="text-gray-400">Баланс:</span>
-                          <span className="text-[#00F0FF] font-bold">{u.balance} USDT</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Icon name="Users" size={14} className="text-[#FF10F0]" />
-                          <span className="text-gray-400">Рефералы:</span>
-                          <span className="text-[#FF10F0] font-bold">{u.referralCount}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (u.isPinned) {
-                          handleUnpinUser(u.id);
-                        } else {
-                          handlePinUser(u.id);
-                        }
-                      }}
-                      size="sm"
-                      className={`flex-shrink-0 ${u.isPinned ? 'bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/40' : 'bg-gray-700/50 hover:bg-gray-700/70 text-gray-400 border border-gray-600/40'}`}
-                      title={u.isPinned ? 'Открепить' : 'Закрепить'}
-                    >
-                      <Icon name="Pin" size={16} />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+              <p className="text-gray-400">
+                Вы вошли в админ панель
+              </p>
             </div>
           </Card>
         </div>
