@@ -1497,7 +1497,7 @@ const Index = () => {
                     </div>
 
                     <Button
-                      onClick={() => {
+                      onClick={async () => {
                         const availableBalance = referralRegistrations * 0.5;
                         const withdrawalAmount = parseFloat(refWithdrawalAmount);
                         
@@ -1517,7 +1517,38 @@ const Index = () => {
                           toast.error(language === 'ru' ? 'Введите адрес кошелька' : 'Enter wallet address');
                           return;
                         }
-                        toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
+
+                        try {
+                          const response = await fetch(WITHDRAWAL_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              userId: user?.id,
+                              username: user?.username,
+                              amount: withdrawalAmount,
+                              network: refWithdrawalNetwork || refWithdrawalCrypto,
+                              walletAddress: refWithdrawalWallet
+                            })
+                          });
+
+                          const data = await response.json();
+
+                          if (response.ok && data.success) {
+                            const registrationsToDeduct = withdrawalAmount / 0.5;
+                            setReferralRegistrations(prev => Math.max(0, prev - registrationsToDeduct));
+                            
+                            setRefWithdrawalCrypto('');
+                            setRefWithdrawalNetwork('');
+                            setRefWithdrawalWallet('');
+                            setRefWithdrawalAmount('');
+                            
+                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
+                          } else {
+                            toast.error(data.error || (language === 'ru' ? 'Ошибка создания заявки' : 'Error creating request'));
+                          }
+                        } catch (error) {
+                          toast.error(language === 'ru' ? 'Ошибка сети' : 'Network error');
+                        }
                       }}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-lg"
                     >
