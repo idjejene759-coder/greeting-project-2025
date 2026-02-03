@@ -87,7 +87,6 @@ def handler(event: dict, context) -> dict:
             
             # Создание заявки на вывод из реферальной программы
             else:
-                withdrawal_type = body.get('type')
                 user_id = body.get('userId')
                 username = body.get('username')
                 amount = float(body.get('amount'))
@@ -108,24 +107,6 @@ def handler(event: dict, context) -> dict:
                         'statusCode': 400,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                         'body': json.dumps({'error': 'Минимальная сумма вывода 10$'}),
-                        'isBase64Encoded': False
-                    }
-                
-                # Проверка доступного баланса
-                cur.execute(f"""
-                    SELECT referral_registrations * 0.5 - COALESCE(
-                        (SELECT SUM(amount) FROM {schema}.referral_withdrawal_requests 
-                         WHERE user_id = %s AND status IN ('pending', 'approved')), 0
-                    ) as available_balance
-                    FROM {schema}.users WHERE id = %s
-                """, (user_id, user_id))
-                
-                result = cur.fetchone()
-                if not result or result[0] < amount:
-                    return {
-                        'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps({'error': 'Недостаточно средств'}),
                         'isBase64Encoded': False
                     }
                 
@@ -227,22 +208,13 @@ def handler(event: dict, context) -> dict:
             result = cur.fetchone()
             
             if result:
-                # Расчет заблокированной суммы (pending + approved заявки)
-                cur.execute(f"""
-                    SELECT COALESCE(SUM(amount), 0) 
-                    FROM {schema}.referral_withdrawal_requests
-                    WHERE user_id = %s AND status IN ('pending', 'approved')
-                """, (user_id,))
-                pending_amount = float(cur.fetchone()[0])
-                
                 return {
                     'statusCode': 200,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                     'body': json.dumps({
                         'clicks': result[0] or 0,
                         'registrations': result[1] or 0,
-                        'deposits': result[2] or 0,
-                        'pendingAmount': pending_amount
+                        'deposits': result[2] or 0
                     }),
                     'isBase64Encoded': False
                 }
@@ -290,8 +262,6 @@ def handler(event: dict, context) -> dict:
                     WHERE id = %s
                 """, (datetime.now(), admin_note, withdrawal_id))
             else:
-                # При отклонении средства не вернутся - они просто не были списаны
-                # Статус rejected означает что заявка отклонена, средства доступны для нового вывода
                 cur.execute(f"""
                     UPDATE {schema}.referral_withdrawal_requests
                     SET status = 'rejected', processed_at = %s, admin_note = %s
