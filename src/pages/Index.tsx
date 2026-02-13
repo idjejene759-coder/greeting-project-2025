@@ -16,10 +16,13 @@ interface User {
 }
 
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
+const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
-const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
+const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
 const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
+const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
 const SUPPORT_URL = 'https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608';
+const REFERRAL_WITHDRAWAL_URL = 'https://functions.poehali.dev/21f3f6f2-72be-490d-9c2d-bb282a274e42';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
 
 const Index = () => {
@@ -385,7 +388,7 @@ const Index = () => {
     if (!user) return;
     
     try {
-      const response = await fetch(PLAYERS_URL, {
+      const response = await fetch(VIP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -572,7 +575,7 @@ const Index = () => {
         setReferralDeposits(data.deposits || 0);
       }
       
-      const withdrawalResponse = await fetch(`${REFERRAL_URL}?type=withdrawals&userId=${user.id}&status=pending`);
+      const withdrawalResponse = await fetch(`${REFERRAL_WITHDRAWAL_URL}?userId=${user.id}&status=pending`);
       const withdrawalData = await withdrawalResponse.json();
       
       if (withdrawalResponse.ok) {
@@ -622,15 +625,29 @@ const Index = () => {
     }
 
     try {
-      if (username.trim() === 'admin345' && password.trim() === 'admin123') {
-        setIsAdmin(true);
-        localStorage.setItem('isAdmin', 'true');
-        toast.success('Добро пожаловать, администратор!');
-        await loadAdminUsers();
-        setScreen('admin');
-        setUsername('');
-        setPassword('');
-        return;
+      if (username.trim() === 'admin345') {
+        const response = await fetch(ADMIN_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'login',
+            username: username.trim(),
+            password: password.trim()
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          setIsAdmin(true);
+          localStorage.setItem('isAdmin', 'true');
+          toast.success('Добро пожаловать, администратор!');
+          await loadAdminUsers();
+          setScreen('admin');
+          setUsername('');
+          setPassword('');
+          return;
+        }
       }
 
       if (authMode === 'register') {
@@ -1814,7 +1831,7 @@ const Index = () => {
             <Card 
               onClick={async () => {
                 try {
-                  const res = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                  const res = await fetch(`${REFERRAL_WITHDRAWAL_URL}?status=pending`);
                   const data = await res.json();
                   setReferralWithdrawalRequests(data.withdrawals || []);
                   setScreen('admin_referral_withdrawals');
@@ -3000,7 +3017,7 @@ const Index = () => {
                       <Button
                         onClick={async () => {
                           try {
-                            const res = await fetch(REFERRAL_URL, {
+                            const res = await fetch(REFERRAL_WITHDRAWAL_URL, {
                               method: 'PUT',
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
@@ -3013,7 +3030,7 @@ const Index = () => {
                             const data = await res.json();
                             if (data.success) {
                               toast.success('Заявка одобрена');
-                              const refreshRes = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                              const refreshRes = await fetch(`${REFERRAL_WITHDRAWAL_URL}?status=pending`);
                               const refreshData = await refreshRes.json();
                               setReferralWithdrawalRequests(refreshData.withdrawals || []);
                             }
@@ -3030,7 +3047,7 @@ const Index = () => {
                       <Button
                         onClick={async () => {
                           try {
-                            const res = await fetch(REFERRAL_URL, {
+                            const res = await fetch(REFERRAL_WITHDRAWAL_URL, {
                               method: 'PUT',
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
@@ -3043,7 +3060,7 @@ const Index = () => {
                             const data = await res.json();
                             if (data.success) {
                               toast.success('Заявка отклонена');
-                              const refreshRes = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                              const refreshRes = await fetch(`${REFERRAL_WITHDRAWAL_URL}?status=pending`);
                               const refreshData = await refreshRes.json();
                               setReferralWithdrawalRequests(refreshData.withdrawals || []);
                             }
