@@ -1,12 +1,14 @@
 {
   "tests": [
     {
-      "name": "Get referral statistics - user not found",
+      "name": "Get referral statistics",
       "method": "GET",
-      "path": "/?userId=999999",
-      "expectedStatus": 404,
+      "path": "/?userId=1",
+      "expectedStatus": 200,
       "expectedBody": {
-        "error": "string"
+        "clicks": "number",
+        "registrations": "number",
+        "deposits": "number"
       },
       "bodyMatcher": "partial"
     },

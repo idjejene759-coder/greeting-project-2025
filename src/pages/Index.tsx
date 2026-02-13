@@ -570,7 +570,14 @@ const Index = () => {
         setReferralClicks(data.clicks || 0);
         setReferralRegistrations(data.registrations || 0);
         setReferralDeposits(data.deposits || 0);
-        setPendingReferralAmount(data.pendingAmount || 0);
+      }
+      
+      const withdrawalResponse = await fetch(`${REFERRAL_URL}?type=withdrawals&userId=${user.id}&status=pending`);
+      const withdrawalData = await withdrawalResponse.json();
+      
+      if (withdrawalResponse.ok) {
+        const totalPending = (withdrawalData.withdrawals || []).reduce((sum: number, w: any) => sum + w.amount, 0);
+        setPendingReferralAmount(totalPending);
       }
     } catch (error) {
       console.error('Error loading referral stats:', error);
@@ -1374,9 +1381,21 @@ const Index = () => {
                 </div>
 
                 <div className="mt-3 sm:mt-4 space-y-3">
-                  <div className="bg-gradient-to-r from-green-600 to-teal-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
-                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">💰 {language === 'ru' ? 'Баланс' : 'Balance'}</p>
-                    <p className="text-white text-3xl sm:text-4xl font-black">{((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)} $</p>
+                  <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
+                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t.income}</p>
+                    <p className="text-white text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
+                  </div>
+                  
+                  {pendingReferralAmount > 0 && (
+                    <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center shadow-lg">
+                      <p className="text-white text-xs sm:text-sm font-semibold mb-1">⏳ {language === 'ru' ? 'В обработке' : 'Processing'}</p>
+                      <p className="text-white text-xl sm:text-2xl font-bold">{pendingReferralAmount.toFixed(2)} $</p>
+                    </div>
+                  )}
+                  
+                  <div className="bg-gradient-to-r from-green-600 to-teal-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center shadow-lg">
+                    <p className="text-white text-xs sm:text-sm font-semibold mb-1">💰 {language === 'ru' ? 'Доступно к выводу' : 'Available for withdrawal'}</p>
+                    <p className="text-white text-xl sm:text-2xl font-bold">{((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)} $</p>
                   </div>
                 </div>
               </>
@@ -1458,7 +1477,7 @@ const Index = () => {
                   <>
                     <div>
                       <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">
-                        {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({language === 'ru' ? 'Доступно' : 'Available'}: {((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)}$)</span>
+                        {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({t.minAmount} {((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)}$)</span>
                       </label>
                       <input
                         type="number"
@@ -1507,11 +1526,10 @@ const Index = () => {
                         }
 
                         try {
-                          const response = await fetch(REFERRAL_URL, {
+                          const response = await fetch(REFERRAL_WITHDRAWAL_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                              type: 'withdrawal',
                               userId: user?.id,
                               username: user?.username,
                               amount: withdrawalAmount,
@@ -1524,14 +1542,12 @@ const Index = () => {
                           const data = await response.json();
 
                           if (response.ok && data.success) {
-                            // Обновляем данные с сервера
-                            await loadReferralStats();
+                            setPendingReferralAmount(prev => prev + withdrawalAmount);
                             
                             setRefWithdrawalCrypto('');
                             setRefWithdrawalNetwork('');
                             setRefWithdrawalWallet('');
                             setRefWithdrawalAmount('');
-                            setReferralView('main');
                             
                             toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
                           } else {
