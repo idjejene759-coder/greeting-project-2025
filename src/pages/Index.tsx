@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'admin_players' | 'admin_support' | 'admin_support_chat' | 'admin_withdrawals' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm' | 'support_chat';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'admin_players' | 'admin_support' | 'admin_support_chat' | 'admin_withdrawals' | 'admin_referral_withdrawals' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm' | 'support_chat';
 
 interface User {
   id: number;
@@ -16,11 +16,9 @@ interface User {
 }
 
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
-const ADMIN_URL = 'https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
-const VIP_URL = 'https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772';
-const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
 const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
+const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
 const SUPPORT_URL = 'https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
 
@@ -76,6 +74,8 @@ const Index = () => {
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [supportMessage, setSupportMessage] = useState('');
   const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
+  const [referralWithdrawalRequests, setReferralWithdrawalRequests] = useState<any[]>([]);
+  const [pendingReferralAmount, setPendingReferralAmount] = useState(0);
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 
   const translations = {
@@ -385,7 +385,7 @@ const Index = () => {
     if (!user) return;
     
     try {
-      const response = await fetch(VIP_URL, {
+      const response = await fetch(PLAYERS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -571,6 +571,14 @@ const Index = () => {
         setReferralRegistrations(data.registrations || 0);
         setReferralDeposits(data.deposits || 0);
       }
+      
+      const withdrawalResponse = await fetch(`${REFERRAL_URL}?type=withdrawals&userId=${user.id}&status=pending`);
+      const withdrawalData = await withdrawalResponse.json();
+      
+      if (withdrawalResponse.ok) {
+        const totalPending = (withdrawalData.withdrawals || []).reduce((sum: number, w: any) => sum + w.amount, 0);
+        setPendingReferralAmount(totalPending);
+      }
     } catch (error) {
       console.error('Error loading referral stats:', error);
     }
@@ -614,29 +622,15 @@ const Index = () => {
     }
 
     try {
-      if (username.trim() === 'admin345') {
-        const response = await fetch(ADMIN_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'login',
-            username: username.trim(),
-            password: password.trim()
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          setIsAdmin(true);
-          localStorage.setItem('isAdmin', 'true');
-          toast.success('Добро пожаловать, администратор!');
-          await loadAdminUsers();
-          setScreen('admin');
-          setUsername('');
-          setPassword('');
-          return;
-        }
+      if (username.trim() === 'admin345' && password.trim() === 'admin123') {
+        setIsAdmin(true);
+        localStorage.setItem('isAdmin', 'true');
+        toast.success('Добро пожаловать, администратор!');
+        await loadAdminUsers();
+        setScreen('admin');
+        setUsername('');
+        setPassword('');
+        return;
       }
 
       if (authMode === 'register') {
@@ -1386,10 +1380,22 @@ const Index = () => {
                   <p className="text-gray-600 text-xs mt-2">{t.sendToFriends}</p>
                 </div>
 
-                <div className="mt-3 sm:mt-4">
+                <div className="mt-3 sm:mt-4 space-y-3">
                   <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
                     <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t.income}</p>
                     <p className="text-white text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
+                  </div>
+                  
+                  {pendingReferralAmount > 0 && (
+                    <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center shadow-lg">
+                      <p className="text-white text-xs sm:text-sm font-semibold mb-1">⏳ {language === 'ru' ? 'В обработке' : 'Processing'}</p>
+                      <p className="text-white text-xl sm:text-2xl font-bold">{pendingReferralAmount.toFixed(2)} $</p>
+                    </div>
+                  )}
+                  
+                  <div className="bg-gradient-to-r from-green-600 to-teal-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center shadow-lg">
+                    <p className="text-white text-xs sm:text-sm font-semibold mb-1">💰 {language === 'ru' ? 'Доступно к выводу' : 'Available for withdrawal'}</p>
+                    <p className="text-white text-xl sm:text-2xl font-bold">{((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)} $</p>
                   </div>
                 </div>
               </>
@@ -1471,12 +1477,12 @@ const Index = () => {
                   <>
                     <div>
                       <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">
-                        {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({t.minAmount} {(referralRegistrations * 0.5).toFixed(2)}$)</span>
+                        {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({t.minAmount} {((referralRegistrations * 0.5) - pendingReferralAmount).toFixed(2)}$)</span>
                       </label>
                       <input
                         type="number"
                         min="10"
-                        max={referralRegistrations * 0.5}
+                        max={(referralRegistrations * 0.5) - pendingReferralAmount}
                         step="0.01"
                         value={refWithdrawalAmount}
                         onChange={(e) => setRefWithdrawalAmount(e.target.value)}
@@ -1497,8 +1503,9 @@ const Index = () => {
                     </div>
 
                     <Button
-                      onClick={() => {
-                        const availableBalance = referralRegistrations * 0.5;
+                      onClick={async () => {
+                        const totalBalance = referralRegistrations * 0.5;
+                        const availableBalance = totalBalance - pendingReferralAmount;
                         const withdrawalAmount = parseFloat(refWithdrawalAmount);
                         
                         if (!refWithdrawalAmount || withdrawalAmount < 10) {
@@ -1517,7 +1524,38 @@ const Index = () => {
                           toast.error(language === 'ru' ? 'Введите адрес кошелька' : 'Enter wallet address');
                           return;
                         }
-                        toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
+
+                        try {
+                          const response = await fetch(REFERRAL_WITHDRAWAL_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              userId: user?.id,
+                              username: user?.username,
+                              amount: withdrawalAmount,
+                              cryptoType: refWithdrawalCrypto,
+                              network: refWithdrawalNetwork || refWithdrawalCrypto,
+                              walletAddress: refWithdrawalWallet
+                            })
+                          });
+
+                          const data = await response.json();
+
+                          if (response.ok && data.success) {
+                            setPendingReferralAmount(prev => prev + withdrawalAmount);
+                            
+                            setRefWithdrawalCrypto('');
+                            setRefWithdrawalNetwork('');
+                            setRefWithdrawalWallet('');
+                            setRefWithdrawalAmount('');
+                            
+                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
+                          } else {
+                            toast.error(data.error || (language === 'ru' ? 'Ошибка создания заявки' : 'Error creating request'));
+                          }
+                        } catch (error) {
+                          toast.error(language === 'ru' ? 'Ошибка сети' : 'Network error');
+                        }
                       }}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-lg"
                     >
@@ -1770,6 +1808,26 @@ const Index = () => {
                   <Icon name="Wallet" size={24} className="text-[#a8a8d8]" />
                 </div>
                 <h3 className="text-lg font-semibold text-[#a8a8d8]">Заявки на вывод</h3>
+              </div>
+            </Card>
+
+            <Card 
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                  const data = await res.json();
+                  setReferralWithdrawalRequests(data.withdrawals || []);
+                  setScreen('admin_referral_withdrawals');
+                } catch (err) {
+                  toast.error('Ошибка загрузки реферальных заявок');
+                }
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
+                  <Icon name="Users" size={24} className="text-[#a8a8d8]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#a8a8d8]">Вывод из реферальной программы</h3>
               </div>
             </Card>
 
@@ -2892,9 +2950,124 @@ const Index = () => {
     );
   }
 
+  if (screen === 'admin_referral_withdrawals') {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-6xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            {language === 'ru' ? 'Назад' : 'Back'}
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#9b87f5' }}>
+              💰 Вывод из реферальной программы
+            </h2>
+
+            {referralWithdrawalRequests.length === 0 ? (
+              <p className="text-center text-gray-400 py-8">Нет заявок</p>
+            ) : (
+              <div className="space-y-4">
+                {referralWithdrawalRequests.map((req: any) => (
+                  <div key={req.id} className="bg-[#1a1a2e] p-4 rounded-lg border border-[#9b87f5]/30">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <p className="text-lg font-bold text-[#9b87f5]">{req.username}</p>
+                        <p className="text-sm text-gray-400">ID: {req.userId}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-[#00F0FF]">{req.amount} $</p>
+                        <p className="text-xs text-gray-400">{req.cryptoType} ({req.network})</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-black/60 p-3 rounded border border-[#00F0FF]/20 mb-3">
+                      <p className="text-xs text-gray-400 mb-1">Адрес кошелька:</p>
+                      <p className="text-sm text-[#00F0FF] font-mono break-all">{req.walletAddress}</p>
+                    </div>
+                    
+                    <p className="text-xs text-gray-500 mb-3">
+                      Создана: {new Date(req.createdAt).toLocaleString()}
+                    </p>
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(REFERRAL_URL, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                withdrawalId: req.id,
+                                action: 'approve',
+                                adminNote: 'Одобрено'
+                              })
+                            });
+                            
+                            const data = await res.json();
+                            if (data.success) {
+                              toast.success('Заявка одобрена');
+                              const refreshRes = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                              const refreshData = await refreshRes.json();
+                              setReferralWithdrawalRequests(refreshData.withdrawals || []);
+                            }
+                          } catch (err) {
+                            toast.error('Ошибка одобрения');
+                          }
+                        }}
+                        className="flex-1 bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-600/50"
+                      >
+                        <Icon name="Check" size={18} className="mr-2" />
+                        Одобрить
+                      </Button>
+                      
+                      <Button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(REFERRAL_URL, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                withdrawalId: req.id,
+                                action: 'reject',
+                                adminNote: 'Отклонено'
+                              })
+                            });
+                            
+                            const data = await res.json();
+                            if (data.success) {
+                              toast.success('Заявка отклонена');
+                              const refreshRes = await fetch(`${REFERRAL_URL}?type=withdrawals&status=pending`);
+                              const refreshData = await refreshRes.json();
+                              setReferralWithdrawalRequests(refreshData.withdrawals || []);
+                            }
+                          } catch (err) {
+                            toast.error('Ошибка отклонения');
+                          }
+                        }}
+                        className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/50"
+                      >
+                        <Icon name="X" size={18} className="mr-2" />
+                        Отклонить
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 };
-
-export default Index;
 
 export default Index;
