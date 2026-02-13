@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "Admin login",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "login",
+        "username": "admin345",
+        "password": "reter4554"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get all users",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "users": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

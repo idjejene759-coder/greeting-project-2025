@@ -2,6 +2,10 @@
   "players": "https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722",
   "support": "https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608",
   "referral": "https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb",
+  "telegram-bot-telegram-auth": "https://functions.poehali.dev/37376f8d-96d9-4835-abdc-841278f787be",
+  "telegram-bot-telegram-bot": "https://functions.poehali.dev/9f753a1c-98da-41f8-b7c3-176852e77161",
+  "vip": "https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772",
   "withdrawals": "https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177",
+  "admin": "https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4",
   "auth": "https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac"
 }
