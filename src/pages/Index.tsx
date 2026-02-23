@@ -2509,6 +2509,120 @@ const Index = () => {
     );
   }
 
+  if (screen === 'admin_user' && selectedUser) {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <Button
+            onClick={() => setScreen('admin')}
+            variant="ghost"
+            className="text-[#00F0FF] hover:text-[#FF10F0]"
+          >
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад
+          </Button>
+
+          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
+              👤 {selectedUser.username}
+            </h2>
+
+            <div className="space-y-6">
+              <div className="bg-[#1a1a2e] p-4 rounded-lg space-y-2">
+                <p className="text-sm text-gray-400">ID: {selectedUser.id}</p>
+                <p className="text-sm text-gray-400">💰 Баланс: {selectedUser.balance} USDT</p>
+                <p className="text-sm text-gray-400">👥 Рефералов: {selectedUser.referralCount}</p>
+                <p className="text-sm text-gray-400">📅 Регистрация: {new Date(selectedUser.createdAt).toLocaleDateString()}</p>
+                {selectedUser.isVip && <p className="text-yellow-400 text-sm">⭐ VIP активен</p>}
+                {selectedUser.isBanned && <p className="text-red-400 text-sm">🚫 Заблокирован: {selectedUser.banReason}</p>}
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">Изменить баланс</label>
+                <Input
+                  type="number"
+                  value={editBalance}
+                  onChange={(e) => setEditBalance(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                  placeholder="Новый баланс USDT"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">Изменить кол-во рефералов</label>
+                <Input
+                  type="number"
+                  value={editReferrals}
+                  onChange={(e) => setEditReferrals(e.target.value)}
+                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                  placeholder="Новое кол-во рефералов"
+                />
+              </div>
+
+              <Button
+                onClick={handleUpdateUser}
+                className="w-full bg-[#9b87f5] hover:bg-[#8b77e5] text-white"
+              >
+                <Icon name="Save" size={18} className="mr-2" />
+                Сохранить изменения
+              </Button>
+
+              <div className="border-t border-[#FF10F0]/20 pt-6">
+                {selectedUser.isBanned ? (
+                  <Button
+                    onClick={() => handleUnbanUser(selectedUser.id)}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <Icon name="UserCheck" size={18} className="mr-2" />
+                    Разблокировать
+                  </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <Input
+                      value={banReason}
+                      onChange={(e) => setBanReason(e.target.value)}
+                      className="bg-[#1a1a2e] border-red-500/30 text-white"
+                      placeholder="Причина блокировки"
+                    />
+                    <Button
+                      onClick={handleBanUser}
+                      className="w-full bg-red-600 hover:bg-red-700"
+                    >
+                      <Icon name="UserX" size={18} className="mr-2" />
+                      Заблокировать
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-[#FF10F0]/20 pt-4">
+                {selectedUser.isPinned ? (
+                  <Button
+                    onClick={() => handleUnpinUser(selectedUser.id)}
+                    className="w-full bg-[#1a1a2e] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
+                  >
+                    <Icon name="StarOff" size={18} className="mr-2" />
+                    Открепить
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handlePinUser(selectedUser.id)}
+                    className="w-full bg-[#1a1a2e] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
+                  >
+                    <Icon name="Star" size={18} className="mr-2" />
+                    Закрепить
+                  </Button>
+                )}
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (screen === 'admin_players') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
@@ -2531,7 +2645,17 @@ const Index = () => {
 
             <div className="space-y-3 max-h-[600px] overflow-y-auto">
               {allPlayers.map((player) => (
-                <Card key={player.id} className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors">
+                <Card
+                  key={player.id}
+                  onClick={() => {
+                    setSelectedUser(player);
+                    setEditBalance(String(player.balance));
+                    setEditReferrals(String(player.referralCount));
+                    setBanReason('');
+                    setScreen('admin_user');
+                  }}
+                  className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors cursor-pointer"
+                >
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-lg font-bold text-[#9b87f5]">{player.username}</p>
@@ -2543,6 +2667,7 @@ const Index = () => {
                         {player.isBanned && <p className="text-red-400">🚫 Заблокирован</p>}
                       </div>
                     </div>
+                    <Icon name="ChevronRight" size={20} className="text-[#9b87f5]/50" />
                   </div>
                 </Card>
               ))}
