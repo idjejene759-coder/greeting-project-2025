@@ -1,11 +1,12 @@
 {
+  "telegram-bot-telegram-auth": "https://functions.poehali.dev/3484034c-2eea-4efb-b6bb-b210a800e4d9",
+  "telegram-bot-telegram-bot": "https://functions.poehali.dev/0c5d0175-f74b-4b10-98f8-565b35f590b7",
+  "referral-withdrawals": "https://functions.poehali.dev/d38745fc-69e2-4c65-baec-3b6798e0b76a",
+  "vip": "https://functions.poehali.dev/3748b10f-150b-4ed4-99d9-8d0c439e624f",
+  "admin": "https://functions.poehali.dev/d39f2135-dd29-4434-9b42-3a881c1b6eb2",
   "players": "https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722",
   "support": "https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608",
   "referral": "https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb",
-  "telegram-bot-telegram-auth": "https://functions.poehali.dev/37376f8d-96d9-4835-abdc-841278f787be",
-  "telegram-bot-telegram-bot": "https://functions.poehali.dev/9f753a1c-98da-41f8-b7c3-176852e77161",
-  "vip": "https://functions.poehali.dev/6aa4ac1b-7cc2-4b00-b3ed-36a090f42772",
   "withdrawals": "https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177",
-  "admin": "https://functions.poehali.dev/c85f181c-7e3a-4ae4-b2ab-510eafdab9d4",
   "auth": "https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac"
 }
