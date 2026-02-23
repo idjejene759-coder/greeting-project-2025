@@ -20,6 +20,7 @@ const ADMIN_URL = 'https://functions.poehali.dev/d39f2135-dd29-4434-9b42-3a881c1
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
 const VIP_URL = 'https://functions.poehali.dev/3748b10f-150b-4ed4-99d9-8d0c439e624f';
 const REFERRAL_URL = 'https://functions.poehali.dev/81a8cc6f-5777-44ae-87dc-cb8019062cdb';
+const REFERRAL_WITHDRAWAL_URL = 'https://functions.poehali.dev/d38745fc-69e2-4c65-baec-3b6798e0b76a';
 const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
 const SUPPORT_URL = 'https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
@@ -1519,13 +1520,14 @@ const Index = () => {
                         }
 
                         try {
-                          const response = await fetch(WITHDRAWAL_URL, {
+                          const response = await fetch(REFERRAL_WITHDRAWAL_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                               userId: user?.id,
                               username: user?.username,
                               amount: withdrawalAmount,
+                              cryptoType: refWithdrawalCrypto,
                               network: refWithdrawalNetwork || refWithdrawalCrypto,
                               walletAddress: refWithdrawalWallet
                             })
@@ -1534,15 +1536,12 @@ const Index = () => {
                           const data = await response.json();
 
                           if (response.ok && data.success) {
-                            const registrationsToDeduct = withdrawalAmount / 0.5;
-                            setReferralRegistrations(prev => Math.max(0, prev - registrationsToDeduct));
-                            
                             setRefWithdrawalCrypto('');
                             setRefWithdrawalNetwork('');
                             setRefWithdrawalWallet('');
                             setRefWithdrawalAmount('');
                             
-                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена!' : 'Withdrawal request sent!');
+                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена! Ожидайте подтверждения администратора.' : 'Withdrawal request sent! Wait for admin confirmation.');
                           } else {
                             toast.error(data.error || (language === 'ru' ? 'Ошибка создания заявки' : 'Error creating request'));
                           }
@@ -1787,7 +1786,7 @@ const Index = () => {
             <Card 
               onClick={async () => {
                 try {
-                  const res = await fetch(`${WITHDRAWAL_URL}?status=pending`);
+                  const res = await fetch(`${REFERRAL_WITHDRAWAL_URL}?status=pending`);
                   const data = await res.json();
                   setWithdrawalRequests(data.withdrawals || []);
                   setScreen('admin_withdrawals');
@@ -2874,7 +2873,7 @@ const Index = () => {
                         <p className="text-sm text-gray-400">ID заявки: {req.id}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-green-400">{req.amount} USDT</p>
+                        <p className="text-2xl font-bold text-green-400">{req.amount} {req.cryptoType || 'USDT'}</p>
                         <p className="text-sm text-gray-400">{req.network}</p>
                       </div>
                     </div>
@@ -2892,7 +2891,7 @@ const Index = () => {
                       <Button
                         onClick={async () => {
                           try {
-                            await fetch(WITHDRAWAL_URL, {
+                            const res = await fetch(REFERRAL_WITHDRAWAL_URL, {
                               method: 'PUT',
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
@@ -2901,8 +2900,13 @@ const Index = () => {
                                 adminNote: 'Одобрено'
                               })
                             });
-                            toast.success('Заявка одобрена');
-                            setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                            const data = await res.json();
+                            if (data.success) {
+                              toast.success('Заявка одобрена');
+                              setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                            } else {
+                              toast.error(data.error || 'Ошибка');
+                            }
                           } catch (err) {
                             toast.error('Ошибка');
                           }
@@ -2915,7 +2919,7 @@ const Index = () => {
                       <Button
                         onClick={async () => {
                           try {
-                            await fetch(WITHDRAWAL_URL, {
+                            const res = await fetch(REFERRAL_WITHDRAWAL_URL, {
                               method: 'PUT',
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
@@ -2924,8 +2928,13 @@ const Index = () => {
                                 adminNote: 'Отклонено'
                               })
                             });
-                            toast.success('Заявка отклонена');
-                            setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                            const data = await res.json();
+                            if (data.success) {
+                              toast.success('Заявка отклонена');
+                              setWithdrawalRequests(withdrawalRequests.filter(r => r.id !== req.id));
+                            } else {
+                              toast.error(data.error || 'Ошибка');
+                            }
                           } catch (err) {
                             toast.error('Ошибка');
                           }
