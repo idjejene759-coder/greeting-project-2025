@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 
-type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'admin_players' | 'admin_support' | 'admin_support_chat' | 'admin_withdrawals' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm' | 'support_chat';
+type Screen = 'home' | 'instructions' | 'signals' | 'referral' | 'auth' | 'admin' | 'admin_user' | 'admin_customization' | 'admin_players' | 'admin_support' | 'admin_support_chat' | 'admin_withdrawals' | 'admin_summary' | 'vip' | 'vip_payment' | 'crashx' | 'withdrawal_crypto_select' | 'withdrawal_crypto_usdt' | 'withdrawal_crypto_ton' | 'withdrawal_crypto_confirm' | 'support_chat';
 
 interface User {
   id: number;
@@ -78,6 +78,7 @@ const Index = () => {
   const [supportMessage, setSupportMessage] = useState('');
   const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  const [summaryStats, setSummaryStats] = useState<{online:number,totalUsers:number,todayRegistrations:number,activeToday:number,chart:{date:string,count:number}[]} | null>(null);
 
   const translations = {
     ru: {
@@ -1734,10 +1735,21 @@ const Index = () => {
 
 
           <div className="space-y-4">
-            <Card className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+            <Card
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${PLAYERS_URL}?mode=stats`);
+                  const data = await res.json();
+                  setSummaryStats(data);
+                  setScreen('admin_summary');
+                } catch {
+                  toast.error('Ошибка загрузки статистики');
+                }
+              }}
+              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#FF10F0]/50 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Grid" size={24} className="text-[#a8a8d8]" />
+                  <Icon name="Grid" size={24} className="text-[#FF10F0]" />
                 </div>
                 <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.summary}</h3>
               </div>
@@ -1819,6 +1831,94 @@ const Index = () => {
               </div>
             </Card>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === 'admin_summary') {
+    const stats = summaryStats;
+    const maxCount = stats ? Math.max(...stats.chart.map(d => d.count), 1) : 1;
+    return (
+      <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
+          <div className="flex items-center gap-4">
+            <Button onClick={() => setScreen('admin')} variant="ghost" className="text-[#00F0FF] hover:text-[#FF10F0]">
+              <Icon name="ArrowLeft" size={20} className="mr-2" />
+              {language === 'ru' ? 'Назад' : 'Back'}
+            </Button>
+            <h2 className="text-2xl font-black" style={{ color: '#FF10F0', textShadow: '0 0 15px rgba(255,16,240,0.5)' }}>
+              📊 {language === 'ru' ? 'Сводка' : 'Summary'}
+            </h2>
+          </div>
+
+          {!stats ? (
+            <div className="text-center text-[#a8a8d8] py-12">
+              <Icon name="Loader" size={32} className="animate-spin mx-auto mb-3 text-[#FF10F0]" />
+              {language === 'ru' ? 'Загрузка...' : 'Loading...'}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="bg-[#1a0f2e]/90 border border-[#FF10F0]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#FF10F0', textShadow: '0 0 15px rgba(255,16,240,0.6)' }}>
+                    {stats.online}
+                  </div>
+                  <div className="text-xs text-[#a8a8d8]">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" />
+                    {language === 'ru' ? 'Онлайн сейчас' : 'Online now'}
+                  </div>
+                </Card>
+                <Card className="bg-[#1a0f2e]/90 border border-[#00F0FF]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#00F0FF', textShadow: '0 0 15px rgba(0,240,255,0.6)' }}>
+                    {stats.totalUsers}
+                  </div>
+                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Всего игроков' : 'Total players'}</div>
+                </Card>
+                <Card className="bg-[#1a0f2e]/90 border border-[#9b87f5]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#9b87f5', textShadow: '0 0 15px rgba(155,135,245,0.6)' }}>
+                    {stats.todayRegistrations}
+                  </div>
+                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Регистраций сегодня' : 'Registered today'}</div>
+                </Card>
+                <Card className="bg-[#1a0f2e]/90 border border-[#FF10F0]/20 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#00F0FF', textShadow: '0 0 15px rgba(0,240,255,0.6)' }}>
+                    {stats.activeToday}
+                  </div>
+                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Активных сегодня' : 'Active today'}</div>
+                </Card>
+              </div>
+
+              <Card className="bg-[#1a0f2e]/90 border border-[#9b87f5]/30 p-5">
+                <h3 className="text-sm font-semibold text-[#9b87f5] mb-4 flex items-center gap-2">
+                  <Icon name="TrendingUp" size={16} />
+                  {language === 'ru' ? 'Регистрации за 7 дней' : 'Registrations last 7 days'}
+                </h3>
+                <div className="flex items-end gap-2 h-32">
+                  {stats.chart.map((day, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className="w-full rounded-t-sm transition-all duration-500"
+                        style={{
+                          height: `${Math.max((day.count / maxCount) * 100, 4)}%`,
+                          background: day.count > 0
+                            ? 'linear-gradient(to top, #FF10F0, #9b87f5)'
+                            : 'rgba(74,74,106,0.4)',
+                          boxShadow: day.count > 0 ? '0 0 8px rgba(255,16,240,0.4)' : 'none',
+                          minHeight: '4px'
+                        }}
+                      />
+                      <span className="text-[10px] text-[#6a6a8a]">{day.date}</span>
+                      {day.count > 0 && (
+                        <span className="text-[10px] font-bold text-[#FF10F0]">{day.count}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </>
+          )}
         </div>
       </div>
     );

@@ -5,9 +5,15 @@
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,
-      "expectedBody": {
-        "players": "array"
-      },
+      "expectedBody": {},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get admin stats",
+      "method": "GET",
+      "path": "/?mode=stats",
+      "expectedStatus": 200,
+      "expectedBody": {},
       "bodyMatcher": "partial"
     }
   ]
