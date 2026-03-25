@@ -16,6 +16,7 @@ interface User {
 }
 
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
+const TELEGRAM_AUTH_URL = 'https://functions.poehali.dev/3484034c-2eea-4efb-b6bb-b210a800e4d9';
 const ADMIN_URL = 'https://functions.poehali.dev/d39f2135-dd29-4434-9b42-3a881c1b6eb2';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
 const VIP_URL = 'https://functions.poehali.dev/3748b10f-150b-4ed4-99d9-8d0c439e624f';
@@ -269,6 +270,37 @@ const Index = () => {
         trackedRefs.push(refKey);
         localStorage.setItem('trackedRefs', JSON.stringify(trackedRefs));
       }
+    }
+
+    const tg = (window as Record<string, unknown>).Telegram as { WebApp?: { initData?: string; ready?: () => void } } | undefined;
+    const initData = tg?.WebApp?.initData;
+    if (initData && initData.length > 0) {
+      tg?.WebApp?.ready?.();
+      fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ init_data: initData })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.user) {
+            const userData = {
+              id: data.user.id,
+              username: data.user.name || data.user.telegram_id || 'user',
+              balance: 0,
+              referralCount: 0,
+              referralCode: ''
+            };
+            setUser(userData);
+            setBalance(0);
+            setReferralCount(0);
+            localStorage.setItem('user', JSON.stringify(userData));
+            setScreen('home');
+            toast.success('Вы вошли через Telegram!');
+          }
+        })
+        .catch(() => {});
+      return;
     }
     
     if (savedAdmin === 'true') {

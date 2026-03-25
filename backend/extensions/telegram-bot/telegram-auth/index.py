@@ -12,9 +12,11 @@ Flow:
 import json
 import os
 import hashlib
+import hmac
 import secrets
 from datetime import datetime, timezone, timedelta
 from typing import Optional
+from urllib.parse import parse_qs, unquote
 import psycopg2
 import jwt
 
@@ -377,6 +379,68 @@ def handle_refresh(cursor, body: dict) -> dict:
     })
 
 
+def validate_webapp_data(init_data: str, bot_token: str) -> Optional[dict]:
+    """Validate Telegram WebApp initData using HMAC-SHA256."""
+    parsed = parse_qs(init_data, keep_blank_values=True)
+    received_hash = parsed.get("hash", [None])[0]
+    if not received_hash:
+        return None
+
+    data_pairs = []
+    for key, values in parsed.items():
+        if key == "hash":
+            continue
+        data_pairs.append(f"{key}={values[0]}")
+    data_pairs.sort()
+    data_check_string = "\n".join(data_pairs)
+
+    secret_key = hmac.new(b"WebAppData", bot_token.encode(), hashlib.sha256).digest()
+    calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+
+    if calculated_hash != received_hash:
+        return None
+
+    user_str = parsed.get("user", [None])[0]
+    if not user_str:
+        return None
+
+    return json.loads(unquote(user_str))
+
+
+def handle_webapp_auth(cursor, body: dict) -> dict:
+    """POST ?action=webapp_auth — auto-login from Telegram WebApp initData."""
+    init_data = body.get("init_data")
+    if not init_data:
+        return cors_response(400, {"error": "Missing init_data"})
+
+    bot_token = get_env("TELEGRAM_BOT_TOKEN")
+    tg_user = validate_webapp_data(init_data, bot_token)
+    if not tg_user:
+        return cors_response(401, {"error": "Invalid Telegram data"})
+
+    telegram_id = str(tg_user.get("id"))
+    username = tg_user.get("username")
+    first_name = tg_user.get("first_name")
+    last_name = tg_user.get("last_name")
+    photo_url = tg_user.get("photo_url")
+
+    jwt_secret = get_env("JWT_SECRET")
+    user = create_or_update_user(cursor, telegram_id, username, first_name, last_name, photo_url)
+
+    access_token = create_jwt(user["id"], jwt_secret)
+    refresh_token = generate_token(48)
+    refresh_token_hash = hash_token(refresh_token)
+    refresh_expires = datetime.now(timezone.utc) + timedelta(days=30)
+    save_refresh_token(cursor, user["id"], refresh_token_hash, refresh_expires)
+
+    return cors_response(200, {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_in": 900,
+        "user": user,
+    })
+
+
 def handle_logout(cursor, body: dict) -> dict:
     """
     POST ?action=logout
@@ -425,7 +489,9 @@ def handler(event, context):
         cleanup_expired_refresh_tokens(cursor)
 
         # Route to action handler
-        if action == "callback" and method == "POST":
+        if action == "webapp_auth" and method == "POST":
+            response = handle_webapp_auth(cursor, body)
+        elif action == "callback" and method == "POST":
             response = handle_callback(cursor, body)
         elif action == "refresh" and method == "POST":
             response = handle_refresh(cursor, body)
