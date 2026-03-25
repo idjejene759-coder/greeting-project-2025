@@ -272,25 +272,31 @@ const Index = () => {
       }
     }
 
-    const tgGlobal = (window as Record<string, unknown>).Telegram as Record<string, unknown> | undefined;
-    const tgWebApp = tgGlobal?.WebApp as { initData?: string; initDataUnsafe?: { user?: { id: number; first_name?: string; last_name?: string; username?: string; photo_url?: string } }; ready?: () => void; expand?: () => void; platform?: string } | undefined;
-    
-    const tgInitData = tgWebApp?.initData || '';
-    const tgUser = tgWebApp?.initDataUnsafe?.user;
-    const hashData = window.location.hash;
-    
-    let parsedHashUser: { id?: number; first_name?: string; last_name?: string; username?: string } | null = null;
-    if (hashData.includes('tgWebAppData')) {
-      try {
-        const hashParams = new URLSearchParams(hashData.replace('#tgWebAppData=', '').replace('#', ''));
-        const userStr = hashParams.get('user');
-        if (userStr) parsedHashUser = JSON.parse(decodeURIComponent(userStr));
-      } catch (e) { /* ignore */ }
+    const tgToken = urlParams.get('tg_token');
+    if (tgToken && !savedUser) {
+      fetch(`${TELEGRAM_AUTH_URL}?action=callback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tgToken })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.user) {
+            const ud = { id: data.user.id, username: data.user.name || data.user.telegram_id || 'user', balance: 0, referralCount: 0, referralCode: '' };
+            setUser(ud);
+            localStorage.setItem('user', JSON.stringify(ud));
+            setScreen('home');
+            window.history.replaceState({}, '', '/');
+          }
+        })
+        .catch(() => {});
+      return;
     }
-    
-    const effectiveUser = tgUser || parsedHashUser;
-    console.log('[TG] initData length:', tgInitData.length, 'user:', JSON.stringify(effectiveUser), 'platform:', tgWebApp?.platform, 'hash:', hashData.substring(0, 100));
-    
+
+    const tgGlobal = (window as Record<string, unknown>).Telegram as Record<string, unknown> | undefined;
+    const tgWebApp = tgGlobal?.WebApp as { initData?: string; initDataUnsafe?: { user?: { id: number; first_name?: string; last_name?: string; username?: string } }; ready?: () => void; expand?: () => void } | undefined;
+    const tgInitData = tgWebApp?.initData || '';
+
     if (tgInitData.length > 0) {
       tgWebApp?.ready?.();
       tgWebApp?.expand?.();
@@ -310,39 +316,6 @@ const Index = () => {
         })
         .catch(() => {});
       return;
-    }
-    
-    if (effectiveUser && effectiveUser.id) {
-      tgWebApp?.ready?.();
-      tgWebApp?.expand?.();
-      console.log('[TG] Using fallback auth with user id:', effectiveUser.id);
-      fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth_unsafe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          telegram_id: String(effectiveUser.id),
-          username: effectiveUser.username || null,
-          first_name: effectiveUser.first_name || null,
-          last_name: effectiveUser.last_name || null
-        })
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.user) {
-            const ud = { id: data.user.id, username: data.user.name || data.user.telegram_id || 'user', balance: 0, referralCount: 0, referralCode: '' };
-            setUser(ud);
-            localStorage.setItem('user', JSON.stringify(ud));
-            setScreen('home');
-          }
-        })
-        .catch(() => {});
-      return;
-    }
-
-    const isTelegramWebView = navigator.userAgent.includes('Telegram') || document.referrer.includes('t.me');
-    console.log('[TG] isTelegramWebView:', isTelegramWebView, 'UA:', navigator.userAgent.substring(0, 120));
-    if (isTelegramWebView && !savedUser && !savedAdmin) {
-      console.log('[TG] Detected Telegram WebView but no user data available, showing auth screen');
     }
     
     if (savedAdmin === 'true') {

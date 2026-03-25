@@ -119,7 +119,7 @@ def save_auth_token(
 # =============================================================================
 
 def handle_web_auth(chat_id: int, user: dict) -> None:
-    """Обработка команды /start web_auth."""
+    """Обработка команды /start web_auth — авторизация через бота."""
     telegram_id = str(user.get("id", ""))
     username = user.get("username")
     first_name = user.get("first_name")
@@ -127,23 +127,21 @@ def handle_web_auth(chat_id: int, user: dict) -> None:
 
     token = save_auth_token(telegram_id, username, first_name, last_name)
 
-    site_url = os.environ["SITE_URL"].rstrip("/")
-    auth_url = f"{site_url}/auth/telegram/callback?token={token}"
+    site_url = os.environ.get("SITE_URL", "https://cubistime.ru").rstrip("/")
+    auth_url = f"{site_url}?tg_token={token}"
 
     bot = get_bot()
-    bot.send_message(
-        chat_id,
-        f"Авторизация готова!\n\nНажмите кнопку ниже, чтобы войти на сайт 👇\n\nСсылка действительна 5 минут.",
-        reply_markup=telebot.types.InlineKeyboardMarkup().add(
-            telebot.types.InlineKeyboardButton("Войти на сайт", url=auth_url)
-        )
-    )
+    markup = telebot.types.InlineKeyboardMarkup()
+    markup.add(telebot.types.InlineKeyboardButton(
+        "🚀 Открыть",
+        web_app=telebot.types.WebAppInfo(url=auth_url)
+    ))
+    bot.send_message(chat_id, "Нажмите кнопку ниже 👇", reply_markup=markup)
 
 
-def handle_start(chat_id: int) -> None:
-    """Обработка команды /start без параметров."""
-    bot = get_bot()
-    bot.send_message(chat_id, "Привет! Используйте кнопку «Войти через Telegram» на сайте.")
+def handle_start(chat_id: int, user: dict) -> None:
+    """Обработка команды /start — авторегистрация и открытие Mini App."""
+    handle_web_auth(chat_id, user)
 
 
 def process_webhook(body: dict) -> dict:
@@ -175,7 +173,7 @@ def process_webhook(body: dict) -> dict:
                 handle_web_auth(chat_id, user)
             else:
                 print("[DEBUG] Calling handle_start")
-                handle_start(chat_id)
+                handle_start(chat_id, user)
     except telebot.apihelper.ApiTelegramException as e:
         print(f"[ERROR] Telegram API error: {e}")
     except Exception as e:
