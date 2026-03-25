@@ -92,12 +92,32 @@
   }
 
   .hover-lift {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(255, 16, 240, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 16, 240, 0.25);
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  [role="button"],
+  .cursor-pointer {
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.97);
   }
 
   .gradient-text {
