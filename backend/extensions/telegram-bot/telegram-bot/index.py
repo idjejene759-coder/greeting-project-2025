@@ -270,16 +270,19 @@ def handle_send_photo(body: dict) -> dict:
 
 def handle_setup_webapp(body: dict) -> dict:
     """POST ?action=setup_webapp — настроить Menu Button бота как Web App."""
-    import requests
+    import requests as req
     bot_token = get_bot_token()
-    site_url = os.environ.get("SITE_URL", "").rstrip("/")
-    if not site_url:
-        return cors_response(400, {"error": "SITE_URL not configured"})
 
-    url = body.get("url", site_url)
+    url = body.get("url", "")
+    if not url:
+        url = os.environ.get("SITE_URL", "").rstrip("/")
+    if not url:
+        return cors_response(400, {"error": "URL not provided and SITE_URL not configured"})
+
     text = body.get("text", "Открыть")
+    print(f"[SETUP] Setting menu button to web_app url={url} text={text}")
 
-    resp = requests.post(
+    resp = req.post(
         f"https://api.telegram.org/bot{bot_token}/setChatMenuButton",
         json={
             "menu_button": {
@@ -290,6 +293,7 @@ def handle_setup_webapp(body: dict) -> dict:
         }
     )
     result = resp.json()
+    print(f"[SETUP] Telegram API response: {result}")
     if result.get("ok"):
         return cors_response(200, {"success": True, "message": f"Menu button set to Web App: {url}"})
     return cors_response(400, {"error": result.get("description", "Unknown error")})
