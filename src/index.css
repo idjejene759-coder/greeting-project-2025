@@ -6,41 +6,42 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
+    --background: 230 25% 7%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 7%;
+    --card: 230 20% 10%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 7%;
+    --popover: 230 20% 10%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 105 100% 54%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 217 100% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 105 100% 40%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 348 100% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 230 15% 18%;
+    --muted-foreground: 230 10% 60%;
 
-    --accent: 105 100% 54%;
+    --accent: 142 70% 50%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 105 60% 18%;
-    --input: 0 0% 12%;
-    --ring: 105 100% 54%;
+    --border: 217 50% 20%;
+    --input: 230 20% 14%;
+    --ring: 217 100% 60%;
 
     --radius: 0.75rem;
 
-    --neon-green: #39ff14;
-    --neon-green-dim: #22cc00;
-    --neon-pink: #39ff14;
-    --neon-cyan: #39ff14;
-    --neon-purple: #39ff14;
+    --neon-blue: #3b82f6;
+    --neon-red: #ef4444;
+    --neon-green: #22c55e;
+    --neon-pink: #3b82f6;
+    --neon-cyan: #3b82f6;
+    --neon-purple: #818cf8;
   }
 }
 
@@ -52,46 +53,47 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Rubik", sans-serif;
-    background-color: #0a0a0a;
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1b2a 50%, #0a0e1a 100%);
+    min-height: 100vh;
   }
 }
 
 @layer utilities {
   .neon-glow-pink {
     text-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      0 0 30px var(--neon-green),
-      0 0 40px var(--neon-green);
+      0 0 10px var(--neon-blue),
+      0 0 20px var(--neon-blue),
+      0 0 30px var(--neon-blue),
+      0 0 40px var(--neon-blue);
   }
 
   .neon-glow-cyan {
     text-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      0 0 30px var(--neon-green),
-      0 0 40px var(--neon-green);
+      0 0 10px var(--neon-blue),
+      0 0 20px var(--neon-blue),
+      0 0 30px var(--neon-blue),
+      0 0 40px var(--neon-blue);
   }
 
   .neon-border-pink {
     box-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      inset 0 0 10px var(--neon-green);
+      0 0 10px var(--neon-blue),
+      0 0 20px var(--neon-blue),
+      inset 0 0 10px rgba(59, 130, 246, 0.2);
   }
 
   .neon-border-cyan {
     box-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      inset 0 0 10px var(--neon-green);
+      0 0 10px var(--neon-blue),
+      0 0 20px var(--neon-blue),
+      inset 0 0 10px rgba(59, 130, 246, 0.2);
   }
 
   .glass-card {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(10, 14, 30, 0.75);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(57, 255, 20, 0.15);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   }
 
   .hover-lift {
@@ -100,7 +102,7 @@
 
   .hover-lift:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.25);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
   }
 
   * {
@@ -124,14 +126,14 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #39ff14 0%, #22cc00 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #ef4444 50%, #22c55e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .animated-gradient {
-    background: linear-gradient(270deg, #39ff14, #22cc00, #00ff88);
+    background: linear-gradient(270deg, #3b82f6, #ef4444, #22c55e, #ffffff);
     background-size: 600% 600%;
     animation: gradientShift 8s ease infinite;
   }
@@ -162,9 +164,9 @@
     height: 200%;
     background: linear-gradient(
       to right,
-      rgba(57, 255, 20, 0) 0%,
-      rgba(57, 255, 20, 0.08) 50%,
-      rgba(57, 255, 20, 0) 100%
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 100%
     );
     transform: rotate(45deg);
     animation: shine 3s infinite;
