@@ -1,0 +1,1 @@
+ALTER TABLE t_p45110186_greeting_project_202.users ALTER COLUMN username SET DEFAULT '';
