@@ -899,10 +899,10 @@ const Index = () => {
 
         <div className="relative z-10 max-w-md w-full space-y-4 sm:space-y-6 animate-fade-in">
           <div className="text-center mb-4">
-            <h1 className="text-4xl sm:text-6xl font-black tracking-wider mb-2 gradient-text">
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tight mb-2" style={{ color: '#3b82f6', textShadow: '0 2px 20px rgba(59,130,246,0.4)', letterSpacing: '-0.02em' }}>
               {customSiteName}
             </h1>
-            <div className="h-1 w-24 sm:w-32 mx-auto animated-gradient rounded-full"></div>
+            <div className="h-[2px] w-24 sm:w-32 mx-auto rounded-full" style={{ background: 'linear-gradient(90deg, #3b82f6, #1d4ed8)' }}></div>
           </div>
 
           <Card className="glass-card p-5 sm:p-8 shine-effect">
@@ -965,10 +965,10 @@ const Index = () => {
           <div className="relative z-10 max-w-4xl w-full space-y-6 sm:space-y-10 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
               <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-wider gradient-text mb-2">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mb-2" style={{ color: '#3b82f6', textShadow: '0 2px 20px rgba(59,130,246,0.4)', letterSpacing: '-0.02em' }}>
                   {customSiteName}
                 </h1>
-                <div className="h-1 w-32 sm:w-40 mx-auto sm:mx-0 animated-gradient rounded-full"></div>
+                <div className="h-[2px] w-32 sm:w-40 mx-auto sm:mx-0 rounded-full" style={{ background: 'linear-gradient(90deg, #3b82f6, #1d4ed8)' }}></div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
