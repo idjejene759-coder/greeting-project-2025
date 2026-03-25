@@ -1,0 +1,1 @@
+UPDATE t_p45110186_greeting_project_202.admins SET password_hash = '47896eaeaed6bee17e93d069be884a1f276f87fe7a16ce50dc139693be9a414c' WHERE username = 'admin345';
