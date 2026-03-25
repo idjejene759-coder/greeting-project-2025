@@ -1200,7 +1200,7 @@ const Index = () => {
                 className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
               >
                 <Icon name="MessageCircle" size={24} className="mr-2" />
-                <span className="break-words">{language === 'ru' ? 'Поддержка 💬' : 'Support 💬'}</span>
+                <span className="break-words">{language === 'ru' ? 'Поддержка' : 'Support'}</span>
               </Button>
             </div>
           </div>
