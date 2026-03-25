@@ -157,6 +157,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            cur.execute("UPDATE users SET last_login_at = NOW() WHERE id = %s", (user[0],))
+            conn.commit()
+            
             return {
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -170,6 +173,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'referralCode': user[4]
                     }
                 }),
+                'isBase64Encoded': False
+            }
+
+        elif action == 'ping':
+            user_id = body_data.get('userId')
+            if user_id:
+                cur.execute("UPDATE users SET last_login_at = NOW() WHERE id = %s", (user_id,))
+                conn.commit()
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'ok': True}),
                 'isBase64Encoded': False
             }
         

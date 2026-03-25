@@ -344,6 +344,31 @@ const Index = () => {
   }, [user?.id, isAdmin, balance, referralCount]);
 
   useEffect(() => {
+    if (!user || isAdmin) return;
+    const ping = () => fetch(AUTH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'ping', userId: user.id, username: user.username, password: '' })
+    }).catch(() => {});
+    ping();
+    const interval = setInterval(ping, 2 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [user?.id, isAdmin]);
+
+  useEffect(() => {
+    if (screen !== 'admin_summary') return;
+    const refresh = async () => {
+      try {
+        const res = await fetch(`${PLAYERS_URL}?mode=stats`);
+        const data = await res.json();
+        setSummaryStats(data);
+      } catch (_) { /* ignore */ }
+    };
+    const interval = setInterval(refresh, 30 * 1000);
+    return () => clearInterval(interval);
+  }, [screen]);
+
+  useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
