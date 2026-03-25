@@ -16,6 +16,7 @@ interface User {
 }
 
 const AUTH_URL = 'https://functions.poehali.dev/84480352-2061-48c5-b055-98dde5c9eaac';
+const AUTH_EMAIL_URL = 'https://functions.poehali.dev/aedd94db-726b-413f-92dc-f4eae0cd8661';
 const TELEGRAM_AUTH_URL = 'https://functions.poehali.dev/3484034c-2eea-4efb-b6bb-b210a800e4d9';
 const ADMIN_URL = 'https://functions.poehali.dev/d39f2135-dd29-4434-9b42-3a881c1b6eb2';
 const WITHDRAWAL_URL = 'https://functions.poehali.dev/70e3feba-e029-403f-90d0-d0d99a410177';
@@ -30,6 +31,8 @@ const Index = () => {
   const [screen, setScreen] = useState<Screen>('auth');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [registerName, setRegisterName] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState<User | null>(null);
   const [currentSignal, setCurrentSignal] = useState<number | null>(null);
@@ -775,6 +778,63 @@ const Index = () => {
     }
   };
 
+  const handleEmailAuth = async () => {
+    if (!email.trim() || !password.trim()) {
+      toast.error('Введите email и пароль');
+      return;
+    }
+    try {
+      const action = authMode === 'login' ? 'login' : 'register';
+      const bodyData: Record<string, string> = { email: email.trim(), password: password.trim() };
+      if (authMode === 'register' && registerName.trim()) bodyData.name = registerName.trim();
+
+      const response = await fetch(`${AUTH_EMAIL_URL}?action=${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData)
+      });
+      const data = await response.json();
+
+      if (authMode === 'register' && response.ok) {
+        if (data.email_verification_required) {
+          toast.success('Проверьте почту для подтверждения');
+          setAuthMode('login');
+          return;
+        }
+        const loginResp = await fetch(`${AUTH_EMAIL_URL}?action=login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.trim(), password: password.trim() })
+        });
+        const loginData = await loginResp.json();
+        if (loginResp.ok && loginData.user) {
+          const ud = { id: loginData.user.id, username: loginData.user.name || loginData.user.email || 'user', balance: 0, referralCount: 0, referralCode: '' };
+          setUser(ud);
+          localStorage.setItem('user', JSON.stringify(ud));
+          localStorage.setItem('auth_refresh_token', loginData.refresh_token);
+          toast.success('Регистрация успешна!');
+          setScreen('home');
+          setEmail(''); setPassword(''); setRegisterName('');
+        }
+        return;
+      }
+
+      if (response.ok && data.user) {
+        const ud = { id: data.user.id, username: data.user.name || data.user.email || 'user', balance: 0, referralCount: 0, referralCode: '' };
+        setUser(ud);
+        localStorage.setItem('user', JSON.stringify(ud));
+        localStorage.setItem('auth_refresh_token', data.refresh_token);
+        toast.success('Вы вошли в систему!');
+        setScreen('home');
+        setEmail(''); setPassword('');
+      } else {
+        toast.error(data.error || 'Ошибка');
+      }
+    } catch (err) {
+      toast.error('Ошибка соединения с сервером');
+    }
+  };
+
   const loadAdminUsers = async () => {
     try {
       const response = await fetch(ADMIN_URL);
@@ -957,13 +1017,24 @@ const Index = () => {
             </h2>
 
             <div className="space-y-3 sm:space-y-4">
+              {authMode === 'register' && (
+                <Input
+                  type="text"
+                  placeholder="Имя"
+                  value={registerName}
+                  onChange={(e) => setRegisterName(e.target.value)}
+                  className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
+                  onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
+                />
+              )}
+
               <Input
-                type="text"
-                placeholder={t.username}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
-                onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+                onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
               />
 
               <Input
@@ -972,11 +1043,11 @@ const Index = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
-                onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+                onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
               />
 
               <Button
-                onClick={handleAuth}
+                onClick={handleEmailAuth}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold bg-[#1f7a3a] hover:bg-[#256640] text-white border-0 hover-lift transition-all"
               >
                 {authMode === 'login' ? t.enterBtn : t.registerBtn}
