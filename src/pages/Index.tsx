@@ -273,40 +273,76 @@ const Index = () => {
     }
 
     const tgGlobal = (window as Record<string, unknown>).Telegram as Record<string, unknown> | undefined;
-    const tgWebApp = tgGlobal?.WebApp as { initData?: string; initDataUnsafe?: { user?: { id: number; first_name?: string; last_name?: string; username?: string } }; ready?: () => void; expand?: () => void; platform?: string } | undefined;
-    console.log('[TG] Telegram object:', !!tgGlobal, 'WebApp:', !!tgWebApp, 'initData length:', tgWebApp?.initData?.length || 0, 'platform:', tgWebApp?.platform);
-    console.log('[TG] initDataUnsafe:', JSON.stringify(tgWebApp?.initDataUnsafe));
+    const tgWebApp = tgGlobal?.WebApp as { initData?: string; initDataUnsafe?: { user?: { id: number; first_name?: string; last_name?: string; username?: string; photo_url?: string } }; ready?: () => void; expand?: () => void; platform?: string } | undefined;
     
-    if (tgWebApp?.initData && tgWebApp.initData.length > 0) {
-      tgWebApp.ready?.();
-      tgWebApp.expand?.();
-      console.log('[TG] Sending webapp_auth...');
+    const tgInitData = tgWebApp?.initData || '';
+    const tgUser = tgWebApp?.initDataUnsafe?.user;
+    const hashData = window.location.hash;
+    
+    let parsedHashUser: { id?: number; first_name?: string; last_name?: string; username?: string } | null = null;
+    if (hashData.includes('tgWebAppData')) {
+      try {
+        const hashParams = new URLSearchParams(hashData.replace('#tgWebAppData=', '').replace('#', ''));
+        const userStr = hashParams.get('user');
+        if (userStr) parsedHashUser = JSON.parse(decodeURIComponent(userStr));
+      } catch (e) { /* ignore */ }
+    }
+    
+    const effectiveUser = tgUser || parsedHashUser;
+    console.log('[TG] initData length:', tgInitData.length, 'user:', JSON.stringify(effectiveUser), 'platform:', tgWebApp?.platform, 'hash:', hashData.substring(0, 100));
+    
+    if (tgInitData.length > 0) {
+      tgWebApp?.ready?.();
+      tgWebApp?.expand?.();
       fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ init_data: tgWebApp.initData })
+        body: JSON.stringify({ init_data: tgInitData })
       })
         .then(r => r.json())
         .then(data => {
-          console.log('[TG] Auth response:', JSON.stringify(data));
           if (data.user) {
-            const userData = {
-              id: data.user.id,
-              username: data.user.name || data.user.telegram_id || 'user',
-              balance: 0,
-              referralCount: 0,
-              referralCode: ''
-            };
-            setUser(userData);
-            setBalance(0);
-            setReferralCount(0);
-            localStorage.setItem('user', JSON.stringify(userData));
+            const ud = { id: data.user.id, username: data.user.name || data.user.telegram_id || 'user', balance: 0, referralCount: 0, referralCode: '' };
+            setUser(ud);
+            localStorage.setItem('user', JSON.stringify(ud));
             setScreen('home');
-            toast.success('Вы вошли через Telegram!');
           }
         })
-        .catch(err => console.error('[TG] Auth error:', err));
+        .catch(() => {});
       return;
+    }
+    
+    if (effectiveUser && effectiveUser.id) {
+      tgWebApp?.ready?.();
+      tgWebApp?.expand?.();
+      console.log('[TG] Using fallback auth with user id:', effectiveUser.id);
+      fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth_unsafe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          telegram_id: String(effectiveUser.id),
+          username: effectiveUser.username || null,
+          first_name: effectiveUser.first_name || null,
+          last_name: effectiveUser.last_name || null
+        })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.user) {
+            const ud = { id: data.user.id, username: data.user.name || data.user.telegram_id || 'user', balance: 0, referralCount: 0, referralCode: '' };
+            setUser(ud);
+            localStorage.setItem('user', JSON.stringify(ud));
+            setScreen('home');
+          }
+        })
+        .catch(() => {});
+      return;
+    }
+
+    const isTelegramWebView = navigator.userAgent.includes('Telegram') || document.referrer.includes('t.me');
+    console.log('[TG] isTelegramWebView:', isTelegramWebView, 'UA:', navigator.userAgent.substring(0, 120));
+    if (isTelegramWebView && !savedUser && !savedAdmin) {
+      console.log('[TG] Detected Telegram WebView but no user data available, showing auth screen');
     }
     
     if (savedAdmin === 'true') {

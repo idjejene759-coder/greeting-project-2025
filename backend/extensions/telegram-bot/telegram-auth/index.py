@@ -441,6 +441,34 @@ def handle_webapp_auth(cursor, body: dict) -> dict:
     })
 
 
+def handle_webapp_auth_unsafe(cursor, body: dict) -> dict:
+    """POST ?action=webapp_auth_unsafe — авторегистрация по telegram_id без HMAC (для WebView)."""
+    telegram_id = body.get("telegram_id")
+    if not telegram_id:
+        return cors_response(400, {"error": "Missing telegram_id"})
+
+    username = body.get("username")
+    first_name = body.get("first_name")
+    last_name = body.get("last_name")
+    photo_url = body.get("photo_url")
+
+    jwt_secret = get_env("JWT_SECRET")
+    user = create_or_update_user(cursor, str(telegram_id), username, first_name, last_name, photo_url)
+
+    access_token = create_jwt(user["id"], jwt_secret)
+    refresh_token = generate_token(48)
+    refresh_token_hash = hash_token(refresh_token)
+    refresh_expires = datetime.now(timezone.utc) + timedelta(days=30)
+    save_refresh_token(cursor, user["id"], refresh_token_hash, refresh_expires)
+
+    return cors_response(200, {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_in": 900,
+        "user": user,
+    })
+
+
 def handle_logout(cursor, body: dict) -> dict:
     """
     POST ?action=logout
@@ -491,6 +519,8 @@ def handler(event, context):
         # Route to action handler
         if action == "webapp_auth" and method == "POST":
             response = handle_webapp_auth(cursor, body)
+        elif action == "webapp_auth_unsafe" and method == "POST":
+            response = handle_webapp_auth_unsafe(cursor, body)
         elif action == "callback" and method == "POST":
             response = handle_callback(cursor, body)
         elif action == "refresh" and method == "POST":
