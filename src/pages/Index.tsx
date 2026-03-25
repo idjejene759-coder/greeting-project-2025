@@ -272,17 +272,23 @@ const Index = () => {
       }
     }
 
-    const tg = (window as Record<string, unknown>).Telegram as { WebApp?: { initData?: string; ready?: () => void } } | undefined;
-    const initData = tg?.WebApp?.initData;
-    if (initData && initData.length > 0) {
-      tg?.WebApp?.ready?.();
+    const tgGlobal = (window as Record<string, unknown>).Telegram as Record<string, unknown> | undefined;
+    const tgWebApp = tgGlobal?.WebApp as { initData?: string; initDataUnsafe?: { user?: { id: number; first_name?: string; last_name?: string; username?: string } }; ready?: () => void; expand?: () => void; platform?: string } | undefined;
+    console.log('[TG] Telegram object:', !!tgGlobal, 'WebApp:', !!tgWebApp, 'initData length:', tgWebApp?.initData?.length || 0, 'platform:', tgWebApp?.platform);
+    console.log('[TG] initDataUnsafe:', JSON.stringify(tgWebApp?.initDataUnsafe));
+    
+    if (tgWebApp?.initData && tgWebApp.initData.length > 0) {
+      tgWebApp.ready?.();
+      tgWebApp.expand?.();
+      console.log('[TG] Sending webapp_auth...');
       fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ init_data: initData })
+        body: JSON.stringify({ init_data: tgWebApp.initData })
       })
         .then(r => r.json())
         .then(data => {
+          console.log('[TG] Auth response:', JSON.stringify(data));
           if (data.user) {
             const userData = {
               id: data.user.id,
@@ -299,7 +305,7 @@ const Index = () => {
             toast.success('Вы вошли через Telegram!');
           }
         })
-        .catch(() => {});
+        .catch(err => console.error('[TG] Auth error:', err));
       return;
     }
     
