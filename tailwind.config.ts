@@ -86,8 +86,8 @@ export default {
 					}
 				},
 				'pulse-glow': {
-					'0%, 100%': { opacity: '1', transform: 'scale(1)' },
-					'50%': { opacity: '0.8', transform: 'scale(1.02)' }
+					'0%, 100%': { opacity: '1', transform: 'scale(1)', boxShadow: '0 0 10px #39ff14' },
+					'50%': { opacity: '0.8', transform: 'scale(1.02)', boxShadow: '0 0 25px #39ff14' }
 				},
 				'fade-in': {
 					'0%': { opacity: '0', transform: 'translateY(6px)' },

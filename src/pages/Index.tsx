@@ -889,11 +889,11 @@ const Index = () => {
   if (screen === 'auth') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0118] via-[#1a0f2e] to-[#0f0520]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#FF10F0] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
-          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#00F0FF] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
+          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
         </div>
 
         <div className="relative z-10 max-w-md w-full space-y-4 sm:space-y-6 animate-fade-in">
@@ -915,7 +915,7 @@ const Index = () => {
                 placeholder={t.username}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
+                className="bg-black/40 border-[#39ff14]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#39ff14] transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
@@ -924,7 +924,7 @@ const Index = () => {
                 placeholder={t.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-black/40 border-[#FF10F0]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#FF10F0] transition-all"
+                className="bg-black/40 border-[#39ff14]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#39ff14] transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
@@ -938,7 +938,7 @@ const Index = () => {
               <div className="text-center pt-1">
                 <button
                   onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                  className="text-[#00F0FF] hover:text-[#FF10F0] transition-all text-sm sm:text-base font-medium"
+                  className="text-[#39ff14] hover:text-[#39ff14] transition-all text-sm sm:text-base font-medium"
                 >
                   {authMode === 'login' ? t.noAccount : t.hasAccount}
                 </button>
@@ -954,11 +954,11 @@ const Index = () => {
     return (
       <>
         <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0a0118] via-[#1a0f2e] to-[#0f0520]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
           
           <div className="absolute inset-0">
-            <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#FF10F0] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
-            <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#00F0FF] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
+            <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
           </div>
 
           <div className="relative z-10 max-w-4xl w-full space-y-6 sm:space-y-10 animate-fade-in">
@@ -974,20 +974,20 @@ const Index = () => {
                   <Button
                     onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                     variant="ghost"
-                    className="w-10 h-10 p-0 text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 rounded-lg transition-all border border-[#00F0FF]/30"
+                    className="w-10 h-10 p-0 text-[#39ff14] hover:text-[#39ff14] hover:bg-[#39ff14]/10 rounded-lg transition-all border border-[#39ff14]/30"
                   >
                     <span className="text-sm font-bold">{language === 'ru' ? 'RU' : 'EN'}</span>
                   </Button>
                   {showLanguageMenu && (
-                    <div className="absolute top-12 right-0 bg-[#1a1a2e] border border-[#FF10F0]/30 rounded-lg overflow-hidden shadow-xl z-50 min-w-[100px]">
+                    <div className="absolute top-12 right-0 bg-[#0a0a0a] border border-[#39ff14]/30 rounded-lg overflow-hidden shadow-xl z-50 min-w-[100px]">
                       <button
                         onClick={() => {
                           setLanguage('ru');
                           localStorage.setItem('language', 'ru');
                           setShowLanguageMenu(false);
                         }}
-                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#FF10F0]/20 transition-colors ${
-                          language === 'ru' ? 'bg-[#FF10F0]/10 text-[#FF10F0] font-bold' : 'text-gray-300'
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#39ff14]/20 transition-colors ${
+                          language === 'ru' ? 'bg-[#39ff14]/10 text-[#39ff14] font-bold' : 'text-gray-300'
                         }`}
                       >
                         🇷🇺 Русский
@@ -998,8 +998,8 @@ const Index = () => {
                           localStorage.setItem('language', 'en');
                           setShowLanguageMenu(false);
                         }}
-                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#00F0FF]/20 transition-colors ${
-                          language === 'en' ? 'bg-[#00F0FF]/10 text-[#00F0FF] font-bold' : 'text-gray-300'
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#39ff14]/20 transition-colors ${
+                          language === 'en' ? 'bg-[#39ff14]/10 text-[#39ff14] font-bold' : 'text-gray-300'
                         }`}
                       >
                         🇬🇧 English
@@ -1010,7 +1010,7 @@ const Index = () => {
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
-                  className="text-[#00F0FF] hover:text-[#FF10F0] hover:bg-[#FF10F0]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
+                  className="text-[#39ff14] hover:text-[#39ff14] hover:bg-[#39ff14]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
                 >
                   <Icon name="LogOut" size={18} className="mr-1 sm:mr-2" />
                   {t.logout}
@@ -1023,7 +1023,7 @@ const Index = () => {
                 <Button
                   onClick={() => setScreen('instructions')}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
                 >
                   <Icon name="Rocket" size={24} className="mr-2" />
                   {language === 'ru' ? 'Начать' : 'Start'}
@@ -1032,7 +1032,7 @@ const Index = () => {
                 <Button
                   onClick={handleVipSignals}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#9b87f5] border-2 border-[#9b87f5]/40 hover:border-[#9b87f5] hover-lift shine-effect"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
                 >
                   <Icon name="Crown" size={24} className="mr-2" />
                   {language === 'ru' ? 'VIP Сигналы' : 'VIP Signals'}
@@ -1042,7 +1042,7 @@ const Index = () => {
               <Button
                 onClick={() => setScreen('referral')}
                 size="lg"
-                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#00F0FF] border-2 border-[#00F0FF]/40 hover:border-[#00F0FF] hover-lift shine-effect"
+                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
               >
                 <Icon name="Users" size={24} className="mr-2" />
                 <span className="break-words">{language === 'ru' ? 'Реферальная программа' : 'Referral Program'}</span>
@@ -1061,7 +1061,7 @@ const Index = () => {
                   }
                 }}
                 size="lg"
-                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#FF10F0] border-2 border-[#FF10F0]/40 hover:border-[#FF10F0] hover-lift shine-effect"
+                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
               >
                 <Icon name="MessageCircle" size={24} className="mr-2" />
                 <span className="break-words">{language === 'ru' ? 'Поддержка 💬' : 'Support 💬'}</span>
@@ -1072,22 +1072,22 @@ const Index = () => {
 
         {showVipPaymentModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-lg animate-fade-in overflow-y-auto">
-            <Card className="glass-card border-2 border-[#9b87f5]/60 p-4 sm:p-6 max-w-lg w-full shine-effect my-4 sm:my-8">
+            <Card className="glass-card border-2 border-[#39ff14]/60 p-4 sm:p-6 max-w-lg w-full shine-effect my-4 sm:my-8">
               <div className="space-y-3 sm:space-y-4">
                 <div className="text-center">
                   <div className="mb-3 sm:mb-4 relative inline-block">
                     <div className="relative z-10">
-                      <Icon name="Crown" size={40} className="sm:hidden mx-auto text-[#9b87f5] animate-pulse" />
-                      <Icon name="Crown" size={56} className="hidden sm:block mx-auto text-[#9b87f5] animate-pulse" />
+                      <Icon name="Crown" size={40} className="sm:hidden mx-auto text-[#39ff14] animate-pulse" />
+                      <Icon name="Crown" size={56} className="hidden sm:block mx-auto text-[#39ff14] animate-pulse" />
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[#9b87f5] rounded-full blur-2xl opacity-60 animate-pulse"></div>
+                      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[#39ff14] rounded-full blur-2xl opacity-60 animate-pulse"></div>
                     </div>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black mb-2 gradient-text">
                     {t.vipAccess}
                   </h2>
-                  <div className="inline-flex items-center justify-center bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] px-4 py-2 rounded-full mb-3">
+                  <div className="inline-flex items-center justify-center bg-gradient-to-r from-[#39ff14] to-[#22cc00] px-4 py-2 rounded-full mb-3">
                     <p className="text-white font-bold text-sm sm:text-base">
                       {t.perMonth}
                     </p>
@@ -1106,20 +1106,20 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-[#1a1a2e] to-[#252545] p-3 sm:p-4 rounded-xl border border-[#9b87f5]/40">
+                <div className="bg-gradient-to-br from-[#0a0a0a] to-[#0d1f0d] p-3 sm:p-4 rounded-xl border border-[#39ff14]/40">
                   <div className="flex items-center gap-2 mb-2">
-                    <Icon name="Wallet" size={16} className="text-[#9b87f5]" />
+                    <Icon name="Wallet" size={16} className="text-[#39ff14]" />
                     <p className="text-xs sm:text-sm text-gray-300 font-semibold">{t.walletAddr}</p>
                   </div>
-                  <div className="bg-black/60 p-2 sm:p-3 rounded-lg border border-[#00F0FF]/30 mb-2">
-                    <p className="text-[10px] sm:text-xs text-[#00F0FF] font-mono break-all leading-relaxed">{CRYPTO_WALLET}</p>
+                  <div className="bg-black/60 p-2 sm:p-3 rounded-lg border border-[#39ff14]/30 mb-2">
+                    <p className="text-[10px] sm:text-xs text-[#39ff14] font-mono break-all leading-relaxed">{CRYPTO_WALLET}</p>
                   </div>
                   <Button
                     onClick={() => {
                       navigator.clipboard.writeText(CRYPTO_WALLET);
                       toast.success(language === 'ru' ? '✅ Адрес скопирован в буфер обмена!' : '✅ Address copied to clipboard!');
                     }}
-                    className="w-full bg-[#9b87f5]/20 hover:bg-[#9b87f5]/30 text-[#9b87f5] border border-[#9b87f5]/40 hover:border-[#9b87f5] transition-all h-9 sm:h-10 text-xs sm:text-sm font-bold"
+                    className="w-full bg-[#39ff14]/20 hover:bg-[#39ff14]/30 text-[#39ff14] border border-[#39ff14]/40 hover:border-[#39ff14] transition-all h-9 sm:h-10 text-xs sm:text-sm font-bold"
                   >
                     <Icon name="Copy" size={14} className="mr-1.5" />
                     {t.copyAddress}
@@ -1128,7 +1128,7 @@ const Index = () => {
 
                 <div className="space-y-1.5 sm:space-y-2">
                   <label className="text-xs sm:text-sm text-gray-300 font-semibold flex items-center gap-1.5">
-                    <Icon name="Image" size={14} className="text-[#9b87f5]" />
+                    <Icon name="Image" size={14} className="text-[#39ff14]" />
                     {t.screenshotLink}
                   </label>
                   <Input
@@ -1136,16 +1136,16 @@ const Index = () => {
                     placeholder="https://imgur.com/..."
                     value={vipPaymentScreenshot}
                     onChange={(e) => setVipPaymentScreenshot(e.target.value)}
-                    className="bg-black/60 border-[#9b87f5]/50 text-white placeholder:text-gray-500 h-10 sm:h-12 text-sm sm:text-base backdrop-blur-sm focus:border-[#9b87f5] transition-all"
+                    className="bg-black/60 border-[#39ff14]/50 text-white placeholder:text-gray-500 h-10 sm:h-12 text-sm sm:text-base backdrop-blur-sm focus:border-[#39ff14] transition-all"
                   />
                   <p className="text-[10px] sm:text-xs text-gray-400 leading-relaxed">
                     {t.uploadInstruction}
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-[#9b87f5]/15 to-[#7c3aed]/15 border border-[#9b87f5]/40 rounded-xl p-3">
+                <div className="bg-gradient-to-r from-[#39ff14]/15 to-[#22cc00]/15 border border-[#39ff14]/40 rounded-xl p-3">
                   <div className="flex items-start gap-2">
-                    <Icon name="Clock" size={18} className="text-[#9b87f5] flex-shrink-0 mt-0.5" />
+                    <Icon name="Clock" size={18} className="text-[#39ff14] flex-shrink-0 mt-0.5" />
                     <p className="text-xs sm:text-sm text-gray-200 leading-relaxed">
                       {t.reviewTime}
                     </p>
@@ -1159,13 +1159,13 @@ const Index = () => {
                       setVipPaymentScreenshot('');
                     }}
                     variant="outline"
-                    className="flex-1 h-10 sm:h-12 bg-transparent border-2 border-[#FF10F0]/50 text-[#FF10F0] hover:bg-[#FF10F0]/10 hover:border-[#FF10F0] transition-all text-xs sm:text-sm font-bold"
+                    className="flex-1 h-10 sm:h-12 bg-transparent border-2 border-[#39ff14]/50 text-[#39ff14] hover:bg-[#39ff14]/10 hover:border-[#39ff14] transition-all text-xs sm:text-sm font-bold"
                   >
                     {t.cancel}
                   </Button>
                   <Button
                     onClick={handleVipPaymentSubmit}
-                    className="flex-1 h-10 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-xs sm:text-sm font-bold shadow-lg shadow-[#9b87f5]/20"
+                    className="flex-1 h-10 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-xs sm:text-sm font-bold shadow-lg shadow-[#39ff14]/20"
                   >
                     <Icon name="Send" size={16} className="mr-1 sm:mr-1.5" />
                     {t.sendRequest}
@@ -1182,20 +1182,20 @@ const Index = () => {
   if (screen === 'instructions') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             {t.back}
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-8">
-            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#39ff14' }}>
               {t.instructionTitle}
             </h2>
 
@@ -1235,7 +1235,7 @@ const Index = () => {
                 window.open(urlToOpen, '_blank');
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
               {t.registerNow}
@@ -1250,7 +1250,7 @@ const Index = () => {
                 }
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
             >
               <Icon name="Play" size={24} className="mr-2" />
               {t.toSignals}
@@ -1264,36 +1264,36 @@ const Index = () => {
   if (screen === 'signals') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             {t.back}
           </Button>
 
-          <Card className="bg-black/60 border border-[#00F0FF]/30 p-4 sm:p-8 text-center">
-            <h2 className="text-3xl sm:text-5xl font-black mb-6 sm:mb-8" style={{ color: '#00F0FF' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-8 text-center">
+            <h2 className="text-3xl sm:text-5xl font-black mb-6 sm:mb-8" style={{ color: '#39ff14' }}>
               🎰 CRASH X
             </h2>
 
             {currentSignal !== null && (
-              <div className="mb-6 sm:mb-8 p-6 sm:p-12 bg-black/60 rounded-lg border-2 border-[#FF10F0]/50">
-                <p className="text-lg sm:text-2xl mb-3 sm:mb-4 text-[#00F0FF]">{t.yourSignal}</p>
-                <p className="text-5xl sm:text-8xl font-black animate-pulse-glow" style={{ color: '#FF10F0', textShadow: '0 0 30px rgba(255, 16, 240, 0.5)' }}>
+              <div className="mb-6 sm:mb-8 p-6 sm:p-12 bg-black/60 rounded-lg border-2 border-[#39ff14]/50">
+                <p className="text-lg sm:text-2xl mb-3 sm:mb-4 text-[#39ff14]">{t.yourSignal}</p>
+                <p className="text-5xl sm:text-8xl font-black animate-pulse-glow" style={{ color: '#39ff14', textShadow: '0 0 30px rgba(57, 255, 20, 0.5)' }}>
                   {currentSignal.toString().replace('.', ',')}x
                 </p>
               </div>
             )}
 
             {isWaiting && (
-              <div className="mb-6 p-4 bg-black/40 rounded-lg border border-[#00F0FF]/30">
-                <p className="text-[#00F0FF] text-lg">
-                  ⏱️ {t.nextSignalIn} <span className="font-bold text-[#FF10F0]">{timeLeft}{t.sec}</span>
+              <div className="mb-6 p-4 bg-black/40 rounded-lg border border-[#39ff14]/30">
+                <p className="text-[#39ff14] text-lg">
+                  ⏱️ {t.nextSignalIn} <span className="font-bold text-[#39ff14]">{timeLeft}{t.sec}</span>
                 </p>
               </div>
             )}
@@ -1302,7 +1302,7 @@ const Index = () => {
               onClick={generateSignal}
               size="lg"
               disabled={isWaiting}
-              className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Icon name="Zap" size={28} className="mr-2 sm:mr-3" />
               {currentSignal === null ? t.getSignal : isWaiting ? `${t.waiting} (${timeLeft}${t.sec})` : t.nextSignal}
@@ -1316,13 +1316,13 @@ const Index = () => {
   if (screen === 'referral') {
     return (
       <div className="min-h-screen p-3 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-2xl mx-auto space-y-3 sm:space-y-4 animate-fade-in py-3 sm:py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={18} className="mr-1.5" />
             <span className="text-sm sm:text-base">{t.back}</span>
@@ -1592,20 +1592,20 @@ const Index = () => {
   if (screen === 'vip') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-8">
-            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#9b87f5' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6 text-center" style={{ color: '#39ff14' }}>
               {t.vipInstruction}
             </h2>
 
@@ -1644,7 +1644,7 @@ const Index = () => {
                 window.open(urlToOpen, '_blank');
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#9b87f5] border-2 border-[#9b87f5]/30 hover:border-[#9b87f5]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
               {t.registerNow}
@@ -1653,7 +1653,7 @@ const Index = () => {
             <Button
               onClick={() => setScreen('crashx')}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
             >
               <Icon name="Play" size={24} className="mr-2" />
               {t.toSignals}
@@ -1667,22 +1667,22 @@ const Index = () => {
   if (screen === 'crashx') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-2xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('vip')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             {t.back}
           </Button>
 
-          <Card className="bg-black/60 border border-[#00F0FF]/40 p-6 sm:p-8">
+          <Card className="bg-black/60 border border-[#39ff14]/40 p-6 sm:p-8">
             <div className="text-center mb-6">
               <div className="text-4xl mb-3">🎰</div>
-              <h1 className="text-3xl sm:text-4xl font-black" style={{ color: '#00F0FF' }}>
+              <h1 className="text-3xl sm:text-4xl font-black" style={{ color: '#39ff14' }}>
                 CRASH X
               </h1>
             </div>
@@ -1691,26 +1691,26 @@ const Index = () => {
               <Button
                 onClick={generateCrashXSignal}
                 size="lg"
-                className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-2 border-[#9b87f5] transition-all"
+                className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#39ff14] to-[#22cc00] hover:from-[#2ecc00] hover:to-[#1aaa00] text-white border-2 border-[#39ff14] transition-all"
               >
                 <Icon name="Zap" size={28} className="mr-3" />
                 {t.getSignal}
               </Button>
             ) : (
               <div className="space-y-4">
-                <div className="bg-black/80 border-2 border-[#9b87f5] rounded-2xl p-6 sm:p-8">
-                  <p className="text-[#00F0FF] text-lg sm:text-xl text-center mb-3">{t.yourSignal}</p>
-                  <p className="text-5xl sm:text-7xl font-black text-center" style={{ color: '#FF10F0' }}>
+                <div className="bg-black/80 border-2 border-[#39ff14] rounded-2xl p-6 sm:p-8">
+                  <p className="text-[#39ff14] text-lg sm:text-xl text-center mb-3">{t.yourSignal}</p>
+                  <p className="text-5xl sm:text-7xl font-black text-center" style={{ color: '#39ff14' }}>
                     {crashXSignal.toFixed(2)}x
                   </p>
                 </div>
 
-                <div className="bg-black/60 border border-[#00F0FF]/30 rounded-xl p-4 sm:p-6 text-center">
+                <div className="bg-black/60 border border-[#39ff14]/30 rounded-xl p-4 sm:p-6 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <Icon name="Clock" size={24} className="text-[#00F0FF]" />
-                    <p className="text-[#00F0FF] text-base sm:text-lg">{t.nextSignalIn}</p>
+                    <Icon name="Clock" size={24} className="text-[#39ff14]" />
+                    <p className="text-[#39ff14] text-base sm:text-lg">{t.nextSignalIn}</p>
                   </div>
-                  <p className="text-3xl sm:text-4xl font-bold" style={{ color: '#FF10F0' }}>
+                  <p className="text-3xl sm:text-4xl font-bold" style={{ color: '#39ff14' }}>
                     {crashXTimeLeft}{t.sec}
                   </p>
                 </div>
@@ -1719,7 +1719,7 @@ const Index = () => {
                   onClick={generateCrashXSignal}
                   disabled={isCrashXWaiting}
                   size="lg"
-                  className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full h-14 sm:h-16 text-lg sm:text-xl font-bold bg-gradient-to-r from-[#39ff14] to-[#22cc00] hover:from-[#2ecc00] hover:to-[#1aaa00] text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <Icon name="Zap" size={24} className="mr-2" />
                   {isCrashXWaiting ? `${t.waiting} (${crashXTimeLeft}${t.sec})` : t.getSignal}
@@ -1735,11 +1735,11 @@ const Index = () => {
   if (screen === 'admin') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-6xl mx-auto space-y-6 py-4">
           <div className="flex justify-between items-center flex-wrap gap-3">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black" style={{ color: '#FF10F0', textShadow: '0 0 20px rgba(255, 16, 240, 0.5)' }}>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black" style={{ color: '#39ff14', textShadow: '0 0 20px rgba(57, 255, 20, 0.5)' }}>
               👑 {t.admin}
             </h1>
             <Button
@@ -1771,12 +1771,12 @@ const Index = () => {
                   toast.error('Ошибка загрузки статистики');
                 }
               }}
-              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#FF10F0]/50 transition-colors cursor-pointer">
+              className="bg-[#111111]/80 backdrop-blur-sm border border-[#1a1a1a]/50 p-4 hover:border-[#39ff14]/50 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Grid" size={24} className="text-[#FF10F0]" />
+                <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
+                  <Icon name="Grid" size={24} className="text-[#39ff14]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.summary}</h3>
+                <h3 className="text-lg font-semibold text-[#cccccc]">{t.summary}</h3>
               </div>
             </Card>
 
@@ -1791,12 +1791,12 @@ const Index = () => {
                   toast.error('Ошибка загрузки игроков');
                 }
               }}
-              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              className="bg-[#111111]/80 backdrop-blur-sm border border-[#1a1a1a]/50 p-4 hover:border-[#2a2a2a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Users" size={24} className="text-[#a8a8d8]" />
+                <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
+                  <Icon name="Users" size={24} className="text-[#cccccc]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.players}</h3>
+                <h3 className="text-lg font-semibold text-[#cccccc]">{t.players}</h3>
               </div>
             </Card>
 
@@ -1811,12 +1811,12 @@ const Index = () => {
                   toast.error('Ошибка загрузки чатов');
                 }
               }}
-              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              className="bg-[#111111]/80 backdrop-blur-sm border border-[#1a1a1a]/50 p-4 hover:border-[#2a2a2a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="MessageCircle" size={24} className="text-[#a8a8d8]" />
+                <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
+                  <Icon name="MessageCircle" size={24} className="text-[#cccccc]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.support}</h3>
+                <h3 className="text-lg font-semibold text-[#cccccc]">{t.support}</h3>
               </div>
             </Card>
 
@@ -1831,12 +1831,12 @@ const Index = () => {
                   toast.error('Ошибка загрузки заявок');
                 }
               }}
-              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer">
+              className="bg-[#111111]/80 backdrop-blur-sm border border-[#1a1a1a]/50 p-4 hover:border-[#2a2a2a]/70 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Wallet" size={24} className="text-[#a8a8d8]" />
+                <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
+                  <Icon name="Wallet" size={24} className="text-[#cccccc]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">Заявки на вывод</h3>
+                <h3 className="text-lg font-semibold text-[#cccccc]">Заявки на вывод</h3>
               </div>
             </Card>
 
@@ -1846,13 +1846,13 @@ const Index = () => {
                 setTempSiteName(customSiteName);
                 setScreen('admin_customization');
               }}
-              className="bg-[#2d2d4a]/80 backdrop-blur-sm border border-[#4a4a6a]/50 p-4 hover:border-[#6a6a8a]/70 transition-colors cursor-pointer"
+              className="bg-[#111111]/80 backdrop-blur-sm border border-[#1a1a1a]/50 p-4 hover:border-[#2a2a2a]/70 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-3">
-                <div className="bg-[#4a4a6a]/30 p-3 rounded-lg">
-                  <Icon name="Paintbrush" size={24} className="text-[#a8a8d8]" />
+                <div className="bg-[#1a1a1a]/30 p-3 rounded-lg">
+                  <Icon name="Paintbrush" size={24} className="text-[#cccccc]" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#a8a8d8]">{t.customization}</h3>
+                <h3 className="text-lg font-semibold text-[#cccccc]">{t.customization}</h3>
               </div>
             </Card>
           </div>
@@ -1866,57 +1866,57 @@ const Index = () => {
     const maxCount = stats ? Math.max(...stats.chart.map(d => d.count), 1) : 1;
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <div className="flex items-center gap-4">
-            <Button onClick={() => setScreen('admin')} variant="ghost" className="text-[#00F0FF] hover:text-[#FF10F0]">
+            <Button onClick={() => setScreen('admin')} variant="ghost" className="text-[#39ff14] hover:text-[#39ff14]">
               <Icon name="ArrowLeft" size={20} className="mr-2" />
               {language === 'ru' ? 'Назад' : 'Back'}
             </Button>
-            <h2 className="text-2xl font-black" style={{ color: '#FF10F0', textShadow: '0 0 15px rgba(255,16,240,0.5)' }}>
+            <h2 className="text-2xl font-black" style={{ color: '#39ff14', textShadow: '0 0 15px rgba(255,16,240,0.5)' }}>
               📊 {language === 'ru' ? 'Сводка' : 'Summary'}
             </h2>
           </div>
 
           {!stats ? (
-            <div className="text-center text-[#a8a8d8] py-12">
-              <Icon name="Loader" size={32} className="animate-spin mx-auto mb-3 text-[#FF10F0]" />
+            <div className="text-center text-[#cccccc] py-12">
+              <Icon name="Loader" size={32} className="animate-spin mx-auto mb-3 text-[#39ff14]" />
               {language === 'ru' ? 'Загрузка...' : 'Loading...'}
             </div>
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <Card className="bg-[#1a0f2e]/90 border border-[#FF10F0]/30 p-4 text-center">
-                  <div className="text-3xl font-black mb-1" style={{ color: '#FF10F0', textShadow: '0 0 15px rgba(255,16,240,0.6)' }}>
+                <Card className="bg-[#050f00]/90 border border-[#39ff14]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#39ff14', textShadow: '0 0 15px rgba(255,16,240,0.6)' }}>
                     {stats.online}
                   </div>
-                  <div className="text-xs text-[#a8a8d8]">
+                  <div className="text-xs text-[#cccccc]">
                     <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse" />
                     {language === 'ru' ? 'Онлайн сейчас' : 'Online now'}
                   </div>
                 </Card>
-                <Card className="bg-[#1a0f2e]/90 border border-[#00F0FF]/30 p-4 text-center">
-                  <div className="text-3xl font-black mb-1" style={{ color: '#00F0FF', textShadow: '0 0 15px rgba(0,240,255,0.6)' }}>
+                <Card className="bg-[#050f00]/90 border border-[#39ff14]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#39ff14', textShadow: '0 0 15px rgba(57,255,20,0.6)' }}>
                     {stats.totalUsers}
                   </div>
-                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Всего игроков' : 'Total players'}</div>
+                  <div className="text-xs text-[#cccccc]">{language === 'ru' ? 'Всего игроков' : 'Total players'}</div>
                 </Card>
-                <Card className="bg-[#1a0f2e]/90 border border-[#9b87f5]/30 p-4 text-center">
-                  <div className="text-3xl font-black mb-1" style={{ color: '#9b87f5', textShadow: '0 0 15px rgba(155,135,245,0.6)' }}>
+                <Card className="bg-[#050f00]/90 border border-[#39ff14]/30 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#39ff14', textShadow: '0 0 15px rgba(57,255,20,0.6)' }}>
                     {stats.todayRegistrations}
                   </div>
-                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Регистраций сегодня' : 'Registered today'}</div>
+                  <div className="text-xs text-[#cccccc]">{language === 'ru' ? 'Регистраций сегодня' : 'Registered today'}</div>
                 </Card>
-                <Card className="bg-[#1a0f2e]/90 border border-[#FF10F0]/20 p-4 text-center">
-                  <div className="text-3xl font-black mb-1" style={{ color: '#00F0FF', textShadow: '0 0 15px rgba(0,240,255,0.6)' }}>
+                <Card className="bg-[#050f00]/90 border border-[#39ff14]/20 p-4 text-center">
+                  <div className="text-3xl font-black mb-1" style={{ color: '#39ff14', textShadow: '0 0 15px rgba(57,255,20,0.6)' }}>
                     {stats.activeToday}
                   </div>
-                  <div className="text-xs text-[#a8a8d8]">{language === 'ru' ? 'Активных сегодня' : 'Active today'}</div>
+                  <div className="text-xs text-[#cccccc]">{language === 'ru' ? 'Активных сегодня' : 'Active today'}</div>
                 </Card>
               </div>
 
-              <Card className="bg-[#1a0f2e]/90 border border-[#9b87f5]/30 p-5">
-                <h3 className="text-sm font-semibold text-[#9b87f5] mb-4 flex items-center gap-2">
+              <Card className="bg-[#050f00]/90 border border-[#39ff14]/30 p-5">
+                <h3 className="text-sm font-semibold text-[#39ff14] mb-4 flex items-center gap-2">
                   <Icon name="TrendingUp" size={16} />
                   {language === 'ru' ? 'Регистрации за 7 дней' : 'Registrations last 7 days'}
                 </h3>
@@ -1928,15 +1928,15 @@ const Index = () => {
                         style={{
                           height: `${Math.max((day.count / maxCount) * 100, 4)}%`,
                           background: day.count > 0
-                            ? 'linear-gradient(to top, #FF10F0, #9b87f5)'
-                            : 'rgba(74,74,106,0.4)',
-                          boxShadow: day.count > 0 ? '0 0 8px rgba(255,16,240,0.4)' : 'none',
+                            ? 'linear-gradient(to top, #39ff14, #39ff14)'
+                            : 'rgba(30,30,30,0.8)',
+                          boxShadow: day.count > 0 ? '0 0 8px rgba(57,255,20,0.4)' : 'none',
                           minHeight: '4px'
                         }}
                       />
-                      <span className="text-[10px] text-[#6a6a8a]">{day.date}</span>
+                      <span className="text-[10px] text-[#2a2a2a]">{day.date}</span>
                       {day.count > 0 && (
-                        <span className="text-[10px] font-bold text-[#FF10F0]">{day.count}</span>
+                        <span className="text-[10px] font-bold text-[#39ff14]">{day.count}</span>
                       )}
                     </div>
                   ))}
@@ -1952,33 +1952,33 @@ const Index = () => {
   if (screen === 'admin_customization') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             {language === 'ru' ? 'Назад' : 'Back'}
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#9b87f5' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               ⚙️ {language === 'ru' ? 'Кастомизация' : 'Customization'}
             </h2>
 
             <div className="space-y-6">
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">
+                <label className="text-sm text-[#39ff14] mb-2 block font-semibold">
                   {language === 'ru' ? '🌐 Название сайта' : '🌐 Site Name'}
                 </label>
                 <Input
                   type="text"
                   value={tempSiteName}
                   onChange={(e) => setTempSiteName(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white placeholder:text-gray-500"
                   placeholder={language === 'ru' ? 'Например: LUSKY BEAR' : 'Example: LUSKY BEAR'}
                 />
                 <p className="text-xs text-gray-400 mt-2">
@@ -1987,14 +1987,14 @@ const Index = () => {
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">
+                <label className="text-sm text-[#39ff14] mb-2 block font-semibold">
                   {language === 'ru' ? '🔗 Ссылка на регистрацию' : '🔗 Registration Link'}
                 </label>
                 <Input
                   type="text"
                   value={tempRegisterUrl}
                   onChange={(e) => setTempRegisterUrl(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white placeholder:text-gray-500"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white placeholder:text-gray-500"
                   placeholder="https://t.me/..."
                 />
                 <p className="text-xs text-gray-400 mt-2">
@@ -2017,7 +2017,7 @@ const Index = () => {
                   toast.success(language === 'ru' ? '✅ Настройки успешно применены!' : '✅ Settings successfully applied!');
                   setScreen('admin');
                 }}
-                className="w-full h-12 bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] hover:from-[#8b77e5] hover:to-[#6c2acd] text-white border-0 text-lg font-bold"
+                className="w-full h-12 bg-gradient-to-r from-[#39ff14] to-[#22cc00] hover:from-[#2ecc00] hover:to-[#1aaa00] text-white border-0 text-lg font-bold"
               >
                 <Icon name="Check" size={20} className="mr-2" />
                 {language === 'ru' ? 'Применить' : 'Apply'}
@@ -2053,7 +2053,7 @@ const Index = () => {
   if (screen === 'admin_user' && selectedUser) {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
@@ -2062,21 +2062,21 @@ const Index = () => {
               setSelectedUser(null);
             }}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-4 sm:p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               Управление пользователем
             </h2>
 
             <div className="space-y-6">
-              <div className="bg-[#1a1a2e] p-4 rounded-lg border border-[#FF10F0]/20">
+              <div className="bg-[#0a0a0a] p-4 rounded-lg border border-[#39ff14]/20">
                 <p className="text-sm text-gray-400 mb-1">Имя пользователя</p>
-                <p className="text-xl font-bold text-[#FF10F0]">{selectedUser.username}</p>
+                <p className="text-xl font-bold text-[#39ff14]">{selectedUser.username}</p>
                 <p className="text-xs text-gray-500 mt-1">ID: {selectedUser.id}</p>
                 {selectedUser.isBanned && (
                   <div className="mt-3 p-2 bg-red-500/10 border border-red-500/30 rounded">
@@ -2088,30 +2088,30 @@ const Index = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm text-[#00F0FF] mb-2 block">Баланс (USDT)</label>
+                  <label className="text-sm text-[#39ff14] mb-2 block">Баланс (USDT)</label>
                   <Input
                     type="number"
                     value={editBalance}
                     onChange={(e) => setEditBalance(e.target.value)}
-                    className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                    className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                     placeholder="Введите новый баланс"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm text-[#00F0FF] mb-2 block">Количество рефералов</label>
+                  <label className="text-sm text-[#39ff14] mb-2 block">Количество рефералов</label>
                   <Input
                     type="number"
                     value={editReferrals}
                     onChange={(e) => setEditReferrals(e.target.value)}
-                    className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                    className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                     placeholder="Введите количество рефералов"
                   />
                 </div>
 
                 <Button
                   onClick={handleUpdateUser}
-                  className="w-full bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60"
+                  className="w-full bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
                 >
                   <Icon name="Save" size={18} className="mr-2" />
                   Сохранить изменения
@@ -2119,13 +2119,13 @@ const Index = () => {
               </div>
 
               {!selectedUser.isBanned ? (
-                <div className="space-y-3 pt-4 border-t border-[#FF10F0]/20">
+                <div className="space-y-3 pt-4 border-t border-[#39ff14]/20">
                   <label className="text-sm text-red-400 mb-2 block font-bold">Блокировка пользователя</label>
                   <Input
                     type="text"
                     value={banReason}
                     onChange={(e) => setBanReason(e.target.value)}
-                    className="bg-[#1a1a2e] border-red-500/30 text-white"
+                    className="bg-[#0a0a0a] border-red-500/30 text-white"
                     placeholder="Укажите причину блокировки"
                   />
                   <Button
@@ -2155,39 +2155,39 @@ const Index = () => {
   if (screen === 'withdrawal_method') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('referral')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               💸 Выберите метод вывода
             </h2>
 
             <div className="space-y-4">
               <div className="mb-4">
-                <label className="text-sm text-[#00F0FF] mb-2 block">Сумма вывода (₽)</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Сумма вывода (₽)</label>
                 <Input
                   type="number"
                   value={withdrawalAmount}
                   onChange={(e) => setWithdrawalAmount(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Минимум 200 ₽"
                 />
-                <p className="text-xs text-[#00F0FF] mt-1">Доступно: {balance} ₽</p>
+                <p className="text-xs text-[#39ff14] mt-1">Доступно: {balance} ₽</p>
               </div>
 
               <Button
                 onClick={() => setScreen('withdrawal_sbp')}
-                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60"
+                className="w-full h-16 text-lg bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="Smartphone" size={24} className="mr-2" />
                 Вывести по СБП
@@ -2195,7 +2195,7 @@ const Index = () => {
 
               <Button
                 onClick={() => setScreen('withdrawal_card')}
-                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#00F0FF] border-2 border-[#00F0FF]/30 hover:border-[#00F0FF]/60"
+                className="w-full h-16 text-lg bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="CreditCard" size={24} className="mr-2" />
                 Вывести на карту
@@ -2210,52 +2210,52 @@ const Index = () => {
   if (screen === 'withdrawal_sbp') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('withdrawal_method')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               📱 Вывод по СБП
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Номер телефона</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Номер телефона</label>
                 <Input
                   type="tel"
                   value={sbpPhone}
                   onChange={(e) => setSbpPhone(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="+79001234567"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Имя получателя</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Имя получателя</label>
                 <Input
                   type="text"
                   value={sbpName}
                   onChange={(e) => setSbpName(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Иван Иванов"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Выберите банк</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Выберите банк</label>
                 <select
                   value={sbpBank}
                   onChange={(e) => setSbpBank(e.target.value)}
-                  className="w-full bg-[#1a1a2e] border border-[#FF10F0]/30 text-white rounded-md px-3 py-2 focus:outline-none focus:border-[#FF10F0]"
+                  className="w-full bg-[#0a0a0a] border border-[#39ff14]/30 text-white rounded-md px-3 py-2 focus:outline-none focus:border-[#39ff14]"
                 >
                   <option value="Сбербанк">Сбербанк</option>
                   <option value="Тинькофф">Тинькофф</option>
@@ -2265,13 +2265,13 @@ const Index = () => {
                 </select>
               </div>
 
-              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#FF10F0]/20">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+              <div className="bg-[#0a0a0a] p-3 rounded-lg border border-[#39ff14]/20">
+                <p className="text-sm text-[#39ff14]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
               </div>
 
               <Button
                 onClick={handleWithdrawSbp}
-                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60"
+                className="w-full h-12 bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="Send" size={20} className="mr-2" />
                 Вывести
@@ -2286,43 +2286,43 @@ const Index = () => {
   if (screen === 'withdrawal_card') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('withdrawal_method')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               💳 Вывод на карту
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Номер карты</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Номер карты</label>
                 <Input
                   type="text"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="1234 5678 9012 3456"
                   maxLength={19}
                 />
               </div>
 
-              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#FF10F0]/20">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
+              <div className="bg-[#0a0a0a] p-3 rounded-lg border border-[#39ff14]/20">
+                <p className="text-sm text-[#39ff14]">Сумма: <span className="font-bold">{withdrawalAmount || '0'} ₽</span></p>
               </div>
 
               <Button
                 onClick={handleWithdrawCard}
-                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#FF10F0] border-2 border-[#FF10F0]/30 hover:border-[#FF10F0]/60"
+                className="w-full h-12 bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="Send" size={20} className="mr-2" />
                 Вывести
@@ -2337,35 +2337,35 @@ const Index = () => {
   if (screen === 'withdrawal_crypto_select') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('referral')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#FF10F0]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#FF10F0' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               💰 Выберите криптовалюту
             </h2>
 
             <div className="space-y-4">
               <div className="mb-4">
-                <p className="text-center text-[#00F0FF] font-semibold mb-3">Минимальный вывод от 10$</p>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Сумма вывода ($)</label>
+                <p className="text-center text-[#39ff14] font-semibold mb-3">Минимальный вывод от 10$</p>
+                <label className="text-sm text-[#39ff14] mb-2 block">Сумма вывода ($)</label>
                 <Input
                   type="number"
                   value={withdrawalAmount}
                   onChange={(e) => setWithdrawalAmount(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#FF10F0]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Минимум 10$"
                 />
-                <p className="text-xs text-[#00F0FF] mt-1">Доступно: {balance}$</p>
+                <p className="text-xs text-[#39ff14] mt-1">Доступно: {balance}$</p>
               </div>
 
               <Button
@@ -2377,7 +2377,7 @@ const Index = () => {
                   setCryptoType('USDT');
                   setScreen('withdrawal_crypto_usdt');
                 }}
-                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#26A17B] border-2 border-[#26A17B]/30 hover:border-[#26A17B]/60"
+                className="w-full h-16 text-lg bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="DollarSign" size={24} className="mr-2" />
                 USDT
@@ -2392,7 +2392,7 @@ const Index = () => {
                   setCryptoType('TON');
                   setScreen('withdrawal_crypto_ton');
                 }}
-                className="w-full h-16 text-lg bg-[#1a1a2e] hover:bg-[#252545] text-[#0088CC] border-2 border-[#0088CC]/30 hover:border-[#0088CC]/60"
+                className="w-full h-16 text-lg bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="Gem" size={24} className="mr-2" />
                 TON
@@ -2407,34 +2407,34 @@ const Index = () => {
   if (screen === 'withdrawal_crypto_usdt') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('withdrawal_crypto_select')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#26A17B]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#26A17B' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               💵 Вывод USDT
             </h2>
 
             <div className="space-y-4">
-              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#26A17B]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
+              <div className="bg-[#0a0a0a] p-3 rounded-lg border border-[#39ff14]/20 mb-4">
+                <p className="text-sm text-[#39ff14]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Выберите сеть</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Выберите сеть</label>
                 <select
                   value={cryptoNetwork}
                   onChange={(e) => setCryptoNetwork(e.target.value as 'TON' | 'TRC20')}
-                  className="w-full bg-[#1a1a2e] border border-[#26A17B]/30 text-white rounded-md px-3 py-2 focus:outline-none focus:border-[#26A17B]"
+                  className="w-full bg-[#0a0a0a] border border-[#39ff14]/30 text-white rounded-md px-3 py-2 focus:outline-none focus:border-[#39ff14]"
                 >
                   <option value="">Выберите сеть</option>
                   <option value="TON">The Open Network (TON)</option>
@@ -2443,12 +2443,12 @@ const Index = () => {
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Адрес кошелька USDT</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Адрес кошелька USDT</label>
                 <Input
                   type="text"
                   value={cryptoWallet}
                   onChange={(e) => setCryptoWallet(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#26A17B]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Введите адрес кошелька"
                 />
               </div>
@@ -2466,7 +2466,7 @@ const Index = () => {
                   setConfirmStep(0);
                   setScreen('withdrawal_crypto_confirm');
                 }}
-                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#26A17B] border-2 border-[#26A17B]/30 hover:border-[#26A17B]/60"
+                className="w-full h-12 bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="ArrowRight" size={20} className="mr-2" />
                 Далее
@@ -2481,35 +2481,35 @@ const Index = () => {
   if (screen === 'withdrawal_crypto_ton') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('withdrawal_crypto_select')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#0088CC]/30 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#0088CC' }}>
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: '#39ff14' }}>
               💎 Вывод TON
             </h2>
 
             <div className="space-y-4">
-              <div className="bg-[#1a1a2e] p-3 rounded-lg border border-[#0088CC]/20 mb-4">
-                <p className="text-sm text-[#00F0FF]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
+              <div className="bg-[#0a0a0a] p-3 rounded-lg border border-[#39ff14]/20 mb-4">
+                <p className="text-sm text-[#39ff14]">Сумма: <span className="font-bold">{withdrawalAmount || '0'}$</span></p>
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block">Адрес TON кошелька</label>
+                <label className="text-sm text-[#39ff14] mb-2 block">Адрес TON кошелька</label>
                 <Input
                   type="text"
                   value={cryptoWallet}
                   onChange={(e) => setCryptoWallet(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#0088CC]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="UQ..."
                 />
               </div>
@@ -2523,7 +2523,7 @@ const Index = () => {
                   setConfirmStep(0);
                   setScreen('withdrawal_crypto_confirm');
                 }}
-                className="w-full h-12 bg-[#1a1a2e] hover:bg-[#252545] text-[#0088CC] border-2 border-[#0088CC]/30 hover:border-[#0088CC]/60"
+                className="w-full h-12 bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60"
               >
                 <Icon name="ArrowRight" size={20} className="mr-2" />
                 Далее
@@ -2536,12 +2536,12 @@ const Index = () => {
   }
 
   if (screen === 'withdrawal_crypto_confirm') {
-    const borderColor = cryptoType === 'USDT' ? '#26A17B' : '#0088CC';
-    const textColor = cryptoType === 'USDT' ? '#26A17B' : '#0088CC';
+    const borderColor = cryptoType === 'USDT' ? '#39ff14' : '#39ff14';
+    const textColor = cryptoType === 'USDT' ? '#39ff14' : '#39ff14';
 
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
@@ -2554,7 +2554,7 @@ const Index = () => {
               setConfirmStep(0);
             }}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
@@ -2566,13 +2566,13 @@ const Index = () => {
             </h2>
 
             <div className="space-y-4 mb-6">
-              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+              <div className="bg-[#0a0a0a] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
                 <p className="text-sm text-gray-400 mb-2">Криптовалюта:</p>
                 <p className="text-xl font-bold" style={{ color: textColor }}>{cryptoType}</p>
               </div>
 
               {cryptoType === 'USDT' && (
-                <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+                <div className="bg-[#0a0a0a] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
                   <p className="text-sm text-gray-400 mb-2">Сеть:</p>
                   <p className="text-xl font-bold" style={{ color: textColor }}>
                     {cryptoNetwork === 'TON' ? 'The Open Network (TON)' : 'Tron (TRC20)'}
@@ -2580,14 +2580,14 @@ const Index = () => {
                 </div>
               )}
 
-              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+              <div className="bg-[#0a0a0a] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
                 <p className="text-sm text-gray-400 mb-2">Адрес кошелька:</p>
                 <p className="text-sm font-mono break-all" style={{ color: textColor }}>{cryptoWallet}</p>
               </div>
 
-              <div className="bg-[#1a1a2e] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
+              <div className="bg-[#0a0a0a] p-4 rounded-lg border" style={{ borderColor: `${borderColor}20` }}>
                 <p className="text-sm text-gray-400 mb-2">Сумма вывода:</p>
-                <p className="text-xl font-bold text-[#FF10F0]">{withdrawalAmount} ₽</p>
+                <p className="text-xl font-bold text-[#39ff14]">{withdrawalAmount} ₽</p>
               </div>
             </div>
 
@@ -2636,25 +2636,25 @@ const Index = () => {
   if (screen === 'admin_user' && selectedUser) {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
               👤 {selectedUser.username}
             </h2>
 
             <div className="space-y-6">
-              <div className="bg-[#1a1a2e] p-4 rounded-lg space-y-2">
+              <div className="bg-[#0a0a0a] p-4 rounded-lg space-y-2">
                 <p className="text-sm text-gray-400">ID: {selectedUser.id}</p>
                 <p className="text-sm text-gray-400">💰 Баланс: {selectedUser.balance} USDT</p>
                 <p className="text-sm text-gray-400">👥 Рефералов: {selectedUser.referralCount}</p>
@@ -2664,36 +2664,36 @@ const Index = () => {
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">Изменить баланс</label>
+                <label className="text-sm text-[#39ff14] mb-2 block font-semibold">Изменить баланс</label>
                 <Input
                   type="number"
                   value={editBalance}
                   onChange={(e) => setEditBalance(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Новый баланс USDT"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-[#00F0FF] mb-2 block font-semibold">Изменить кол-во рефералов</label>
+                <label className="text-sm text-[#39ff14] mb-2 block font-semibold">Изменить кол-во рефералов</label>
                 <Input
                   type="number"
                   value={editReferrals}
                   onChange={(e) => setEditReferrals(e.target.value)}
-                  className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                  className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                   placeholder="Новое кол-во рефералов"
                 />
               </div>
 
               <Button
                 onClick={handleUpdateUser}
-                className="w-full bg-[#9b87f5] hover:bg-[#8b77e5] text-white"
+                className="w-full bg-[#39ff14] hover:bg-[#2ecc00] text-white"
               >
                 <Icon name="Save" size={18} className="mr-2" />
                 Сохранить изменения
               </Button>
 
-              <div className="border-t border-[#FF10F0]/20 pt-6">
+              <div className="border-t border-[#39ff14]/20 pt-6">
                 {selectedUser.isBanned ? (
                   <Button
                     onClick={() => handleUnbanUser(selectedUser.id)}
@@ -2707,7 +2707,7 @@ const Index = () => {
                     <Input
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
-                      className="bg-[#1a1a2e] border-red-500/30 text-white"
+                      className="bg-[#0a0a0a] border-red-500/30 text-white"
                       placeholder="Причина блокировки"
                     />
                     <Button
@@ -2721,11 +2721,11 @@ const Index = () => {
                 )}
               </div>
 
-              <div className="border-t border-[#FF10F0]/20 pt-4">
+              <div className="border-t border-[#39ff14]/20 pt-4">
                 {selectedUser.isPinned ? (
                   <Button
                     onClick={() => handleUnpinUser(selectedUser.id)}
-                    className="w-full bg-[#1a1a2e] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
+                    className="w-full bg-[#0a0a0a] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
                   >
                     <Icon name="StarOff" size={18} className="mr-2" />
                     Открепить
@@ -2733,7 +2733,7 @@ const Index = () => {
                 ) : (
                   <Button
                     onClick={() => handlePinUser(selectedUser.id)}
-                    className="w-full bg-[#1a1a2e] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
+                    className="w-full bg-[#0a0a0a] border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/10"
                   >
                     <Icon name="Star" size={18} className="mr-2" />
                     Закрепить
@@ -2750,19 +2750,19 @@ const Index = () => {
   if (screen === 'admin_players') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
               👥 Все игроки ({allPlayers.length})
             </h2>
@@ -2778,11 +2778,11 @@ const Index = () => {
                     setBanReason('');
                     setScreen('admin_user');
                   }}
-                  className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors cursor-pointer"
+                  className="bg-[#0a0a0a] border border-[#39ff14]/20 p-4 hover:border-[#39ff14]/50 transition-colors cursor-pointer"
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-lg font-bold text-[#9b87f5]">{player.username}</p>
+                      <p className="text-lg font-bold text-[#39ff14]">{player.username}</p>
                       <div className="text-sm text-gray-400 space-y-1 mt-2">
                         <p>💰 Баланс: {player.balance} USDT</p>
                         <p>👥 Рефералов: {player.referralCount}</p>
@@ -2791,7 +2791,7 @@ const Index = () => {
                         {player.isBanned && <p className="text-red-400">🚫 Заблокирован</p>}
                       </div>
                     </div>
-                    <Icon name="ChevronRight" size={20} className="text-[#9b87f5]/50" />
+                    <Icon name="ChevronRight" size={20} className="text-[#39ff14]/50" />
                   </div>
                 </Card>
               ))}
@@ -2805,19 +2805,19 @@ const Index = () => {
   if (screen === 'admin_support') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold gradient-text">
                 💬 Чаты поддержки ({supportChats.length})
@@ -2839,11 +2839,11 @@ const Index = () => {
                       toast.error('Ошибка загрузки сообщений');
                     }
                   }}
-                  className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4 hover:border-[#9b87f5]/50 transition-colors cursor-pointer"
+                  className="bg-[#0a0a0a] border border-[#39ff14]/20 p-4 hover:border-[#39ff14]/50 transition-colors cursor-pointer"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <p className="text-lg font-bold text-[#9b87f5]">{chat.username}</p>
+                      <p className="text-lg font-bold text-[#39ff14]">{chat.username}</p>
                       <p className="text-sm text-gray-400 mt-1">{chat.lastMessage}</p>
                       <p className="text-xs text-gray-500 mt-1">
                         {new Date(chat.lastMessageTime).toLocaleString()}
@@ -2870,19 +2870,19 @@ const Index = () => {
   if (screen === 'admin_support_chat' && selectedChat) {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin_support')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
               Чат с {selectedChat.username}
             </h2>
@@ -2893,7 +2893,7 @@ const Index = () => {
                   key={msg.id}
                   className={`p-3 rounded-lg ${msg.isAdminReply ? 'bg-blue-900/30 ml-8' : 'bg-gray-800/50 mr-8'}`}
                 >
-                  <p className="text-sm font-semibold text-[#9b87f5] mb-1">
+                  <p className="text-sm font-semibold text-[#39ff14] mb-1">
                     {msg.isAdminReply ? `Админ (${msg.adminUsername})` : selectedChat.username}
                   </p>
                   <p className="text-white">{msg.message}</p>
@@ -2909,7 +2909,7 @@ const Index = () => {
                 value={supportMessage}
                 onChange={(e) => setSupportMessage(e.target.value)}
                 placeholder="Введите ответ..."
-                className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter' && supportMessage.trim()) {
                     fetch(SUPPORT_URL, {
@@ -2957,7 +2957,7 @@ const Index = () => {
                     toast.error('Ошибка отправки');
                   }
                 }}
-                className="bg-[#9b87f5] hover:bg-[#8b77e5]"
+                className="bg-[#39ff14] hover:bg-[#2ecc00]"
               >
                 <Icon name="Send" size={20} />
               </Button>
@@ -2971,30 +2971,30 @@ const Index = () => {
   if (screen === 'admin_withdrawals') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-7xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('admin')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             Назад
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
               💸 Заявки на вывод ({withdrawalRequests.length})
             </h2>
 
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
               {withdrawalRequests.map((req) => (
-                <Card key={req.id} className="bg-[#1a1a2e] border border-[#9b87f5]/20 p-4">
+                <Card key={req.id} className="bg-[#0a0a0a] border border-[#39ff14]/20 p-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-lg font-bold text-[#9b87f5]">{req.username}</p>
+                        <p className="text-lg font-bold text-[#39ff14]">{req.username}</p>
                         <p className="text-sm text-gray-400">ID заявки: {req.id}</p>
                       </div>
                       <div className="text-right">
@@ -3086,19 +3086,19 @@ const Index = () => {
   if (screen === 'support_chat') {
     return (
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0f2e] via-[#0f1419] to-[#1a0f2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
         
         <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-fade-in py-4">
           <Button
             onClick={() => setScreen('home')}
             variant="ghost"
-            className="text-[#00F0FF] hover:text-[#FF10F0]"
+            className="text-[#39ff14] hover:text-[#39ff14]"
           >
             <Icon name="ArrowLeft" size={20} className="mr-2" />
             {language === 'ru' ? 'Назад' : 'Back'}
           </Button>
 
-          <Card className="bg-black/60 border border-[#9b87f5]/30 p-4 sm:p-6">
+          <Card className="bg-black/60 border border-[#39ff14]/30 p-4 sm:p-6">
             <h2 className="text-2xl font-bold mb-6 text-center gradient-text">
               💬 {language === 'ru' ? 'Поддержка' : 'Support'}
             </h2>
@@ -3109,7 +3109,7 @@ const Index = () => {
                   key={msg.id}
                   className={`p-3 rounded-lg ${msg.isAdminReply ? 'bg-blue-900/30 ml-8' : 'bg-gray-800/50 mr-8'}`}
                 >
-                  <p className="text-sm font-semibold text-[#9b87f5] mb-1">
+                  <p className="text-sm font-semibold text-[#39ff14] mb-1">
                     {msg.isAdminReply ? 'Поддержка' : user?.username}
                   </p>
                   <p className="text-white">{msg.message}</p>
@@ -3125,7 +3125,7 @@ const Index = () => {
                 value={supportMessage}
                 onChange={(e) => setSupportMessage(e.target.value)}
                 placeholder={language === 'ru' ? 'Введите сообщение...' : 'Type a message...'}
-                className="bg-[#1a1a2e] border-[#9b87f5]/30 text-white"
+                className="bg-[#0a0a0a] border-[#39ff14]/30 text-white"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter' && supportMessage.trim() && user) {
                     fetch(SUPPORT_URL, {
@@ -3171,7 +3171,7 @@ const Index = () => {
                     toast.error(language === 'ru' ? 'Ошибка отправки' : 'Send error');
                   }
                 }}
-                className="bg-[#9b87f5] hover:bg-[#8b77e5]"
+                className="bg-[#39ff14] hover:bg-[#2ecc00]"
               >
                 <Icon name="Send" size={20} />
               </Button>
