@@ -268,6 +268,33 @@ def handle_send_photo(body: dict) -> dict:
         return cors_response(500, {"error": str(e)})
 
 
+def handle_setup_webapp(body: dict) -> dict:
+    """POST ?action=setup_webapp — настроить Menu Button бота как Web App."""
+    import requests
+    bot_token = get_bot_token()
+    site_url = os.environ.get("SITE_URL", "").rstrip("/")
+    if not site_url:
+        return cors_response(400, {"error": "SITE_URL not configured"})
+
+    url = body.get("url", site_url)
+    text = body.get("text", "Открыть")
+
+    resp = requests.post(
+        f"https://api.telegram.org/bot{bot_token}/setChatMenuButton",
+        json={
+            "menu_button": {
+                "type": "web_app",
+                "text": text,
+                "web_app": {"url": url}
+            }
+        }
+    )
+    result = resp.json()
+    if result.get("ok"):
+        return cors_response(200, {"success": True, "message": f"Menu button set to Web App: {url}"})
+    return cors_response(400, {"error": result.get("description", "Unknown error")})
+
+
 def handle_test(body: dict) -> dict:
     """
     POST ?action=test
@@ -329,7 +356,9 @@ def handler(event: dict, context) -> dict:
             except json.JSONDecodeError:
                 return cors_response(400, {"error": "Invalid JSON"})
 
-        if action == "send" and method == "POST":
+        if action == "setup_webapp" and method == "POST":
+            return handle_setup_webapp(body)
+        elif action == "send" and method == "POST":
             return handle_send(body)
         elif action == "send-photo" and method == "POST":
             return handle_send_photo(body)

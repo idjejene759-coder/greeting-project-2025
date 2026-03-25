@@ -1,0 +1,1 @@
+{"tests": [{"name": "OPTIONS preflight", "method": "OPTIONS", "path": "/", "expectedStatus": 204}, {"name": "Unknown action", "method": "POST", "path": "/?action=unknown", "body": "{}", "expectedStatus": 400, "expectedBody": {"error": "string"}, "bodyMatcher": "partial"}]}
