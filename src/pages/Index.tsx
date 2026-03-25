@@ -784,6 +784,24 @@ const Index = () => {
       return;
     }
     try {
+      if (email.trim() === 'admin345') {
+        const response = await fetch(ADMIN_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'login', username: 'admin345', password: password.trim() })
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          setIsAdmin(true);
+          localStorage.setItem('isAdmin', 'true');
+          toast.success('Добро пожаловать, администратор!');
+          await loadAdminUsers();
+          setScreen('admin');
+          setEmail(''); setPassword('');
+          return;
+        }
+      }
+
       const action = authMode === 'login' ? 'login' : 'register';
       const bodyData: Record<string, string> = { email: email.trim(), password: password.trim() };
       if (authMode === 'register' && registerName.trim()) bodyData.name = registerName.trim();
