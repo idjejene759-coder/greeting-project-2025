@@ -420,7 +420,7 @@ const Index = () => {
 
   useEffect(() => {
     if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 929);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && isWaiting) {
       setIsWaiting(false);
@@ -429,7 +429,7 @@ const Index = () => {
 
   useEffect(() => {
     if (crashXTimeLeft > 0) {
-      const timer = setTimeout(() => setCrashXTimeLeft(crashXTimeLeft - 1), 1000);
+      const timer = setTimeout(() => setCrashXTimeLeft(crashXTimeLeft - 1), 929);
       return () => clearTimeout(timer);
     } else if (crashXTimeLeft === 0 && isCrashXWaiting) {
       setIsCrashXWaiting(false);
@@ -455,7 +455,7 @@ const Index = () => {
     
     setCurrentSignal(parseFloat(signal.replace(',', '.')));
     setIsWaiting(true);
-    setTimeLeft(60);
+    setTimeLeft(7);
   };
 
   const checkVipStatus = async () => {
@@ -628,7 +628,7 @@ const Index = () => {
     
     setCrashXSignal(parseFloat(signal));
     setIsCrashXWaiting(true);
-    setCrashXTimeLeft(60);
+    setCrashXTimeLeft(7);
   };
 
   const handleRegister = () => {
@@ -1464,42 +1464,36 @@ const Index = () => {
             <span className="text-sm sm:text-base">{t.back}</span>
           </Button>
 
-          <Card className="bg-white/95 backdrop-blur-sm border-0 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b-2 border-purple-600">
+          <Card className="bg-black/60 border border-[#39ff14]/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-[#39ff14]/30">
               <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Icon name="Clock" size={20} className="sm:w-6 sm:h-6 text-purple-600" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#39ff14]/10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Icon name="Users" size={20} className="sm:w-6 sm:h-6 text-[#39ff14]" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">{t.allTime}</h2>
-                  <div className="h-1 w-20 sm:w-32 bg-gradient-to-r from-purple-600 to-purple-400 rounded-full mt-1"></div>
+                  <h2 className="text-lg sm:text-2xl font-bold text-white truncate">{t.allTime}</h2>
+                  <div className="h-1 w-20 sm:w-32 bg-[#39ff14]/60 rounded-full mt-1"></div>
                 </div>
               </div>
               <div className="relative">
                 <button 
                   onClick={() => setShowReferralMenu(!showReferralMenu)}
-                  className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="flex-shrink-0 p-2 hover:bg-white/10 rounded-full transition-colors"
                 >
-                  <Icon name="MoreVertical" size={20} className="text-gray-600" />
+                  <Icon name="MoreVertical" size={20} className="text-[#39ff14]" />
                 </button>
                 
                 {showReferralMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
+                  <div className="absolute right-0 top-full mt-2 w-40 bg-black/90 rounded-lg border border-[#39ff14]/30 overflow-hidden z-50">
                     <button
-                      onClick={() => {
-                        setReferralView('main');
-                        setShowReferralMenu(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'main' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
+                      onClick={() => { setReferralView('main'); setShowReferralMenu(false); }}
+                      className={`w-full text-left px-4 py-3 hover:bg-[#39ff14]/10 transition-colors ${referralView === 'main' ? 'text-[#39ff14] font-semibold' : 'text-gray-300'}`}
                     >
                       {t.main}
                     </button>
                     <button
-                      onClick={() => {
-                        setReferralView('withdrawal');
-                        setShowReferralMenu(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${referralView === 'withdrawal' ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-700'}`}
+                      onClick={() => { setReferralView('withdrawal'); setShowReferralMenu(false); }}
+                      className={`w-full text-left px-4 py-3 hover:bg-[#39ff14]/10 transition-colors ${referralView === 'withdrawal' ? 'text-[#39ff14] font-semibold' : 'text-gray-300'}`}
                     >
                       {t.withdrawal}
                     </button>
@@ -1511,28 +1505,27 @@ const Index = () => {
             {referralView === 'main' && (
               <>
                 <div className="space-y-0">
-                  <div className="flex justify-between items-center py-3 sm:py-4 border-b border-gray-200 gap-2">
-                    <span className="text-gray-700 text-sm sm:text-lg font-medium">{t.clicks}</span>
-                    <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralClicks}</span>
+                  <div className="flex justify-between items-center py-3 sm:py-4 border-b border-[#39ff14]/20 gap-2">
+                    <span className="text-gray-300 text-sm sm:text-lg font-medium">{t.clicks}</span>
+                    <span className="text-[#39ff14] text-lg sm:text-xl font-bold">{referralClicks}</span>
                   </div>
-
                   <div className="flex justify-between items-center py-3 sm:py-4 gap-2">
-                    <span className="text-gray-700 text-sm sm:text-lg font-medium">{t.registrations}</span>
-                    <span className="text-gray-800 text-lg sm:text-xl font-bold">{referralRegistrations}</span>
+                    <span className="text-gray-300 text-sm sm:text-lg font-medium">{t.registrations}</span>
+                    <span className="text-[#39ff14] text-lg sm:text-xl font-bold">{referralRegistrations}</span>
                   </div>
                 </div>
 
-                <div className="mt-4 sm:mt-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-purple-200">
+                <div className="mt-4 sm:mt-6 bg-[#39ff14]/5 rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-[#39ff14]/30">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-                    <Icon name="Link" size={18} className="text-purple-600 flex-shrink-0" />
-                    <h3 className="text-gray-800 font-bold text-sm sm:text-lg">{t.yourRefLink}</h3>
+                    <Icon name="Link" size={18} className="text-[#39ff14] flex-shrink-0" />
+                    <h3 className="text-white font-bold text-sm sm:text-lg">{t.yourRefLink}</h3>
                   </div>
-                  <div className="bg-white rounded-lg sm:rounded-xl p-2 sm:p-3 border border-purple-300 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <div className="bg-black/50 rounded-lg sm:rounded-xl p-2 sm:p-3 border border-[#39ff14]/20 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <input
                       type="text"
                       readOnly
                       value={`https://cubistime.ru?ref=${user?.id || 0}`}
-                      className="flex-1 bg-transparent border-none outline-none text-purple-700 font-mono text-xs sm:text-sm overflow-x-auto whitespace-nowrap"
+                      className="flex-1 bg-transparent border-none outline-none text-[#39ff14] font-mono text-xs sm:text-sm overflow-x-auto whitespace-nowrap"
                     />
                     <Button
                       onClick={() => {
@@ -1540,19 +1533,19 @@ const Index = () => {
                         toast.success('✅ Ссылка скопирована!');
                       }}
                       size="sm"
-                      className="bg-purple-600 hover:bg-purple-700 text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
+                      className="bg-[#1f7a3a] hover:bg-[#256640] text-white border-0 px-3 sm:px-4 py-2 rounded-lg transition-all flex-shrink-0 text-xs sm:text-sm"
                     >
                       <Icon name="Copy" size={14} className="mr-1" />
                       {t.copy}
                     </Button>
                   </div>
-                  <p className="text-gray-600 text-xs mt-2">{t.sendToFriends}</p>
+                  <p className="text-gray-400 text-xs mt-2">{t.sendToFriends}</p>
                 </div>
 
                 <div className="mt-3 sm:mt-4">
-                  <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg">
-                    <p className="text-white text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t.income}</p>
-                    <p className="text-white text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
+                  <div className="bg-[#39ff14]/10 border border-[#39ff14]/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+                    <p className="text-gray-300 text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t.income}</p>
+                    <p className="text-[#39ff14] text-3xl sm:text-4xl font-black">{(referralRegistrations * 0.5).toFixed(2)} $</p>
                   </div>
                 </div>
               </>
@@ -1561,30 +1554,24 @@ const Index = () => {
             {referralView === 'withdrawal' && (
               <div className="mt-4 space-y-4">
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.withdrawalMethod}</label>
+                  <label className="block text-gray-300 font-semibold mb-2 text-sm sm:text-base">{t.withdrawalMethod}</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
-                      onClick={() => {
-                        setRefWithdrawalCrypto('USDT');
-                        setRefWithdrawalNetwork('');
-                      }}
-                      className={`p-4 rounded-xl border-2 transition-all ${
+                      onClick={() => { setRefWithdrawalCrypto('USDT'); setRefWithdrawalNetwork(''); }}
+                      className={`p-4 rounded-xl border-2 transition-all font-bold ${
                         refWithdrawalCrypto === 'USDT'
-                          ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300'
+                          ? 'border-[#39ff14] bg-[#39ff14]/10 text-[#39ff14]'
+                          : 'border-[#39ff14]/20 bg-black/30 text-gray-300 hover:border-[#39ff14]/50'
                       }`}
                     >
                       USDT
                     </button>
                     <button
-                      onClick={() => {
-                        setRefWithdrawalCrypto('TON');
-                        setRefWithdrawalNetwork('');
-                      }}
-                      className={`p-4 rounded-xl border-2 transition-all ${
+                      onClick={() => { setRefWithdrawalCrypto('TON'); setRefWithdrawalNetwork(''); }}
+                      className={`p-4 rounded-xl border-2 transition-all font-bold ${
                         refWithdrawalCrypto === 'TON'
-                          ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300'
+                          ? 'border-[#39ff14] bg-[#39ff14]/10 text-[#39ff14]'
+                          : 'border-[#39ff14]/20 bg-black/30 text-gray-300 hover:border-[#39ff14]/50'
                       }`}
                     >
                       TON
@@ -1594,38 +1581,20 @@ const Index = () => {
 
                 {refWithdrawalCrypto === 'USDT' && (
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.network}</label>
+                    <label className="block text-gray-300 font-semibold mb-2 text-sm sm:text-base">{t.network}</label>
                     <div className="space-y-2">
-                      <button
-                        onClick={() => setRefWithdrawalNetwork('TON')}
-                        className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
-                          refWithdrawalNetwork === 'TON'
-                            ? 'border-purple-600 bg-purple-50 text-purple-700 font-semibold'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300'
-                        }`}
-                      >
-                        The Open Network (TON)
-                      </button>
-                      <button
-                        onClick={() => setRefWithdrawalNetwork('TRC20')}
-                        className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
-                          refWithdrawalNetwork === 'TRC20'
-                            ? 'border-purple-600 bg-purple-50 text-purple-700 font-semibold'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300'
-                        }`}
-                      >
-                        Tron (TRC20)
-                      </button>
-                      <button
-                        onClick={() => setRefWithdrawalNetwork('SPL')}
-                        className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
-                          refWithdrawalNetwork === 'SPL'
-                            ? 'border-purple-600 bg-purple-50 text-purple-700 font-semibold'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300'
-                        }`}
-                      >
-                        Solana (SPL)
-                      </button>
+                      {['TON', 'TRC20', 'SPL'].map(net => (
+                        <button key={net}
+                          onClick={() => setRefWithdrawalNetwork(net as 'TON' | 'TRC20' | 'SPL')}
+                          className={`w-full p-3 rounded-lg border-2 text-left transition-all ${
+                            refWithdrawalNetwork === net
+                              ? 'border-[#39ff14] bg-[#39ff14]/10 text-[#39ff14] font-semibold'
+                              : 'border-[#39ff14]/20 bg-black/30 text-gray-300 hover:border-[#39ff14]/50'
+                          }`}
+                        >
+                          {net === 'TON' ? 'The Open Network (TON)' : net === 'TRC20' ? 'Tron (TRC20)' : 'Solana (SPL)'}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -1633,7 +1602,7 @@ const Index = () => {
                 {refWithdrawalCrypto && (
                   <>
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">
+                      <label className="block text-gray-300 font-semibold mb-2 text-sm sm:text-base">
                         {t.withdrawAmount} <span className="text-gray-500 font-normal text-sm">({t.minAmount} {(referralRegistrations * 0.5).toFixed(2)}$)</span>
                       </label>
                       <input
@@ -1644,18 +1613,18 @@ const Index = () => {
                         value={refWithdrawalAmount}
                         onChange={(e) => setRefWithdrawalAmount(e.target.value)}
                         placeholder={t.enterAmount}
-                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
+                        className="w-full p-3 rounded-lg border-2 border-[#39ff14]/20 bg-black/50 text-white placeholder:text-gray-500 focus:border-[#39ff14]/60 focus:outline-none transition-colors"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2 text-sm sm:text-base">{t.walletAddress}</label>
+                      <label className="block text-gray-300 font-semibold mb-2 text-sm sm:text-base">{t.walletAddress}</label>
                       <input
                         type="text"
                         value={refWithdrawalWallet}
                         onChange={(e) => setRefWithdrawalWallet(e.target.value)}
                         placeholder={t.enterWallet}
-                        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-purple-600 focus:outline-none transition-colors text-gray-800"
+                        className="w-full p-3 rounded-lg border-2 border-[#39ff14]/20 bg-black/50 text-white placeholder:text-gray-500 focus:border-[#39ff14]/60 focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -1663,55 +1632,24 @@ const Index = () => {
                       onClick={async () => {
                         const availableBalance = referralRegistrations * 0.5;
                         const withdrawalAmount = parseFloat(refWithdrawalAmount);
-                        
-                        if (!refWithdrawalAmount || withdrawalAmount < 10) {
-                          toast.error(language === 'ru' ? 'Минимальная сумма вывода 10$' : 'Minimum withdrawal amount is 10$');
-                          return;
-                        }
-                        if (withdrawalAmount > availableBalance) {
-                          toast.error(language === 'ru' ? `Недостаточно средств. Доступно: ${availableBalance.toFixed(2)}$` : `Insufficient funds. Available: ${availableBalance.toFixed(2)}$`);
-                          return;
-                        }
-                        if (refWithdrawalCrypto === 'USDT' && !refWithdrawalNetwork) {
-                          toast.error(language === 'ru' ? 'Выберите сеть' : 'Select network');
-                          return;
-                        }
-                        if (!refWithdrawalWallet) {
-                          toast.error(language === 'ru' ? 'Введите адрес кошелька' : 'Enter wallet address');
-                          return;
-                        }
-
+                        if (!refWithdrawalAmount || withdrawalAmount < 10) { toast.error(language === 'ru' ? 'Минимальная сумма вывода 10$' : 'Minimum withdrawal amount is 10$'); return; }
+                        if (withdrawalAmount > availableBalance) { toast.error(language === 'ru' ? `Недостаточно средств. Доступно: ${availableBalance.toFixed(2)}$` : `Insufficient funds. Available: ${availableBalance.toFixed(2)}$`); return; }
+                        if (refWithdrawalCrypto === 'USDT' && !refWithdrawalNetwork) { toast.error(language === 'ru' ? 'Выберите сеть' : 'Select network'); return; }
+                        if (!refWithdrawalWallet) { toast.error(language === 'ru' ? 'Введите адрес кошелька' : 'Enter wallet address'); return; }
                         try {
                           const response = await fetch(REFERRAL_WITHDRAWAL_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              userId: user?.id,
-                              username: user?.username,
-                              amount: withdrawalAmount,
-                              cryptoType: refWithdrawalCrypto,
-                              network: refWithdrawalNetwork || refWithdrawalCrypto,
-                              walletAddress: refWithdrawalWallet
-                            })
+                            body: JSON.stringify({ userId: user?.id, username: user?.username, amount: withdrawalAmount, cryptoType: refWithdrawalCrypto, network: refWithdrawalNetwork || refWithdrawalCrypto, walletAddress: refWithdrawalWallet })
                           });
-
                           const data = await response.json();
-
                           if (response.ok && data.success) {
-                            setRefWithdrawalCrypto('');
-                            setRefWithdrawalNetwork('');
-                            setRefWithdrawalWallet('');
-                            setRefWithdrawalAmount('');
-                            
-                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена! Ожидайте подтверждения администратора.' : 'Withdrawal request sent! Wait for admin confirmation.');
-                          } else {
-                            toast.error(data.error || (language === 'ru' ? 'Ошибка создания заявки' : 'Error creating request'));
-                          }
-                        } catch (error) {
-                          toast.error(language === 'ru' ? 'Ошибка сети' : 'Network error');
-                        }
+                            setRefWithdrawalCrypto(''); setRefWithdrawalNetwork(''); setRefWithdrawalWallet(''); setRefWithdrawalAmount('');
+                            toast.success(language === 'ru' ? 'Заявка на вывод отправлена! Ожидайте подтверждения администратора.' : 'Withdrawal request sent!');
+                          } else { toast.error(data.error || (language === 'ru' ? 'Ошибка создания заявки' : 'Error creating request')); }
+                        } catch (error) { toast.error(language === 'ru' ? 'Ошибка сети' : 'Network error'); }
                       }}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-lg"
+                      className="w-full bg-[#1f7a3a] hover:bg-[#256640] text-white py-4 rounded-xl font-bold text-lg border-0"
                     >
                       {t.withdrawFunds}
                     </Button>
