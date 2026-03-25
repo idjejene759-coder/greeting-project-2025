@@ -7,40 +7,38 @@
 @layer base {
   :root {
     --background: 0 0% 4%;
-    --foreground: 0 0% 100%;
+    --foreground: 0 0% 90%;
 
     --card: 0 0% 7%;
-    --card-foreground: 0 0% 100%;
+    --card-foreground: 0 0% 90%;
 
     --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 100%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 105 100% 54%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 130 55% 38%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 105 100% 40%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 130 40% 28%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 105 100% 54%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 130 50% 35%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 105 60% 18%;
-    --input: 0 0% 12%;
-    --ring: 105 100% 54%;
+    --border: 130 25% 18%;
+    --input: 0 0% 10%;
+    --ring: 130 50% 35%;
 
     --radius: 0.75rem;
 
-    --neon-green: #39ff14;
-    --neon-green-dim: #22cc00;
-    --neon-pink: #39ff14;
-    --neon-cyan: #39ff14;
-    --neon-purple: #39ff14;
+    --accent-green: #2d9e4f;
+    --accent-green-dim: #1f7a3a;
+    --accent-green-subtle: #19612e;
   }
 }
 
@@ -59,39 +57,36 @@
 @layer utilities {
   .neon-glow-pink {
     text-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      0 0 30px var(--neon-green),
-      0 0 40px var(--neon-green);
+      0 0 8px rgba(45, 158, 79, 0.6),
+      0 0 16px rgba(45, 158, 79, 0.3);
   }
 
   .neon-glow-cyan {
     text-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      0 0 30px var(--neon-green),
-      0 0 40px var(--neon-green);
+      0 0 8px rgba(45, 158, 79, 0.6),
+      0 0 16px rgba(45, 158, 79, 0.3);
   }
 
   .neon-border-pink {
     box-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      inset 0 0 10px var(--neon-green);
+      0 0 8px rgba(45, 158, 79, 0.4),
+      inset 0 0 8px rgba(45, 158, 79, 0.1);
   }
 
   .neon-border-cyan {
     box-shadow:
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      inset 0 0 10px var(--neon-green);
+      0 0 8px rgba(45, 158, 79, 0.4),
+      inset 0 0 8px rgba(45, 158, 79, 0.1);
   }
 
   .glass-card {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(57, 255, 20, 0.15);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    background: rgba(8, 12, 8, 0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(45, 158, 79, 0.18);
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .hover-lift {
@@ -99,8 +94,8 @@
   }
 
   .hover-lift:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(45, 158, 79, 0.2);
   }
 
   * {
@@ -124,16 +119,16 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #39ff14 0%, #22cc00 100%);
+    background: linear-gradient(135deg, #3db96a 0%, #1f7a3a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .animated-gradient {
-    background: linear-gradient(270deg, #39ff14, #22cc00, #00ff88);
+    background: linear-gradient(270deg, #2d9e4f, #1f7a3a, #256640);
     background-size: 600% 600%;
-    animation: gradientShift 8s ease infinite;
+    animation: gradientShift 10s ease infinite;
   }
 
   @keyframes gradientShift {
@@ -162,12 +157,12 @@
     height: 200%;
     background: linear-gradient(
       to right,
-      rgba(57, 255, 20, 0) 0%,
-      rgba(57, 255, 20, 0.08) 50%,
-      rgba(57, 255, 20, 0) 100%
+      rgba(45, 158, 79, 0) 0%,
+      rgba(45, 158, 79, 0.04) 50%,
+      rgba(45, 158, 79, 0) 100%
     );
     transform: rotate(45deg);
-    animation: shine 3s infinite;
+    animation: shine 5s infinite;
   }
 
   @keyframes shine {
@@ -177,6 +172,13 @@
     100% {
       transform: translateX(100%) translateY(100%) rotate(45deg);
     }
+  }
+
+  .bg-image-overlay {
+    background-image: url("https://cdn.poehali.dev/projects/bb7692aa-9fdf-407d-910a-a268b04fb3d6/bucket/07ef8004-3b72-453d-85c2-abd1d5a5ee86.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }
 

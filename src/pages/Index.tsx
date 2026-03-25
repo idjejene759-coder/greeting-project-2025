@@ -888,12 +888,12 @@ const Index = () => {
 
   if (screen === 'auth') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
+      <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden bg-image-overlay">
+        <div className="absolute inset-0 bg-black/60" />
         
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
-          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-10 left-5 w-40 h-40 sm:w-72 sm:h-72 bg-[#1f7a3a] rounded-full blur-[120px] opacity-15" />
+          <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-72 sm:h-72 bg-[#1f7a3a] rounded-full blur-[120px] opacity-15" />
         </div>
 
         <div className="relative z-10 max-w-md w-full space-y-4 sm:space-y-6 animate-fade-in">
@@ -904,8 +904,8 @@ const Index = () => {
             <div className="h-1 w-24 sm:w-32 mx-auto animated-gradient rounded-full"></div>
           </div>
 
-          <Card className="glass-card p-5 sm:p-8 shine-effect">
-            <h2 className="text-2xl sm:text-3xl font-black mb-5 sm:mb-6 text-center gradient-text">
+          <Card className="glass-card p-5 sm:p-8">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-5 sm:mb-6 text-center gradient-text tracking-tight">
               {authMode === 'login' ? t.login : t.register}
             </h2>
 
@@ -915,7 +915,7 @@ const Index = () => {
                 placeholder={t.username}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="bg-black/40 border-[#39ff14]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#39ff14] transition-all"
+                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
@@ -924,13 +924,13 @@ const Index = () => {
                 placeholder={t.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-black/40 border-[#39ff14]/40 text-white placeholder:text-gray-400 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#39ff14] transition-all"
+                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
                 onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
               />
 
               <Button
                 onClick={handleAuth}
-                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold animated-gradient text-white border-0 hover-lift shine-effect"
+                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold bg-[#1f7a3a] hover:bg-[#256640] text-white border-0 hover-lift transition-all"
               >
                 {authMode === 'login' ? t.enterBtn : t.registerBtn}
               </Button>
@@ -938,7 +938,7 @@ const Index = () => {
               <div className="text-center pt-1">
                 <button
                   onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                  className="text-[#39ff14] hover:text-[#39ff14] transition-all text-sm sm:text-base font-medium"
+                  className="text-[#3db96a] hover:text-[#2d9e4f] transition-all text-sm sm:text-base font-medium"
                 >
                   {authMode === 'login' ? t.noAccount : t.hasAccount}
                 </button>
@@ -953,12 +953,12 @@ const Index = () => {
   if (screen === 'home') {
     return (
       <>
-        <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#000000] via-[#050f00] to-[#000000]" />
+        <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-6 relative overflow-hidden bg-image-overlay">
+          <div className="absolute inset-0 bg-black/65" />
           
           <div className="absolute inset-0">
-            <div className="absolute top-10 left-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" />
-            <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-80 sm:h-80 bg-[#39ff14] rounded-full blur-[100px] opacity-20 animate-pulse-glow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-10 left-5 w-40 h-40 sm:w-72 sm:h-72 bg-[#1f7a3a] rounded-full blur-[130px] opacity-12" />
+            <div className="absolute bottom-10 right-5 w-40 h-40 sm:w-72 sm:h-72 bg-[#1f7a3a] rounded-full blur-[130px] opacity-12" />
           </div>
 
           <div className="relative z-10 max-w-4xl w-full space-y-6 sm:space-y-10 animate-fade-in">
@@ -974,20 +974,20 @@ const Index = () => {
                   <Button
                     onClick={() => setShowLanguageMenu(!showLanguageMenu)}
                     variant="ghost"
-                    className="w-10 h-10 p-0 text-[#39ff14] hover:text-[#39ff14] hover:bg-[#39ff14]/10 rounded-lg transition-all border border-[#39ff14]/30"
+                    className="w-10 h-10 p-0 text-[#3db96a] hover:text-[#3db96a] hover:bg-[#2d9e4f]/10 rounded-lg transition-all border border-[#2d9e4f]/25"
                   >
                     <span className="text-sm font-bold">{language === 'ru' ? 'RU' : 'EN'}</span>
                   </Button>
                   {showLanguageMenu && (
-                    <div className="absolute top-12 right-0 bg-[#0a0a0a] border border-[#39ff14]/30 rounded-lg overflow-hidden shadow-xl z-50 min-w-[100px]">
+                    <div className="absolute top-12 right-0 bg-[#080c08]/90 backdrop-blur-md border border-[#2d9e4f]/25 rounded-lg overflow-hidden shadow-xl z-50 min-w-[100px]">
                       <button
                         onClick={() => {
                           setLanguage('ru');
                           localStorage.setItem('language', 'ru');
                           setShowLanguageMenu(false);
                         }}
-                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#39ff14]/20 transition-colors ${
-                          language === 'ru' ? 'bg-[#39ff14]/10 text-[#39ff14] font-bold' : 'text-gray-300'
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#2d9e4f]/15 transition-colors ${
+                          language === 'ru' ? 'bg-[#2d9e4f]/10 text-[#3db96a] font-bold' : 'text-gray-400'
                         }`}
                       >
                         🇷🇺 Русский
@@ -998,8 +998,8 @@ const Index = () => {
                           localStorage.setItem('language', 'en');
                           setShowLanguageMenu(false);
                         }}
-                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#39ff14]/20 transition-colors ${
-                          language === 'en' ? 'bg-[#39ff14]/10 text-[#39ff14] font-bold' : 'text-gray-300'
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-[#2d9e4f]/15 transition-colors ${
+                          language === 'en' ? 'bg-[#2d9e4f]/10 text-[#3db96a] font-bold' : 'text-gray-400'
                         }`}
                       >
                         🇬🇧 English
@@ -1010,7 +1010,7 @@ const Index = () => {
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
-                  className="text-[#39ff14] hover:text-[#39ff14] hover:bg-[#39ff14]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
+                  className="text-[#3db96a] hover:text-[#3db96a] hover:bg-[#2d9e4f]/10 text-sm sm:text-base font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-xl transition-all"
                 >
                   <Icon name="LogOut" size={18} className="mr-1 sm:mr-2" />
                   {t.logout}
@@ -1023,7 +1023,7 @@ const Index = () => {
                 <Button
                   onClick={() => setScreen('instructions')}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#3db96a] border border-[#2d9e4f]/30 hover:border-[#2d9e4f]/60 hover-lift"
                 >
                   <Icon name="Rocket" size={24} className="mr-2" />
                   {language === 'ru' ? 'Начать' : 'Start'}
@@ -1032,7 +1032,7 @@ const Index = () => {
                 <Button
                   onClick={handleVipSignals}
                   size="lg"
-                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
+                  className="h-20 sm:h-24 text-lg sm:text-xl font-bold glass-card text-[#3db96a] border border-[#2d9e4f]/30 hover:border-[#2d9e4f]/60 hover-lift"
                 >
                   <Icon name="Crown" size={24} className="mr-2" />
                   {language === 'ru' ? 'VIP Сигналы' : 'VIP Signals'}
@@ -1042,7 +1042,7 @@ const Index = () => {
               <Button
                 onClick={() => setScreen('referral')}
                 size="lg"
-                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#39ff14] border-2 border-[#39ff14]/40 hover:border-[#39ff14] hover-lift shine-effect"
+                className="w-full h-20 sm:h-24 text-base sm:text-lg font-bold glass-card text-[#3db96a] border border-[#2d9e4f]/30 hover:border-[#2d9e4f]/60 hover-lift"
               >
                 <Icon name="Users" size={24} className="mr-2" />
                 <span className="break-words">{language === 'ru' ? 'Реферальная программа' : 'Referral Program'}</span>
