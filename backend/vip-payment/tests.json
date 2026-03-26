@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "create_invoice bad params",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "create_invoice", "userId": null, "months": 1},
+      "expectedStatus": 400,
+      "expectedBody": {"error": "Неверные параметры"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

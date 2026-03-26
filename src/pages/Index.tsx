@@ -26,6 +26,7 @@ const REFERRAL_WITHDRAWAL_URL = 'https://functions.poehali.dev/d38745fc-69e2-4c6
 const PLAYERS_URL = 'https://functions.poehali.dev/3e570920-a9de-4ec8-97e8-928154817722';
 const SUPPORT_URL = 'https://functions.poehali.dev/bb6c509d-0959-41f0-9412-4855a56c8608';
 const CRYPTO_WALLET = 'UQAdowLWZaOAssDcVX-CbhUl_ydb9wSJON7EPorQEYBqE4UQ';
+const VIP_PAYMENT_URL = 'https://functions.poehali.dev/6fd14d89-7e15-4fd6-a152-8129b6527802';
 
 const Index = () => {
   const [screen, setScreen] = useState<Screen>('auth');
@@ -54,6 +55,12 @@ const Index = () => {
   const [isVip, setIsVip] = useState(false);
   const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null);
   const [vipRequestStatus, setVipRequestStatus] = useState<string | null>(null);
+  const [showVipPlans, setShowVipPlans] = useState(false);
+  const [selectedVipPlan, setSelectedVipPlan] = useState<number | null>(null);
+  const [vipInvoiceId, setVipInvoiceId] = useState<number | null>(null);
+  const [vipPayUrl, setVipPayUrl] = useState('');
+  const [isCreatingInvoice, setIsCreatingInvoice] = useState(false);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [cryptoType, setCryptoType] = useState<'USDT' | 'TON' | ''>('');
   const [cryptoNetwork, setCryptoNetwork] = useState<'TON' | 'TRC20' | ''>('');
@@ -485,61 +492,70 @@ const Index = () => {
 
   const handleVipSignals = async () => {
     await checkVipStatus();
-    
     if (isVip) {
       setScreen('vip');
-    } else if (vipRequestStatus === 'pending') {
-      toast.info('Ваша заявка на VIP в обработке');
-    } else if (vipRequestStatus === 'rejected') {
-      toast.error('Ваша заявка была отклонена. Попробуйте снова.');
-      setVipRequestStatus(null);
-      setShowVipPaymentModal(true);
     } else {
-      setShowVipPaymentModal(true);
+      setShowVipPlans(true);
     }
   };
 
-  const handleVipPaymentSubmit = async () => {
-    if (!vipPaymentScreenshot.trim()) {
-      toast.error('Добавьте скриншот оплаты');
-      return;
-    }
-    
+  const handleSelectPlan = async (months: number) => {
     if (!user) return;
-    
+    setSelectedVipPlan(months);
+    setIsCreatingInvoice(true);
     try {
-      console.log('Sending VIP payment request:', {
-        action: 'create_request',
-        userId: user.id,
-        screenshotUrl: vipPaymentScreenshot
-      });
-      
-      const response = await fetch(VIP_URL, {
+      const res = await fetch(VIP_PAYMENT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'create_request',
-          userId: user.id,
-          screenshotUrl: vipPaymentScreenshot
-        })
+        body: JSON.stringify({ action: 'create_invoice', userId: user.id, months })
       });
-      
-      const data = await response.json();
-      console.log('VIP payment response:', { status: response.status, data });
-      
-      if (response.ok && data.success) {
-        toast.success(data.message);
-        setShowVipPaymentModal(false);
-        setVipPaymentScreenshot('');
-        setVipRequestStatus('pending');
+      const data = await res.json();
+      if (res.ok && data.invoiceId) {
+        setVipInvoiceId(data.invoiceId);
+        setVipPayUrl(data.payUrl);
+        setShowVipPlans(false);
+        setShowVipPaymentModal(true);
+        window.open(data.payUrl, '_blank');
       } else {
-        toast.error('❌ ' + (data.error || 'Ошибка отправки заявки'));
+        toast.error(data.error || 'Ошибка создания счёта');
+        setSelectedVipPlan(null);
       }
-    } catch (error) {
-      console.error('Error submitting VIP request:', error);
-      toast.error(`❌ Ошибка отправки заявки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+    } catch {
+      toast.error('Ошибка сети');
+      setSelectedVipPlan(null);
     }
+    setIsCreatingInvoice(false);
   };
+
+  const handleCheckVipPayment = async () => {
+    if (!user || !vipInvoiceId) return;
+    setIsCheckingPayment(true);
+    try {
+      const res = await fetch(VIP_PAYMENT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'check_payment', userId: user.id, invoiceId: vipInvoiceId })
+      });
+      const data = await res.json();
+      if (data.paid) {
+        setIsVip(true);
+        setVipExpiresAt(data.expiresAt);
+        setShowVipPaymentModal(false);
+        setVipInvoiceId(null);
+        setVipPayUrl('');
+        setSelectedVipPlan(null);
+        toast.success('VIP активирован!');
+        setScreen('vip');
+      } else {
+        toast.error('Оплата ещё не прошла. Попробуй через минуту.');
+      }
+    } catch {
+      toast.error('Ошибка проверки оплаты');
+    }
+    setIsCheckingPayment(false);
+  };
+
+
 
 
 
@@ -1206,21 +1222,88 @@ const Index = () => {
           </div>
         </div>
 
+        {showVipPlans && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/90 backdrop-blur-lg animate-fade-in">
+            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 animate-fade-in">
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-2xl font-bold text-white">{language === 'ru' ? 'Покупка подписки' : 'Buy Subscription'}</h2>
+                <button
+                  onClick={() => setShowVipPlans(false)}
+                  className="w-9 h-9 rounded-full bg-[#2c2c2e] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                >
+                  <Icon name="X" size={18} />
+                </button>
+              </div>
+              <p className="text-gray-400 text-sm mb-5">{language === 'ru' ? 'Выберите тариф' : 'Choose a plan'}</p>
+
+              <div className="space-y-3">
+                {([
+                  { months: 1,  price: 2.5,  perMonth: 2.5,  label: language === 'ru' ? 'Месяц' : 'Month',   popular: false },
+                  { months: 3,  price: 5.0,  perMonth: 1.67, label: language === 'ru' ? 'Месяца' : 'Months',  popular: true  },
+                  { months: 6,  price: 10.0, perMonth: 1.67, label: language === 'ru' ? 'Месяцев' : 'Months', popular: false },
+                  { months: 12, price: 23.0, perMonth: 1.92, label: language === 'ru' ? 'Год' : 'Year',       popular: false },
+                ] as {months:number;price:number;perMonth:number;label:string;popular:boolean}[]).map(plan => (
+                  <div key={plan.months} className="relative">
+                    <button
+                      onClick={() => handleSelectPlan(plan.months)}
+                      disabled={isCreatingInvoice}
+                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${
+                        plan.popular
+                          ? 'border-[#39ff14]/60 bg-[#39ff14]/5'
+                          : 'border-[#2c2c2e] bg-[#2c2c2e] hover:border-[#39ff14]/30'
+                      } ${isCreatingInvoice && selectedVipPlan !== plan.months ? 'opacity-50' : ''}`}
+                    >
+                      <span className="text-3xl font-black text-white w-8 text-center leading-none">{plan.months === 12 ? '1' : plan.months}</span>
+                      <div className="flex-1">
+                        <p className="text-white font-semibold text-base">{plan.months === 12 ? (language === 'ru' ? 'Год' : 'Year') : plan.label}</p>
+                        <p className="text-gray-400 text-xs">{plan.perMonth.toFixed(2)}$ {language === 'ru' ? 'в месяц' : 'per month'}</p>
+                      </div>
+                      <div className="text-right">
+                        {isCreatingInvoice && selectedVipPlan === plan.months
+                          ? <span className="text-[#39ff14] text-sm font-bold animate-pulse">...</span>
+                          : <span className="text-white font-bold text-lg">{plan.price}$</span>
+                        }
+                      </div>
+                    </button>
+                    {plan.popular && (
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+                        <span className="bg-[#39ff14] text-black text-[10px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider">
+                          {language === 'ru' ? 'Популярный' : 'Popular'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {showVipPaymentModal && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/90 backdrop-blur-lg animate-fade-in">
-            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 space-y-5 animate-fade-in">
+            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">{language === 'ru' ? 'Пополнение' : 'Top Up'}</h2>
+                <h2 className="text-xl font-bold text-white">{language === 'ru' ? 'Оплата подписки' : 'Pay Subscription'}</h2>
                 <button
-                  onClick={() => { setShowVipPaymentModal(false); setVipPaymentScreenshot(''); }}
+                  onClick={() => { setShowVipPaymentModal(false); setVipInvoiceId(null); setVipPayUrl(''); setSelectedVipPlan(null); }}
                   className="w-9 h-9 rounded-full bg-[#2c2c2e] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
                 >
                   <Icon name="X" size={18} />
                 </button>
               </div>
 
+              <div className="bg-[#2c2c2e] rounded-xl p-4 space-y-1">
+                <p className="text-gray-400 text-xs">{language === 'ru' ? 'Тариф' : 'Plan'}</p>
+                <p className="text-white font-bold text-base">
+                  {selectedVipPlan === 1 ? (language === 'ru' ? '1 месяц — 2.5$' : '1 month — $2.5') :
+                   selectedVipPlan === 3 ? (language === 'ru' ? '3 месяца — 5$' : '3 months — $5') :
+                   selectedVipPlan === 6 ? (language === 'ru' ? '6 месяцев — 10$' : '6 months — $10') :
+                   language === 'ru' ? '1 год — 23$' : '1 year — $23'}
+                </p>
+              </div>
+
               <a
-                href="https://t.me/CryptoBot"
+                href={vipPayUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 bg-[#2c2c2e] rounded-xl p-3 hover:bg-[#3a3a3c] transition-colors cursor-pointer"
@@ -1237,51 +1320,19 @@ const Index = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-semibold text-sm">@CryptoBot</p>
-                  <p className="text-gray-400 text-xs">{language === 'ru' ? 'от 5 до 5000' : 'from 5 to 5000'}</p>
+                  <p className="text-gray-400 text-xs">{language === 'ru' ? 'Нажми чтобы оплатить' : 'Tap to pay'}</p>
                 </div>
                 <Icon name="ChevronRight" size={20} className="text-gray-500 flex-shrink-0" />
               </a>
 
-              <div className="bg-[#2c2c2e] rounded-xl p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Icon name="Wallet" size={16} className="text-[#39ff14]" />
-                  <p className="text-xs text-gray-400 font-semibold">{language === 'ru' ? 'Или переведите вручную' : 'Or transfer manually'}</p>
-                </div>
-                <div className="bg-black/40 p-2.5 rounded-lg">
-                  <p className="text-[11px] text-[#39ff14] font-mono break-all">{CRYPTO_WALLET}</p>
-                </div>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(CRYPTO_WALLET);
-                    toast.success(language === 'ru' ? 'Адрес скопирован!' : 'Address copied!');
-                  }}
-                  className="w-full bg-[#39ff14]/15 hover:bg-[#39ff14]/25 text-[#39ff14] border-0 h-9 text-xs font-bold"
-                >
-                  <Icon name="Copy" size={14} className="mr-1.5" />
-                  {t.copyAddress}
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-semibold flex items-center gap-1.5">
-                  <Icon name="Image" size={14} className="text-[#39ff14]" />
-                  {t.screenshotLink}
-                </label>
-                <Input
-                  type="text"
-                  placeholder="https://imgur.com/..."
-                  value={vipPaymentScreenshot}
-                  onChange={(e) => setVipPaymentScreenshot(e.target.value)}
-                  className="bg-[#2c2c2e] border-0 text-white placeholder:text-gray-600 h-11 text-sm focus:ring-1 focus:ring-[#39ff14]/50"
-                />
-              </div>
-
               <Button
-                onClick={handleVipPaymentSubmit}
+                onClick={handleCheckVipPayment}
+                disabled={isCheckingPayment}
                 className="w-full h-12 bg-[#39ff14] hover:bg-[#32dd12] text-black font-bold text-sm border-0 rounded-xl"
               >
-                <Icon name="Send" size={16} className="mr-1.5" />
-                {t.sendRequest}
+                {isCheckingPayment
+                  ? (language === 'ru' ? 'Проверяем...' : 'Checking...')
+                  : (language === 'ru' ? 'Я оплатил — активировать VIP' : 'I paid — activate VIP')}
               </Button>
             </div>
           </div>

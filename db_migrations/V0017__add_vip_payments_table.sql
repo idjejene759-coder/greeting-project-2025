@@ -1,0 +1,13 @@
+ALTER TABLE t_p45110186_greeting_project_202.users 
+ADD COLUMN IF NOT EXISTS vip_months INTEGER NULL DEFAULT NULL;
+
+CREATE TABLE IF NOT EXISTS t_p45110186_greeting_project_202.vip_payments (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES t_p45110186_greeting_project_202.users(id),
+  invoice_id BIGINT NOT NULL UNIQUE,
+  months INTEGER NOT NULL,
+  amount_usd NUMERIC(10,2) NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  paid_at TIMESTAMP NULL
+);
