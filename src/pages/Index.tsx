@@ -41,8 +41,9 @@ const Index = () => {
   const [referralCount, setReferralCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [freeSignalsUsed, setFreeSignalsUsed] = useState(0);
   const FREE_SIGNALS_LIMIT = 10;
+  const getFreeSignalsKey = (uid: number) => `fsu_${uid}`;
+  const [freeSignalsUsed, setFreeSignalsUsed] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
@@ -353,6 +354,8 @@ const Index = () => {
   useEffect(() => {
     if (user && !isAdmin) {
       checkVipStatus();
+      const saved = parseInt(localStorage.getItem(getFreeSignalsKey(user.id)) || '0', 10);
+      setFreeSignalsUsed(saved);
     }
   }, [user]);
 
@@ -495,7 +498,11 @@ const Index = () => {
     setCurrentSignal(parseFloat(signal.replace(',', '.')));
     setIsWaiting(true);
     setTimeLeft(7);
-    if (!isVip) setFreeSignalsUsed(prev => prev + 1);
+    if (!isVip && user) {
+      const next = freeSignalsUsed + 1;
+      setFreeSignalsUsed(next);
+      localStorage.setItem(getFreeSignalsKey(user.id), String(next));
+    }
   };
 
   const checkVipStatus = async () => {
@@ -1546,15 +1553,6 @@ const Index = () => {
                 <p className="text-[#39ff14] text-lg">
                   ⏱️ {t.nextSignalIn} <span className="font-bold text-[#39ff14]">{timeLeft}{t.sec}</span>
                 </p>
-              </div>
-            )}
-
-            {!isVip && (
-              <div className="mb-4 flex items-center justify-between bg-black/40 rounded-lg border border-[#39ff14]/20 px-4 py-2">
-                <span className="text-gray-400 text-sm">{language === 'ru' ? 'Бесплатных сигналов:' : 'Free signals:'}</span>
-                <span className={`font-bold text-base ${freeSignalsUsed >= FREE_SIGNALS_LIMIT ? 'text-red-400' : 'text-[#39ff14]'}`}>
-                  {Math.max(0, FREE_SIGNALS_LIMIT - freeSignalsUsed)} / {FREE_SIGNALS_LIMIT}
-                </span>
               </div>
             )}
 
