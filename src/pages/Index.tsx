@@ -1207,108 +1207,83 @@ const Index = () => {
         </div>
 
         {showVipPaymentModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-lg animate-fade-in overflow-y-auto">
-            <Card className="glass-card border-2 border-[#39ff14]/60 p-4 sm:p-6 max-w-lg w-full shine-effect my-4 sm:my-8">
-              <div className="space-y-3 sm:space-y-4">
-                <div className="text-center">
-                  <div className="mb-3 sm:mb-4 relative inline-block">
-                    <div className="relative z-10">
-                      <Icon name="Crown" size={40} className="sm:hidden mx-auto text-[#39ff14] animate-pulse" />
-                      <Icon name="Crown" size={56} className="hidden sm:block mx-auto text-[#39ff14] animate-pulse" />
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[#39ff14] rounded-full blur-2xl opacity-60 animate-pulse"></div>
-                    </div>
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-black mb-2 gradient-text">
-                    {t.vipAccess}
-                  </h2>
-                  <div className="inline-flex items-center justify-center bg-gradient-to-r from-[#39ff14] to-[#22cc00] px-4 py-2 rounded-full mb-3">
-                    <p className="text-white font-bold text-sm sm:text-base">
-                      {t.perMonth}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-r from-red-500/15 to-orange-500/15 border border-red-400/40 rounded-xl p-3 sm:p-4">
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <Icon name="AlertTriangle" size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
-                    <div className="text-xs sm:text-sm text-red-200 space-y-1">
-                      <p className="font-bold text-red-300">{t.paymentConditions}</p>
-                      <p className="leading-relaxed">• {t.amount} <span className="font-bold text-white">{t.exactly}</span></p>
-                      <p className="leading-relaxed">• {t.network}: <span className="font-bold text-white">{t.tonNetwork}</span></p>
-                      <p className="leading-relaxed text-orange-200">• {t.otherNotAccepted}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-[#0a0a0a] to-[#0d1f0d] p-3 sm:p-4 rounded-xl border border-[#39ff14]/40">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="Wallet" size={16} className="text-[#39ff14]" />
-                    <p className="text-xs sm:text-sm text-gray-300 font-semibold">{t.walletAddr}</p>
-                  </div>
-                  <div className="bg-black/60 p-2 sm:p-3 rounded-lg border border-[#39ff14]/30 mb-2">
-                    <p className="text-[10px] sm:text-xs text-[#39ff14] font-mono break-all leading-relaxed">{CRYPTO_WALLET}</p>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(CRYPTO_WALLET);
-                      toast.success(language === 'ru' ? '✅ Адрес скопирован в буфер обмена!' : '✅ Address copied to clipboard!');
-                    }}
-                    className="w-full bg-[#39ff14]/20 hover:bg-[#39ff14]/30 text-[#39ff14] border border-[#39ff14]/40 hover:border-[#39ff14] transition-all h-9 sm:h-10 text-xs sm:text-sm font-bold"
-                  >
-                    <Icon name="Copy" size={14} className="mr-1.5" />
-                    {t.copyAddress}
-                  </Button>
-                </div>
-
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label className="text-xs sm:text-sm text-gray-300 font-semibold flex items-center gap-1.5">
-                    <Icon name="Image" size={14} className="text-[#39ff14]" />
-                    {t.screenshotLink}
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="https://imgur.com/..."
-                    value={vipPaymentScreenshot}
-                    onChange={(e) => setVipPaymentScreenshot(e.target.value)}
-                    className="bg-black/60 border-[#39ff14]/50 text-white placeholder:text-gray-500 h-10 sm:h-12 text-sm sm:text-base backdrop-blur-sm focus:border-[#39ff14] transition-all"
-                  />
-                  <p className="text-[10px] sm:text-xs text-gray-400 leading-relaxed">
-                    {t.uploadInstruction}
-                  </p>
-                </div>
-
-                <div className="bg-gradient-to-r from-[#39ff14]/15 to-[#22cc00]/15 border border-[#39ff14]/40 rounded-xl p-3">
-                  <div className="flex items-start gap-2">
-                    <Icon name="Clock" size={18} className="text-[#39ff14] flex-shrink-0 mt-0.5" />
-                    <p className="text-xs sm:text-sm text-gray-200 leading-relaxed">
-                      {t.reviewTime}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 sm:gap-3 pt-1">
-                  <Button
-                    onClick={() => {
-                      setShowVipPaymentModal(false);
-                      setVipPaymentScreenshot('');
-                    }}
-                    variant="outline"
-                    className="flex-1 h-10 sm:h-12 bg-transparent border-2 border-[#39ff14]/50 text-[#39ff14] hover:bg-[#39ff14]/10 hover:border-[#39ff14] transition-all text-xs sm:text-sm font-bold"
-                  >
-                    {t.cancel}
-                  </Button>
-                  <Button
-                    onClick={handleVipPaymentSubmit}
-                    className="flex-1 h-10 sm:h-12 animated-gradient text-white border-0 hover-lift shine-effect text-xs sm:text-sm font-bold shadow-lg shadow-[#39ff14]/20"
-                  >
-                    <Icon name="Send" size={16} className="mr-1 sm:mr-1.5" />
-                    {t.sendRequest}
-                  </Button>
-                </div>
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/90 backdrop-blur-lg animate-fade-in">
+            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 space-y-5 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">{language === 'ru' ? 'Пополнение' : 'Top Up'}</h2>
+                <button
+                  onClick={() => { setShowVipPaymentModal(false); setVipPaymentScreenshot(''); }}
+                  className="w-9 h-9 rounded-full bg-[#2c2c2e] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                >
+                  <Icon name="X" size={18} />
+                </button>
               </div>
-            </Card>
+
+              <a
+                href="https://t.me/CryptoBot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-[#2c2c2e] rounded-xl p-3 hover:bg-[#3a3a3c] transition-colors cursor-pointer"
+              >
+                <div className="relative flex-shrink-0">
+                  <img
+                    src="https://cdn.poehali.dev/projects/bb7692aa-9fdf-407d-910a-a268b04fb3d6/bucket/00c6fe9a-97a9-4ca2-ba93-4565c003e862.jpg"
+                    alt="CryptoBot"
+                    className="w-11 h-11 rounded-full object-cover"
+                  />
+                  <div className="absolute -top-0.5 -left-0.5 w-4 h-4 bg-[#39ff14] rounded-full flex items-center justify-center">
+                    <Icon name="Zap" size={10} className="text-black" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold text-sm">@CryptoBot</p>
+                  <p className="text-gray-400 text-xs">{language === 'ru' ? 'от 5 до 5000' : 'from 5 to 5000'}</p>
+                </div>
+                <Icon name="ChevronRight" size={20} className="text-gray-500 flex-shrink-0" />
+              </a>
+
+              <div className="bg-[#2c2c2e] rounded-xl p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Icon name="Wallet" size={16} className="text-[#39ff14]" />
+                  <p className="text-xs text-gray-400 font-semibold">{language === 'ru' ? 'Или переведите вручную' : 'Or transfer manually'}</p>
+                </div>
+                <div className="bg-black/40 p-2.5 rounded-lg">
+                  <p className="text-[11px] text-[#39ff14] font-mono break-all">{CRYPTO_WALLET}</p>
+                </div>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(CRYPTO_WALLET);
+                    toast.success(language === 'ru' ? 'Адрес скопирован!' : 'Address copied!');
+                  }}
+                  className="w-full bg-[#39ff14]/15 hover:bg-[#39ff14]/25 text-[#39ff14] border-0 h-9 text-xs font-bold"
+                >
+                  <Icon name="Copy" size={14} className="mr-1.5" />
+                  {t.copyAddress}
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-400 font-semibold flex items-center gap-1.5">
+                  <Icon name="Image" size={14} className="text-[#39ff14]" />
+                  {t.screenshotLink}
+                </label>
+                <Input
+                  type="text"
+                  placeholder="https://imgur.com/..."
+                  value={vipPaymentScreenshot}
+                  onChange={(e) => setVipPaymentScreenshot(e.target.value)}
+                  className="bg-[#2c2c2e] border-0 text-white placeholder:text-gray-600 h-11 text-sm focus:ring-1 focus:ring-[#39ff14]/50"
+                />
+              </div>
+
+              <Button
+                onClick={handleVipPaymentSubmit}
+                className="w-full h-12 bg-[#39ff14] hover:bg-[#32dd12] text-black font-bold text-sm border-0 rounded-xl"
+              >
+                <Icon name="Send" size={16} className="mr-1.5" />
+                {t.sendRequest}
+              </Button>
+            </div>
           </div>
         )}
       </>
