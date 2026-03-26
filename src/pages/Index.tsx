@@ -1421,15 +1421,10 @@ const Index = () => {
                 <Icon name="ChevronRight" size={20} className="text-gray-500 flex-shrink-0" />
               </a>
 
-              <Button
-                onClick={handleCheckVipPayment}
-                disabled={isCheckingPayment}
-                className="w-full h-12 bg-[#39ff14] hover:bg-[#32dd12] text-black font-bold text-sm border-0 rounded-xl"
-              >
-                {isCheckingPayment
-                  ? (language === 'ru' ? 'Проверяем...' : 'Checking...')
-                  : (language === 'ru' ? 'Я оплатил — активировать VIP' : 'I paid — activate VIP')}
-              </Button>
+              <div className="flex items-center justify-center gap-2 py-3 text-gray-400 text-sm">
+                <div className="w-2 h-2 rounded-full bg-[#39ff14] animate-pulse" />
+                {language === 'ru' ? 'Ожидаем оплату...' : 'Waiting for payment...'}
+              </div>
             </div>
           </div>
         )}
