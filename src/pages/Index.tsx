@@ -1223,8 +1223,8 @@ const Index = () => {
         </div>
 
         {showVipPlans && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/90 backdrop-blur-lg animate-fade-in">
-            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 animate-fade-in">
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 animate-fade-in">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-2xl font-bold text-white">{language === 'ru' ? 'Покупка подписки' : 'Buy Subscription'}</h2>
                 <button
@@ -1280,8 +1280,8 @@ const Index = () => {
         )}
 
         {showVipPaymentModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/90 backdrop-blur-lg animate-fade-in">
-            <div className="w-full max-w-md bg-[#1c1c1e] rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 space-y-4 animate-fade-in">
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-white">{language === 'ru' ? 'Оплата подписки' : 'Pay Subscription'}</h2>
                 <button
