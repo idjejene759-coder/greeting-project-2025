@@ -41,6 +41,8 @@ const Index = () => {
   const [referralCount, setReferralCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [freeSignalsUsed, setFreeSignalsUsed] = useState(0);
+  const FREE_SIGNALS_LIMIT = 10;
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
@@ -470,6 +472,10 @@ const Index = () => {
   }, [crashXTimeLeft, isCrashXWaiting]);
 
   const generateSignal = () => {
+    if (!isVip && freeSignalsUsed >= FREE_SIGNALS_LIMIT) {
+      toast.error(language === 'ru' ? 'Бесплатные сигналы закончились. Купите VIP!' : 'Free signals used up. Buy VIP!');
+      return;
+    }
     if (isWaiting) {
       toast.error(`Подождите ${timeLeft} секунд до следующего сигнала`);
       return;
@@ -489,6 +495,7 @@ const Index = () => {
     setCurrentSignal(parseFloat(signal.replace(',', '.')));
     setIsWaiting(true);
     setTimeLeft(7);
+    if (!isVip) setFreeSignalsUsed(prev => prev + 1);
   };
 
   const checkVipStatus = async () => {
@@ -1542,15 +1549,45 @@ const Index = () => {
               </div>
             )}
 
-            <Button
-              onClick={generateSignal}
-              size="lg"
-              disabled={isWaiting}
-              className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Icon name="Zap" size={28} className="mr-2 sm:mr-3" />
-              {currentSignal === null ? t.getSignal : isWaiting ? `${t.waiting} (${timeLeft}${t.sec})` : t.nextSignal}
-            </Button>
+            {!isVip && (
+              <div className="mb-4 flex items-center justify-between bg-black/40 rounded-lg border border-[#39ff14]/20 px-4 py-2">
+                <span className="text-gray-400 text-sm">{language === 'ru' ? 'Бесплатных сигналов:' : 'Free signals:'}</span>
+                <span className={`font-bold text-base ${freeSignalsUsed >= FREE_SIGNALS_LIMIT ? 'text-red-400' : 'text-[#39ff14]'}`}>
+                  {Math.max(0, FREE_SIGNALS_LIMIT - freeSignalsUsed)} / {FREE_SIGNALS_LIMIT}
+                </span>
+              </div>
+            )}
+
+            {!isVip && freeSignalsUsed >= FREE_SIGNALS_LIMIT ? (
+              <div className="w-full space-y-3">
+                <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-center">
+                  <p className="text-red-400 font-bold text-base mb-1">
+                    {language === 'ru' ? 'Бесплатные сигналы закончились' : 'Free signals used up'}
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    {language === 'ru' ? 'Купите VIP для безлимитных сигналов' : 'Buy VIP for unlimited signals'}
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowVipPlans(true)}
+                  size="lg"
+                  className="h-16 sm:h-20 w-full text-lg sm:text-xl font-bold bg-[#39ff14] hover:bg-[#32dd12] text-black border-0"
+                >
+                  <Icon name="Crown" size={24} className="mr-2" />
+                  {language === 'ru' ? 'Купить VIP сигналы' : 'Buy VIP Signals'}
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={generateSignal}
+                size="lg"
+                disabled={isWaiting}
+                className="h-16 sm:h-20 px-8 sm:px-12 text-lg sm:text-2xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Icon name="Zap" size={28} className="mr-2 sm:mr-3" />
+                {currentSignal === null ? t.getSignal : isWaiting ? `${t.waiting} (${timeLeft}${t.sec})` : t.nextSignal}
+              </Button>
+            )}
           </Card>
         </div>
       </div>
