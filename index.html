@@ -18,6 +18,26 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
+    <script>
+      (function() {
+        var BUILD = '680aeaf';
+        var stored = sessionStorage.getItem('_build');
+        if (stored !== BUILD) {
+          sessionStorage.setItem('_build', BUILD);
+          if (stored !== null) { location.reload(true); }
+        }
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState === 'visible') {
+            var t = Date.now();
+            var last = parseInt(sessionStorage.getItem('_last') || '0');
+            if (t - last > 60000) {
+              sessionStorage.setItem('_last', t);
+              location.reload(true);
+            }
+          }
+        });
+      })();
+    </script>
     <script src="https://cdn.poehali.dev/intertnal/js/pp-min-2.js"></script>
     <script src="https://cdn.poehali.dev/intertnal/js/route-min.js"></script>
     <script src="https://cdn.poehali.dev/intertnal/js/telemetry-min.js"></script>
