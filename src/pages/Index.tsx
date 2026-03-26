@@ -360,6 +360,31 @@ const Index = () => {
   }, [screen, user]);
 
   useEffect(() => {
+    if (!showVipPaymentModal || !vipInvoiceId || !user) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(VIP_PAYMENT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'check_payment', userId: user.id, invoiceId: vipInvoiceId })
+        });
+        const data = await res.json();
+        if (data.paid) {
+          setIsVip(true);
+          setVipExpiresAt(data.expiresAt);
+          setShowVipPaymentModal(false);
+          setVipInvoiceId(null);
+          setVipPayUrl('');
+          setSelectedVipPlan(null);
+          toast.success(language === 'ru' ? 'VIP активирован!' : 'VIP activated!');
+          setScreen('vip');
+        }
+      } catch (e) { console.error(e); }
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [showVipPaymentModal, vipInvoiceId, user]);
+
+  useEffect(() => {
     if (user && !isAdmin) {
       const interval = setInterval(async () => {
         try {
