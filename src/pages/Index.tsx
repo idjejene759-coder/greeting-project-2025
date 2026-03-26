@@ -56,6 +56,7 @@ const Index = () => {
   const [vipExpiresAt, setVipExpiresAt] = useState<string | null>(null);
   const [vipRequestStatus, setVipRequestStatus] = useState<string | null>(null);
   const [showVipPlans, setShowVipPlans] = useState(false);
+  const [showVipMethodSelect, setShowVipMethodSelect] = useState(false);
   const [selectedVipPlan, setSelectedVipPlan] = useState<number | null>(null);
   const [vipInvoiceId, setVipInvoiceId] = useState<number | null>(null);
   const [vipPayUrl, setVipPayUrl] = useState('');
@@ -524,30 +525,33 @@ const Index = () => {
     }
   };
 
-  const handleSelectPlan = async (months: number) => {
-    if (!user) return;
+  const handleSelectPlan = (months: number) => {
     setSelectedVipPlan(months);
+    setShowVipPlans(false);
+    setShowVipMethodSelect(true);
+  };
+
+  const handlePayWithCryptoBot = async () => {
+    if (!user || !selectedVipPlan) return;
     setIsCreatingInvoice(true);
     try {
       const res = await fetch(VIP_PAYMENT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create_invoice', userId: user.id, months })
+        body: JSON.stringify({ action: 'create_invoice', userId: user.id, months: selectedVipPlan })
       });
       const data = await res.json();
       if (res.ok && data.invoiceId) {
         setVipInvoiceId(data.invoiceId);
         setVipPayUrl(data.payUrl);
-        setShowVipPlans(false);
+        setShowVipMethodSelect(false);
         setShowVipPaymentModal(true);
         window.open(data.payUrl, '_blank');
       } else {
         toast.error(data.error || 'Ошибка создания счёта');
-        setSelectedVipPlan(null);
       }
     } catch {
       toast.error('Ошибка сети');
-      setSelectedVipPlan(null);
     }
     setIsCreatingInvoice(false);
   };
@@ -1300,6 +1304,59 @@ const Index = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {showVipMethodSelect && (
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-5 animate-fade-in">
+              <div className="flex items-center gap-3 mb-1">
+                <button
+                  onClick={() => { setShowVipMethodSelect(false); setShowVipPlans(true); }}
+                  className="w-9 h-9 rounded-full bg-[#2c2c2e] flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                >
+                  <Icon name="ArrowLeft" size={18} />
+                </button>
+                <h2 className="text-2xl font-bold text-white">{language === 'ru' ? 'Способ оплаты' : 'Payment Method'}</h2>
+              </div>
+
+              <div className="bg-[#2c2c2e] rounded-xl p-4 space-y-1">
+                <p className="text-gray-400 text-xs">{language === 'ru' ? 'Выбранный тариф' : 'Selected plan'}</p>
+                <p className="text-white font-bold text-base">
+                  {selectedVipPlan === 1 ? (language === 'ru' ? '1 месяц — 2.5$' : '1 month — $2.5') :
+                   selectedVipPlan === 3 ? (language === 'ru' ? '3 месяца — 5$' : '3 months — $5') :
+                   selectedVipPlan === 6 ? (language === 'ru' ? '6 месяцев — 10$' : '6 months — $10') :
+                   language === 'ru' ? '1 год — 23$' : '1 year — $23'}
+                </p>
+              </div>
+
+              <p className="text-gray-400 text-sm">{language === 'ru' ? 'Выберите способ оплаты' : 'Choose payment method'}</p>
+
+              <button
+                onClick={handlePayWithCryptoBot}
+                disabled={isCreatingInvoice}
+                className="w-full flex items-center gap-3 bg-[#2c2c2e] rounded-xl p-4 hover:bg-[#3a3a3c] transition-colors text-left disabled:opacity-50"
+              >
+                <div className="relative flex-shrink-0">
+                  <img
+                    src="https://cdn.poehali.dev/projects/bb7692aa-9fdf-407d-910a-a268b04fb3d6/bucket/00c6fe9a-97a9-4ca2-ba93-4565c003e862.jpg"
+                    alt="CryptoBot"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div className="absolute -top-0.5 -left-0.5 w-4 h-4 bg-[#39ff14] rounded-full flex items-center justify-center">
+                    <Icon name="Zap" size={10} className="text-black" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold text-base">@CryptoBot</p>
+                  <p className="text-gray-400 text-xs">USDT, TON {language === 'ru' ? '— быстро и безопасно' : '— fast & secure'}</p>
+                </div>
+                {isCreatingInvoice
+                  ? <span className="text-[#39ff14] text-sm animate-pulse">...</span>
+                  : <Icon name="ChevronRight" size={20} className="text-gray-500 flex-shrink-0" />
+                }
+              </button>
             </div>
           </div>
         )}
