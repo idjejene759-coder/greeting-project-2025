@@ -339,13 +339,43 @@ const Index = () => {
     } else if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
-        setUser(userData);
-        setBalance(userData.balance || 0);
-        setReferralCount(userData.referralCount || 0);
-        setScreen('home');
-      } catch (error) {
-        console.error('Error parsing user data:', error);
+        const refreshToken = localStorage.getItem('auth_refresh_token');
+        if (refreshToken) {
+          fetch(`${AUTH_EMAIL_URL}?action=refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken })
+          })
+            .then(r => r.json())
+            .then(data => {
+              if (data.user) {
+                const ud = { id: data.user.id, username: data.user.name || data.user.email || 'user', balance: userData.balance || 0, referralCount: userData.referralCount || 0, referralCode: userData.referralCode || '' };
+                setUser(ud);
+                setBalance(userData.balance || 0);
+                setReferralCount(userData.referralCount || 0);
+                localStorage.setItem('user', JSON.stringify(ud));
+                setScreen('home');
+              } else {
+                localStorage.removeItem('user');
+                localStorage.removeItem('auth_refresh_token');
+                setScreen('auth');
+              }
+            })
+            .catch(() => {
+              setUser(userData);
+              setBalance(userData.balance || 0);
+              setReferralCount(userData.referralCount || 0);
+              setScreen('home');
+            });
+        } else {
+          setUser(userData);
+          setBalance(userData.balance || 0);
+          setReferralCount(userData.referralCount || 0);
+          setScreen('home');
+        }
+      } catch {
         localStorage.removeItem('user');
+        localStorage.removeItem('auth_refresh_token');
         setScreen('auth');
       }
     }
@@ -1066,6 +1096,7 @@ const Index = () => {
     setBalance(0);
     setReferralCount(0);
     localStorage.removeItem('user');
+    localStorage.removeItem('auth_refresh_token');
     setScreen('auth');
     toast.success('Вы вышли из системы');
   };
