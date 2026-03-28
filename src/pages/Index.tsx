@@ -314,24 +314,8 @@ const Index = () => {
     if (tgInitData.length > 0) {
       tgWebApp?.ready?.();
       tgWebApp?.expand?.();
-      fetch(`${TELEGRAM_AUTH_URL}?action=webapp_auth`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ init_data: tgInitData })
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.user) {
-            const ud = { id: data.user.id, username: data.user.name || data.user.telegram_id || 'user', balance: 0, referralCount: 0, referralCode: '' };
-            setUser(ud);
-            localStorage.setItem('user', JSON.stringify(ud));
-            setScreen('home');
-          }
-        })
-        .catch(() => {});
-      return;
     }
-    
+
     if (savedAdmin === 'true') {
       setIsAdmin(true);
       loadAdminUsers();
