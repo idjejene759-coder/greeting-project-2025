@@ -1115,7 +1115,7 @@ const Index = () => {
                   placeholder="Имя"
                   value={registerName}
                   onChange={(e) => setRegisterName(e.target.value)}
-                  className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
+                  className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-colors"
                   onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
                 />
               )}
@@ -1125,7 +1125,7 @@ const Index = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
+                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-colors"
                 onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
               />
 
@@ -1134,7 +1134,7 @@ const Index = () => {
                 placeholder={t.password}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-all"
+                className="bg-black/50 border-[#2d9e4f]/30 text-white placeholder:text-gray-500 h-12 sm:h-14 text-base sm:text-lg backdrop-blur-sm focus:border-[#2d9e4f]/60 transition-colors"
                 onKeyDown={(e) => e.key === 'Enter' && handleEmailAuth()}
               />
 
@@ -1281,8 +1281,8 @@ const Index = () => {
         </div>
 
         {showVipPlans && (
-          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
-            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 animate-fade-in">
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-2xl font-bold text-white">{language === 'ru' ? 'Покупка подписки' : 'Buy Subscription'}</h2>
                 <button
@@ -1338,8 +1338,8 @@ const Index = () => {
         )}
 
         {showVipMethodSelect && (
-          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
-            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-5 animate-fade-in">
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-5">
               <div className="flex items-center gap-3 mb-1">
                 <button
                   onClick={() => { setShowVipMethodSelect(false); setShowVipPlans(true); }}
@@ -1391,8 +1391,8 @@ const Index = () => {
         )}
 
         {showVipPaymentModal && (
-          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] animate-fade-in overflow-y-auto">
-            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-4 animate-fade-in">
+          <div className="fixed inset-0 z-50 flex flex-col bg-[#1c1c1e] overflow-y-auto">
+            <div className="flex-1 w-full max-w-md mx-auto p-5 sm:p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-white">{language === 'ru' ? 'Оплата подписки' : 'Pay Subscription'}</h2>
                 <button
@@ -1503,7 +1503,7 @@ const Index = () => {
                 window.open(urlToOpen, '_blank');
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-colors"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
               {t.registerNow}
@@ -1518,7 +1518,7 @@ const Index = () => {
                 }
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-colors"
             >
               <Icon name="Play" size={24} className="mr-2" />
               {t.toSignals}
@@ -1871,7 +1871,7 @@ const Index = () => {
                 window.open(urlToOpen, '_blank');
               }}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-colors"
             >
               <Icon name="UserPlus" size={24} className="mr-2" />
               {t.registerNow}
@@ -1880,7 +1880,7 @@ const Index = () => {
             <Button
               onClick={() => setScreen('crashx')}
               size="lg"
-              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-all"
+              className="flex-1 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-[#0a0a0a] hover:bg-[#0d1f0d] text-[#39ff14] border-2 border-[#39ff14]/30 hover:border-[#39ff14]/60 transition-colors"
             >
               <Icon name="Play" size={24} className="mr-2" />
               {t.toSignals}
@@ -2151,7 +2151,7 @@ const Index = () => {
                   {stats.chart.map((day, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
                       <div
-                        className="w-full rounded-t-sm transition-all duration-500"
+                        className="w-full rounded-t-sm"
                         style={{
                           height: `${Math.max((day.count / maxCount) * 100, 4)}%`,
                           background: day.count > 0
